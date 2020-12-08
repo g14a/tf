@@ -3,6 +3,7 @@ package aws
 import (
 	"fmt"
 	"github.com/manifoldco/promptui"
+	"reflect"
 	"tf/builder"
 	"tf/utils"
 )
@@ -51,6 +52,8 @@ func AWSProviderPrompt() {
 	}
 
 	maxRetries, err := maxRetriesPrompt.Run()
+
+	fmt.Println(reflect.TypeOf(maxRetries), "============")
 
 	providerInfo := map[string]interface{}{
 		"region":      region,

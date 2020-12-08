@@ -2,6 +2,9 @@ package builder
 
 import (
 	"fmt"
+	"github.com/asaskevich/govalidator"
+	"log"
+	"strconv"
 	"strings"
 	"tf/file"
 )
@@ -13,7 +16,16 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 
 	providerInfo.WriteString("provider \"" + provider + "\" {\n")
 	for k, v := range providerBlock {
-		providerInfo.WriteString("\t " + k + ": " + v.(string) + "\n")
+		if govalidator.IsInt(v.(string)) {
+			temp, err := strconv.Atoi(v.(string))
+			if err != nil {
+				log.Fatal(err)
+			}
+			s := fmt.Sprintf("\t "+ k + "= %d \n", temp)
+			providerInfo.WriteString(s)
+		} else {
+			providerInfo.WriteString("\t " + k + "= \"" + v.(string) + "\"\n")
+		}
 	}
 	providerInfo.WriteString("}")
 
