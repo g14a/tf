@@ -3,57 +3,74 @@ package aws
 import (
 	"fmt"
 	"github.com/manifoldco/promptui"
-	"reflect"
 	"tf/builder"
 	"tf/utils"
 )
 
-func AWSProviderPrompt() {
+func ProviderPrompt() {
+	var prompt promptui.Prompt
+
 	fmt.Println("AWS Provider Prompt...")
 
 	_, region, err := AWSRegionPrompt().Run()
 
-	accessKeyPrompt := promptui.Prompt{
+	prompt = promptui.Prompt{
 		Label: "Enter your access_key",
 		Mask:  '*',
 	}
 
-	accessKey, err := accessKeyPrompt.Run()
+	accessKey, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
 		return
 	}
 
-	secretKeyPrompt := promptui.Prompt{
+	prompt = promptui.Prompt{
 		Label: "Enter your secret_key",
 		Mask:  '*',
 	}
 
-	secretKey, err := secretKeyPrompt.Run()
+	secretKey, err := prompt.Run()
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
 		return
 	}
 
-	profilePrompt := promptui.Prompt{
+	prompt = promptui.Prompt{
 		Label: "Enter profile - This is the AWS profile name as set in the shared credentials file",
 	}
 
-	profile, err := profilePrompt.Run()
+	profile, err := prompt.Run()
 
 	if err != nil {
 		fmt.Printf("Prompt failed %v\n", err)
 		return
 	}
 
-	maxRetriesPrompt := promptui.Prompt{
-		Label:    "Enter Max Retries",
+	prompt = promptui.Prompt{
+		Label:    "Enter max_retries",
 		Validate: utils.IntValidator,
 	}
 
-	maxRetries, err := maxRetriesPrompt.Run()
+	maxRetries, err := prompt.Run()
 
-	fmt.Println(reflect.TypeOf(maxRetries), "============")
+	prompt = promptui.Prompt{
+		Label: "Enter allowed_account_ids, eg:[a,b,c]",
+	}
+
+	allowedAccountIds, err := prompt.Run()
+
+	prompt = promptui.Prompt{
+		Label: "Enter insecure - Explicitly allow the provider to perform \"insecure\" SSL requests",
+	}
+
+	insecure, err := prompt.Run()
+
+	prompt = promptui.Prompt{
+		Label: "Enter token - Session token for validating temporary credentials",
+	}
+
+	token, err := prompt.Run()
 
 	providerInfo := map[string]interface{}{
 		"region":      region,
@@ -61,6 +78,9 @@ func AWSProviderPrompt() {
 		"secret_key":  secretKey,
 		"profile":     profile,
 		"max_retries": maxRetries,
+		"allowed_account_ids": allowedAccountIds,
+		"insecure": insecure,
+		"token": token,
 	}
 
 	builder.ProviderBuilder("aws", providerInfo)
