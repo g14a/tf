@@ -36,5 +36,5 @@ func main() {
 
 	fmt.Println(tfProvider)
 
-	aws.ProviderPrompt()
+	aws.AWSResourcePrompt()
 }

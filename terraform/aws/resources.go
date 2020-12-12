@@ -1,7 +1,16 @@
 package aws
 
-func GetResources() []string {
+import (
+	"fmt"
+	"github.com/manifoldco/promptui"
+	"strings"
+	"tf/terraform/aws/resource_prompts"
+)
+
+func resources() []string {
 	return []string{
+		"aws_instance",
+		"aws_s3_bucket",
 		"aws_access_analyzer_analyzer",
 		"aws_acm_certificate",
 		"aws_acm_certificate_validation",
@@ -253,4 +262,29 @@ func GetResources() []string {
 		"aws_elb",
 		"aws_elb_attachment",
 	}
+}
+
+func AWSResourcePrompt()  {
+
+	resourcePrompt := promptui.Select{
+		Label:             "AWS Resources",
+		Size:              20,
+		Items:             resources(),
+		StartInSearchMode: true,
+		Searcher: func(input string, index int) bool {
+			provider := resources()[index]
+			name := strings.Replace(strings.ToLower(provider), " ", "", -1)
+			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+
+			return strings.Contains(name, input)
+		},
+	}
+
+	_, resource, err := resourcePrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(resource)
+	resource_prompts.AWSInstanceBuilderPrompt()
 }
