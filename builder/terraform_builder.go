@@ -55,8 +55,6 @@ func ResourceBuilder(resource, blockName string, resourceBlock map[string]interf
 	}
 	providerInfo.WriteString("}")
 
-	fmt.Println(providerInfo.String())
-
 	_, err := file.TerraformFile.WriteString(providerInfo.String())
 	if err != nil {
 		fmt.Println(err)

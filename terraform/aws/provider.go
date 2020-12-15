@@ -2,6 +2,7 @@ package aws
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"tf/builder"
 	"tf/utils"
@@ -10,7 +11,7 @@ import (
 func ProviderPrompt() {
 	var prompt promptui.Prompt
 
-	fmt.Println("AWS Provider Prompt...")
+	color.Green("\nSelect AWS Provider Info:\n\n", "text")
 
 	_, region, err := AWSRegionPrompt().Run()
 

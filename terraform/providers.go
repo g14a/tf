@@ -2,6 +2,7 @@ package terraform
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"strings"
 	"tf/terraform/aws"
@@ -33,8 +34,11 @@ func getProviders() []string {
 }
 
 func ProvidersPrompt() string {
+
+	color.Green("\nSelect Cloud Provider(e.g. aws,google):\n\n", "text")
+
 	provider := promptui.Select{
-		Label:             "Select Provider",
+		Label:             "",
 		Size:              20,
 		StartInSearchMode: true,
 		Items:             getProviders(),

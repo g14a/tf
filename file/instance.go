@@ -1,6 +1,7 @@
 package file
 
 import (
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"log"
 	"os"
@@ -28,8 +29,10 @@ func TFFileInstance(name string) {
 
 func FilePrompt() {
 
+	color.Green("\nEnter terraform file name to save your configuration in this directory\n", "text")
+
 	filePrompt := promptui.Prompt{
-		Label: "Enter terraform file name to save your configuration in this directory",
+		Label: "",
 	}
 
 	fileName, err := filePrompt.Run()

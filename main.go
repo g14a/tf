@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "tf/cmd"
+import (
+	"tf/cmd"
+)
 
 func main() {
 	cmd.Execute()
