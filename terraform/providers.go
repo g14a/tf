@@ -1,6 +1,13 @@
 package terraform
 
-func GetProviders() []string {
+import (
+	"fmt"
+	"github.com/manifoldco/promptui"
+	"strings"
+	"tf/terraform/aws"
+)
+
+func getProviders() []string {
 	return []string{
 		"aci", "acme", "akamai", "alicloud", "archive", "arukras", "auth0",
 		"avi", "aviatrix", "aws", "azure", "azuread", "azuredevops", "azurerm",
@@ -22,5 +29,37 @@ func GetProviders() []string {
 		"sumologic", "telefonicaopencloud", "template", "tencentcloud", "terraform", "test", "tfe", "time",
 		"tls", "triton", "turbot", "ucloud", "ultradns", "vault", "vcd", "venafi", "vmc", "vra7",
 		"vsphere", "vthunder", "vultr", "wavefront",
+	}
+}
+
+func ProvidersPrompt() string {
+	provider := promptui.Select{
+		Label:             "Select Provider",
+		Size:              20,
+		StartInSearchMode: true,
+		Items:             getProviders(),
+		Searcher: func(input string, index int) bool {
+			provider := getProviders()[index]
+			name := strings.Replace(strings.ToLower(provider), " ", "", -1)
+			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+
+			return strings.Contains(name, input)
+		},
+	}
+
+	_, tfProvider, err := provider.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return ""
+	}
+
+	return tfProvider
+}
+
+func SelectProviderTree(provider string) {
+	switch provider {
+	case "aws":
+		aws.ProviderPrompt()
 	}
 }
