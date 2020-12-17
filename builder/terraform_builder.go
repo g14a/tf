@@ -13,9 +13,7 @@ import (
 func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
-	providerInfo.WriteString("# ------------THIS FILE IS GENERATED AUTOMATICALLY------------\n\n")
-
-	providerInfo.WriteString("provider \"" + provider + "\" {\n")
+	providerInfo.WriteString("\n\nprovider \"" + provider + "\" {\n")
 	for k, v := range providerBlock {
 		if govalidator.IsInt(v.(string)) {
 			temp, err := strconv.Atoi(v.(string))
