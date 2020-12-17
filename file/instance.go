@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"tf/utils"
 )
 
 var TerraformFile os.File
@@ -27,12 +28,13 @@ func TFFileInstance(name string) {
 	TerraformFile = *f
 }
 
-func FilePrompt() {
+func Prompt() {
 
 	color.Green("\nEnter terraform file name to save your configuration in this directory\n", "text")
 
 	filePrompt := promptui.Prompt{
 		Label: "",
+		Validate: utils.StringValidator,
 	}
 
 	fileName, err := filePrompt.Run()

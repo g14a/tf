@@ -2,6 +2,7 @@ package aws
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"strings"
 	"tf/terraform/aws/resource_prompts"
@@ -264,10 +265,12 @@ func resources() []string {
 	}
 }
 
-func AWSResourcePrompt()  {
+func ResourcePrompt() {
+
+	color.Green("\nSelect aws Resources(e.g. aws_instance, aws_vpc):\n\n", "text")
 
 	resourcePrompt := promptui.Select{
-		Label:             "AWS Resources",
+		Label:             "",
 		Size:              20,
 		Items:             resources(),
 		StartInSearchMode: true,

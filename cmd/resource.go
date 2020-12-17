@@ -21,9 +21,9 @@ import (
 	"tf/terraform"
 )
 
-// providerCmd represents the provider command
-var providerCmd = &cobra.Command{
-	Use:   "provider",
+// resourceCmd represents the resource command
+var resourceCmd = &cobra.Command{
+	Use:   "resource",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -34,20 +34,20 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		file.Prompt()
 		tfProvider := terraform.ProvidersPrompt()
-		terraform.SelectProviderTree(tfProvider)
+		terraform.SelectResourceTree(tfProvider)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(providerCmd)
+	rootCmd.AddCommand(resourceCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// providerCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// resourceCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// providerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// resourceCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

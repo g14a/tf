@@ -14,7 +14,7 @@ func GetRegions() []string {
 	}
 }
 
-func AWSRegionPrompt() *promptui.Select {
+func RegionPrompt() *promptui.Select {
 	return &promptui.Select{
 		Label:             "AWS regions",
 		Size:              20,

@@ -9,7 +9,7 @@ func IntValidator(input string) error {
 	if input != "" {
 		_, err := strconv.ParseFloat(input, 64)
 		if err != nil {
-			return errors.New("Invalid number")
+			return errors.New("invalid number")
 		}
 	} else {
 		return nil
@@ -17,3 +17,9 @@ func IntValidator(input string) error {
 	return nil
 }
 
+func StringValidator(input string) error {
+	if input == "" {
+		return errors.New("empty file path")
+	}
+	return nil
+}
