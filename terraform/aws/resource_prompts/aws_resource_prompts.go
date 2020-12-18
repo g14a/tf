@@ -80,3 +80,7 @@ func AWSInstanceBuilderPrompt() {
 
 	builder.ResourceBuilder("aws_instance", blockName, resourceBlock)
 }
+
+func AWSVPCPrompt()  {
+	
+}

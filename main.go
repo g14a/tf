@@ -15,17 +15,8 @@ limitations under the License.
 */
 package main
 
-import (
-	"log"
-	"os/exec"
-)
+import "tf/cmd"
 
 func main() {
-	//cmd.Execute()
-	path, err := exec.LookPath("terraform")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(path)
+	cmd.Execute()
 }

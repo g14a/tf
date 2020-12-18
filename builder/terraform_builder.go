@@ -22,6 +22,13 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 			}
 			s := fmt.Sprintf("  "+k+"= %d \n", temp)
 			providerInfo.WriteString(s)
+		} else if v.(string) == "true" || v.(string) == "false"{
+			b, err := strconv.ParseBool(v.(string))
+			if err != nil {
+				fmt.Println(err)
+			}
+			s := fmt.Sprintf("  "+k+"= %t \n", b)
+			providerInfo.WriteString(s)
 		} else {
 			providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
 		}
