@@ -99,27 +99,7 @@ func AWSInstanceBuilderPrompt() {
 		Items: []string{"true", "false"},
 	}
 
-	resourceBlock := map[string]interface{}{}
-
-	for _, v := range promptOrder {
-		p := prompts[v]
-		value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
-		}
-		resourceBlock[v] = value
-	}
-
-	for _, v := range selectOrder {
-		p := selects[v]
-		_, value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
-		}
-		resourceBlock[v] = value
-	}
-
-	builder.ResourceBuilder("aws_instance", blockName, resourceBlock)
+	builder.ResourceBuilder("aws_instance", blockName, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
 }
 
 func AWSVPCPrompt()  {
@@ -184,31 +164,20 @@ func AWSVPCPrompt()  {
 	}
 	selectOrder = append(selectOrder, "assign_generated_ipv6_cidr_block")
 
-	resourceBlock := map[string]interface{}{}
-
-	for _, v := range promptOrder {
-		p := prompts[v]
-		value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
-		}
-		resourceBlock[v] = value
-	}
-
-	for _, v := range selectOrder {
-		p := selects[v]
-		_, value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
-		}
-		resourceBlock[v] = value
-	}
-
-	builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
+	builder.ResourceBuilder("aws_vpc", blockName, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
 
 }
 
 func AWSS3BucketPrompt() {
+	blockPrompt := promptui.Prompt{
+		Label:  "Enter block name(required) e.g. web",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	prompts := map[string]promptui.Prompt{}
 	var promptOrder []string
 
@@ -238,4 +207,7 @@ func AWSS3BucketPrompt() {
 	}
 	selectOrder = append(selectOrder, "force_destroy")
 
+	builder.ResourceBuilder("aws_s3_bucket", blockName, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
+
 }
+

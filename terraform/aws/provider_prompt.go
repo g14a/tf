@@ -118,5 +118,11 @@ func ProviderPrompt() {
 		providerInfo[v] = value
 	}
 
+	providerInfo["samplemap"] = map[string]interface{} {
+		"assume_role": map[string]interface{}{
+			"external_id": "sample id",
+		},
+	}
+
 	builder.ProviderBuilder("aws", providerInfo)
 }
