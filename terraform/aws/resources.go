@@ -11,6 +11,7 @@ import (
 func resources() []string {
 	return []string{
 		"aws_instance",
+		"aws_vpc",
 		"aws_s3_bucket",
 		"aws_access_analyzer_analyzer",
 		"aws_acm_certificate",
@@ -288,6 +289,12 @@ func ResourcePrompt() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(resource)
-	resource_prompts.AWSInstanceBuilderPrompt()
+	switch resource {
+	case "aws_instance":
+		resource_prompts.AWSInstanceBuilderPrompt()
+	case "aws_vpc":
+		resource_prompts.AWSVPCPrompt()
+	case "aws_s3_bucket":
+		resource_prompts.AWSS3BucketPrompt()
+	}
 }

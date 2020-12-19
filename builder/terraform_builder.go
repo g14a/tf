@@ -15,22 +15,24 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 
 	providerInfo.WriteString("\n\nprovider \"" + provider + "\" {\n")
 	for k, v := range providerBlock {
-		if govalidator.IsInt(v.(string)) {
-			temp, err := strconv.Atoi(v.(string))
-			if err != nil {
-				log.Fatal(err)
+		if v.(string) != "" {
+			if govalidator.IsInt(v.(string)) {
+				temp, err := strconv.Atoi(v.(string))
+				if err != nil {
+					log.Fatal(err)
+				}
+				s := fmt.Sprintf("  "+k+"= %d \n", temp)
+				providerInfo.WriteString(s)
+			} else if v.(string) == "true" || v.(string) == "false" {
+				b, err := strconv.ParseBool(v.(string))
+				if err != nil {
+					fmt.Println(err)
+				}
+				s := fmt.Sprintf("  "+k+"= %t \n", b)
+				providerInfo.WriteString(s)
+			} else {
+				providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
 			}
-			s := fmt.Sprintf("  "+k+"= %d \n", temp)
-			providerInfo.WriteString(s)
-		} else if v.(string) == "true" || v.(string) == "false"{
-			b, err := strconv.ParseBool(v.(string))
-			if err != nil {
-				fmt.Println(err)
-			}
-			s := fmt.Sprintf("  "+k+"= %t \n", b)
-			providerInfo.WriteString(s)
-		} else {
-			providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
 		}
 	}
 	providerInfo.WriteString("}")
@@ -54,22 +56,24 @@ func ResourceBuilder(resource, blockName string, resourceBlock map[string]interf
 
 	providerInfo.WriteString("\n\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
 	for k, v := range resourceBlock {
-		if govalidator.IsInt(v.(string)) {
-			temp, err := strconv.Atoi(v.(string))
-			if err != nil {
-				log.Fatal(err)
+		if v.(string) != "" {
+			if govalidator.IsInt(v.(string)) {
+				temp, err := strconv.Atoi(v.(string))
+				if err != nil {
+					log.Fatal(err)
+				}
+				s := fmt.Sprintf("  "+k+"= %d \n", temp)
+				providerInfo.WriteString(s)
+			} else if v.(string) == "true" || v.(string) == "false" {
+				b, err := strconv.ParseBool(v.(string))
+				if err != nil {
+					fmt.Println(err)
+				}
+				s := fmt.Sprintf("  "+k+"= %t \n", b)
+				providerInfo.WriteString(s)
+			} else {
+				providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
 			}
-			s := fmt.Sprintf("  "+k+"= %d \n", temp)
-			providerInfo.WriteString(s)
-		} else if v.(string) == "true" || v.(string) == "false"{
-			b, err := strconv.ParseBool(v.(string))
-			if err != nil {
-				fmt.Println(err)
-			}
-			s := fmt.Sprintf("  "+k+"= %t \n", b)
-			providerInfo.WriteString(s)
-		} else {
-			providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
 		}
 	}
 	providerInfo.WriteString("}")

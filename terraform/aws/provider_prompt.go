@@ -18,7 +18,7 @@ func ProviderPrompt() {
 		fmt.Println(err)
 	}
 
-	var order []string
+	var promptOrder []string
 	prompts := map[string]promptui.Prompt{}
 
 	color.Red("\nWe recommend not providing us your access information.\n" +
@@ -28,83 +28,94 @@ func ProviderPrompt() {
 		Label: "Enter your access_key",
 		Mask:  '*',
 	}
-	order = append(order, "access_key")
+	promptOrder = append(promptOrder, "access_key")
 
 	prompts["secret_key"] = promptui.Prompt{
 		Label: "Enter your secret_key",
 		Mask:  '*',
 	}
-	order = append(order, "secret_key")
+	promptOrder = append(promptOrder, "secret_key")
 
 	prompts["profile"] = promptui.Prompt{
 		Label: "Enter profile - This is the AWS profile name as set in the shared credentials file",
 	}
-	order = append(order, "profile")
+	promptOrder = append(promptOrder, "profile")
 
 	prompts["max_retries"] = promptui.Prompt{
 		Label:    "Enter max_retries",
 		Validate: utils.IntValidator,
 	}
-	order = append(order, "max_retries")
+	promptOrder = append(promptOrder, "max_retries")
 
 	prompts["allowed_account_ids"] = promptui.Prompt{
 		Label: "Enter allowed_account_ids, eg:[a,b,c]",
 	}
-	order = append(order, "allowed_account_ids")
-
-	prompts["insecure"] = promptui.Prompt{
-		Label: "Enter insecure - Explicitly allow the provider to perform \"insecure\" SSL requests(bool)",
-	}
-	order = append(order, "insecure")
+	promptOrder = append(promptOrder, "allowed_account_ids")
 
 	prompts["token"] = promptui.Prompt{
 		Label: "Enter token - Session token for validating temporary credentials",
 	}
-	order = append(order, "token")
+	promptOrder = append(promptOrder, "token")
 
 	providerInfo := map[string]interface{}{}
 	providerInfo["region"] = region
 
-	for k, v := range prompts {
-		value, err := v.Run()
+	for _, v := range promptOrder {
+		p := prompts[v]
+		value, err := p.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
-		providerInfo[k] = value
+		providerInfo[v] = value
 	}
 
+	var selectOrder []string
 	selects := map[string]promptui.Select{}
+
+	selects["insecure"] = promptui.Select{
+		Label: "Enter insecure - Explicitly allow the provider to perform \"insecure\" SSL requests(bool)",
+		Items: []string{"true", "false"},
+	}
+	selectOrder = append(selectOrder, "insecure")
+
 	selects["skip_credentials_validation"] = promptui.Select{
 		Label: "Enter skip_credentials_validation",
 		Items: []string{"true","false"},
 	}
 
+	selectOrder = append(selectOrder, "skip_credentials_validation")
+
 	selects["skip_get_ec2_platforms"] = promptui.Select{
 		Label: "Enter skip_get_ec2_platforms",
 		Items: []string{"true","false"},
 	}
+	selectOrder = append(selectOrder, "skip_get_ec2_platforms")
 
 	selects["skip_metadata_api_check"] = promptui.Select{
 		Label: "Enter skip_metadata_api_check",
 		Items: []string{"true","false"},
 	}
+	selectOrder = append(selectOrder, "skip_metadata_api_check")
 
 	selects["skip_requesting_account_id"] = promptui.Select{
 		Label: "Enter skip_requesting_account_id",
 		Items: []string{"true","false"},
 	}
+	selectOrder = append(selectOrder, "skip_requesting_account_id")
 
 	selects["skip_region_validation"] = promptui.Select{
 		Label: "Enter skip_region_validation",
 		Items: []string{"true","false"},
 	}
+	selectOrder = append(selectOrder, "skip_region_validation")
 
-	for k, v := range selects {
-		_, value, err := v.Run()
+	for _, v := range selectOrder {
+		p := selects[v]
+		_, value, err := p.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
-		providerInfo[k] = value
+		providerInfo[v] = value
 	}
 
 	builder.ProviderBuilder("aws", providerInfo)
