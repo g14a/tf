@@ -14,58 +14,9 @@ import (
 func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
-	providerInfo.WriteString("\n\nprovider \"" + provider + "\" {\n")
-	for k, v := range providerBlock {
-		switch v.(type) {
-		case string:
-			if v.(string) != "" {
-				if govalidator.IsInt(v.(string)) {
-					temp, err := strconv.Atoi(v.(string))
-					if err != nil {
-						log.Fatal(err)
-					}
-					s := fmt.Sprintf("  "+k+"= %d \n", temp)
-					providerInfo.WriteString(s)
-				} else if v.(string) == "true" || v.(string) == "false" {
-					b, err := strconv.ParseBool(v.(string))
-					if err != nil {
-						fmt.Println(err)
-					}
-					s := fmt.Sprintf("  "+k+"= %t \n", b)
-					providerInfo.WriteString(s)
-				} else {
-					providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
-				}
-			}
-		case map[string]interface{}:
-			providerInfo.WriteString("  " + k + " {\n")
-			for nestedK, i := range v.(map[string]interface{}) {
-				if i.(string) != "" {
-					if govalidator.IsInt(i.(string)) {
-						temp, err := strconv.Atoi(i.(string))
-						if err != nil {
-							log.Fatal(err)
-						}
-						s := fmt.Sprintf("  "+nestedK+" = %d \n", temp)
-						providerInfo.WriteString(s)
-					} else if i.(string) == "true" || i.(string) == "false" {
-						b, err := strconv.ParseBool(i.(string))
-						if err != nil {
-							fmt.Println(err)
-						}
-						s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
-						providerInfo.WriteString(s)
-					} else {
-						fmt.Println("came inside string")
-						providerInfo.WriteString("  " + nestedK + " = \"" + i.(string) + "\"\n")
-						fmt.Println(providerInfo.String())
-					}
-				}
-			}
-			providerInfo.WriteString("}\n")
-		}
-	}
-	providerInfo.WriteString("}\n")
+	providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
+	providerInfo = infoBuilder(&providerInfo, providerBlock)
+	providerInfo.WriteString("}")
 
 	_, err := file.TerraformFile.WriteString(providerInfo.String())
 	if err != nil {
@@ -84,28 +35,9 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 func ResourceBuilder(resource, blockName string, resourceBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
-	providerInfo.WriteString("\n\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
-	for k, v := range resourceBlock {
-		if v.(string) != "" {
-			if govalidator.IsInt(v.(string)) {
-				temp, err := strconv.Atoi(v.(string))
-				if err != nil {
-					log.Fatal(err)
-				}
-				s := fmt.Sprintf("  "+k+"= %d \n", temp)
-				providerInfo.WriteString(s)
-			} else if v.(string) == "true" || v.(string) == "false" {
-				b, err := strconv.ParseBool(v.(string))
-				if err != nil {
-					fmt.Println(err)
-				}
-				s := fmt.Sprintf("  "+k+"= %t \n", b)
-				providerInfo.WriteString(s)
-			} else {
-				providerInfo.WriteString("  " + k + "= \"" + v.(string) + "\"\n")
-			}
-		}
-	}
+	providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
+
+	providerInfo = infoBuilder(&providerInfo, resourceBlock)
 	providerInfo.WriteString("}")
 
 	_, err := file.TerraformFile.WriteString(providerInfo.String())
@@ -146,6 +78,61 @@ func PSOrder(promptOrder, selectOrder []string,
 	}
 
 	return resourceBlock
+}
+
+func infoBuilder(strBuilder *strings.Builder, infoBlock map[string]interface{}) strings.Builder {
+	for k, v := range infoBlock {
+		switch v.(type) {
+		case string:
+			if v.(string) != "" {
+				if govalidator.IsInt(v.(string)) {
+					temp, err := strconv.Atoi(v.(string))
+					if err != nil {
+						log.Fatal(err)
+					}
+					s := fmt.Sprintf("  "+k+"= %d \n", temp)
+					strBuilder.WriteString(s)
+				} else if v.(string) == "true" || v.(string) == "false" {
+					b, err := strconv.ParseBool(v.(string))
+					if err != nil {
+						fmt.Println(err)
+					}
+					s := fmt.Sprintf("  "+k+"= %t \n", b)
+					strBuilder.WriteString(s)
+				} else {
+					s := fmt.Sprintf("  " + k + "= \"" + v.(string) + "\"\n")
+					strBuilder.WriteString(s)
+				}
+			}
+		case map[string]interface{}:
+			strBuilder.WriteString("  " + k + " {\n")
+			for nestedK, i := range v.(map[string]interface{}) {
+				if i.(string) != "" {
+					if govalidator.IsInt(i.(string)) {
+						temp, err := strconv.Atoi(i.(string))
+						if err != nil {
+							log.Fatal(err)
+						}
+						s := fmt.Sprintf("  "+nestedK+" = %d \n", temp)
+						strBuilder.WriteString(s)
+					} else if i.(string) == "true" || i.(string) == "false" {
+						b, err := strconv.ParseBool(i.(string))
+						if err != nil {
+							fmt.Println(err)
+						}
+						s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
+						strBuilder.WriteString(s)
+					} else {
+						s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
+						strBuilder.WriteString(s)
+					}
+				}
+			}
+			strBuilder.WriteString("}\n")
+		}
+	}
+
+	return *strBuilder
 }
 
 func terraformExists() bool {

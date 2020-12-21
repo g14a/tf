@@ -21,7 +21,7 @@ func ProviderPrompt() {
 	var promptOrder []string
 	prompts := map[string]promptui.Prompt{}
 
-	color.Red("\nWe recommend not providing us your access information.\n" +
+	color.Red("\nWe recommend not providing us your access information.\n"+
 		"We however assure that we use your information only to create your terraform configuration\n", "text")
 
 	prompts["access_key"] = promptui.Prompt{
@@ -80,32 +80,32 @@ func ProviderPrompt() {
 
 	selects["skip_credentials_validation"] = promptui.Select{
 		Label: "Enter skip_credentials_validation",
-		Items: []string{"true","false"},
+		Items: []string{"true", "false"},
 	}
 
 	selectOrder = append(selectOrder, "skip_credentials_validation")
 
 	selects["skip_get_ec2_platforms"] = promptui.Select{
 		Label: "Enter skip_get_ec2_platforms",
-		Items: []string{"true","false"},
+		Items: []string{"true", "false"},
 	}
 	selectOrder = append(selectOrder, "skip_get_ec2_platforms")
 
 	selects["skip_metadata_api_check"] = promptui.Select{
 		Label: "Enter skip_metadata_api_check",
-		Items: []string{"true","false"},
+		Items: []string{"true", "false"},
 	}
 	selectOrder = append(selectOrder, "skip_metadata_api_check")
 
 	selects["skip_requesting_account_id"] = promptui.Select{
 		Label: "Enter skip_requesting_account_id",
-		Items: []string{"true","false"},
+		Items: []string{"true", "false"},
 	}
 	selectOrder = append(selectOrder, "skip_requesting_account_id")
 
 	selects["skip_region_validation"] = promptui.Select{
 		Label: "Enter skip_region_validation",
-		Items: []string{"true","false"},
+		Items: []string{"true", "false"},
 	}
 	selectOrder = append(selectOrder, "skip_region_validation")
 
@@ -118,10 +118,8 @@ func ProviderPrompt() {
 		providerInfo[v] = value
 	}
 
-	providerInfo["samplemap"] = map[string]interface{} {
-		"assume_role": map[string]interface{}{
-			"external_id": "sample id",
-		},
+	providerInfo["assume_role"] = map[string]interface{}{
+		"external_id": "sample id",
 	}
 
 	builder.ProviderBuilder("aws", providerInfo)
