@@ -16,7 +16,7 @@ func ProviderBuilder(provider string, promptOrder, selectOrder []string, provide
 
 	providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
 	providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, providerBlock)
-	providerInfo.WriteString("}")
+	providerInfo.WriteString("}\n")
 
 	_, err := file.TerraformFile.WriteString(providerInfo.String())
 	if err != nil {
@@ -38,7 +38,7 @@ func ResourceBuilder(resource, blockName string, promptOrder, selectOrder []stri
 	providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
 
 	providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, resourceBlock)
-	providerInfo.WriteString("}")
+	providerInfo.WriteString("}\n")
 
 	_, err := file.TerraformFile.WriteString(providerInfo.String())
 	if err != nil {
@@ -61,7 +61,7 @@ func PSOrder(promptOrder, selectOrder []string,
 
 	for _, v := range promptOrder {
 		p := prompts[v]
-		value, err := p.Prompt.Run()
+		value, err := p.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -70,7 +70,7 @@ func PSOrder(promptOrder, selectOrder []string,
 
 	for _, v := range selectOrder {
 		p := selects[v]
-		_, value, err := p.Select.Run()
+		value, err := p.Run()
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -78,6 +78,23 @@ func PSOrder(promptOrder, selectOrder []string,
 	}
 
 	return resourceBlock
+}
+
+func NestedPSOrder(nestedOrder []string,
+	nestedPrompts map[string]types.TfPrompt,
+	selects map[string]types.TfSelect) map[string]interface{} {
+	nestedBlock := map[string]interface{}{}
+
+	for _, v := range nestedOrder {
+		p := nestedPrompts[v]
+		value, err := p.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
+		nestedBlock[v] = value
+	}
+
+	return nestedBlock
 }
 
 func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string, infoBlock map[string]interface{}) strings.Builder {
@@ -101,6 +118,9 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 					}
 					s := fmt.Sprintf("  "+o+"= %t \n", b)
 					strBuilder.WriteString(s)
+				} else if strings.HasPrefix(v.(string), "[") && strings.HasSuffix(v.(string), "]") {
+					s := fmt.Sprintf("  " + o + "= " + v.(string) + "\n")
+					strBuilder.WriteString(s)
 				} else {
 					s := fmt.Sprintf("  " + o + "= \"" + v.(string) + "\"\n")
 					strBuilder.WriteString(s)
@@ -123,6 +143,9 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 							fmt.Println(err)
 						}
 						s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
+						strBuilder.WriteString(s)
+					} else if strings.HasPrefix(i.(string), "[") && strings.HasSuffix(i.(string), "]") {
+						s := fmt.Sprintf("  " + nestedK + "= " + i.(string) + "\n")
 						strBuilder.WriteString(s)
 					} else {
 						s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")

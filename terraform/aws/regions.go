@@ -3,6 +3,7 @@ package aws
 import (
 	"github.com/manifoldco/promptui"
 	"strings"
+	"tf/types"
 )
 
 func GetRegions() []string {
@@ -14,18 +15,22 @@ func GetRegions() []string {
 	}
 }
 
-func RegionPrompt() *promptui.Select {
-	return &promptui.Select{
-		Label:             "AWS regions",
-		Size:              20,
-		Items:             GetRegions(),
-		StartInSearchMode: true,
-		Searcher: func(input string, index int) bool {
-			provider := GetRegions()[index]
-			name := strings.Replace(strings.ToLower(provider), " ", "", -1)
-			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+func RegionPrompt() types.TfSelect {
 
-			return strings.Contains(name, input)
+	return types.TfSelect{
+		Label: "Select one of the AWS regions",
+		Select: promptui.Select{
+			Label: "",
+			Size:              20,
+			Items:             GetRegions(),
+			StartInSearchMode: true,
+			Searcher: func(input string, index int) bool {
+				provider := GetRegions()[index]
+				name := strings.Replace(strings.ToLower(provider), " ", "", -1)
+				input = strings.Replace(strings.ToLower(input), " ", "", -1)
+
+				return strings.Contains(name, input)
+			},
 		},
 	}
 }

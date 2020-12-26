@@ -23,7 +23,7 @@ func AWSInstanceBuilderPrompt() {
 
 	var promptOrder []string
 	prompts["ami"] = types.TfPrompt{
-		Label: "Enter ami(required)",
+		Label: "Enter ami(required):\nThe AMI to use for the instance",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -31,7 +31,7 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "ami")
 
 	prompts["instance_type"] = types.TfPrompt{
-		Label: "Enter instance_type(required) e.g. t2.micro",
+		Label: "Enter instance_type(required) e.g. t2.micro\nThe type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -39,7 +39,10 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "instance_type")
 
 	prompts["cpu_core_count"] = types.TfPrompt{
-		Label: "Enter cpu_core_count(number)",
+		Label: "Enter cpu_core_count(number):\n(Optional)Sets the number of CPU cores for an instance. " +
+			"This option is only supported on creation of instance type that support CPU Options - " +
+			"specifying this option for unsupported instance types will return an error from the EC2 API. Checkout " +
+			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#cpu-options-supported-instances-values for more info.",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.IntValidator,
@@ -48,7 +51,9 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "cpu_core_count")
 
 	prompts["cpu_threads_per_core"] = types.TfPrompt{
-		Label: "Enter cpu_threads_per_core(number)",
+		Label: "Enter cpu_threads_per_core(number):\n(Optional - has no effect unless cpu_core_count is also set) " +
+			"If set to to 1, hyperthreading is disabled on the launched instance. " +
+			"Defaults to 2 if not set. See Optimizing CPU Options for more information.",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.IntValidator,
@@ -57,7 +62,11 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "cpu_threads_per_core")
 
 	prompts["ebs_optimized"] = types.TfPrompt{
-		Label: "Select true/false for EBS-optimized(bool)",
+		Label: "Select true/false for EBS-optimized(bool):\n(Optional) If true, the launched EC2 instance will be EBS-optimized. " +
+			"Note that if this is not set on an instance type that is optimized by default then this will show " +
+			"as disabled but if the instance type is optimized by default then there is no " +
+			"need to set this and there is no effect to disabling it. See the " +
+			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -65,7 +74,8 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "ebs_optimized")
 
 	prompts["monitoring"] = types.TfPrompt{
-		Label: "Select true/false for detailed monitoring in EC2 instance",
+		Label: "Select true/false for monitoring:\n(Optional) " +
+			"If true, the launched EC2 instance will have detailed monitoring enabled",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -73,7 +83,7 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "monitoring")
 
 	prompts["subnet_id"] = types.TfPrompt{
-		Label: "The VPC Subnet ID to launch in",
+		Label: "Enter subnet_id:\n(Optional) The VPC Subnet ID to launch in.",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.StringValidator,
@@ -82,7 +92,7 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "subnet_id")
 
 	prompts["private_ip"] = types.TfPrompt{
-		Label: "Private IP address to associate with the instance in a VPC",
+		Label: "Enter private_ip:\n(Optional) Private IP address to associate with the instance in a VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.StringValidator,
@@ -91,7 +101,10 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "private_ip")
 
 	prompts["iam_instance_profile"] = types.TfPrompt{
-		Label: "The IAM Instance Profile to launch the instance with",
+		Label: "Enter iam_instance_profile:\n(Optional) The IAM Instance Profile to launch the " +
+			"instance with. Specified as the name of the Instance Profile. " +
+			"Ensure your credentials have the correct permission to assign " +
+			"the instance profile according to the EC2 documentation, notably iam:PassRole",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.StringValidator,
@@ -119,7 +132,7 @@ func AWSInstanceBuilderPrompt() {
 	var selectOrder []string
 
 	selects["associate_public_ip_address"] = types.TfSelect{
-		Label: "Associate a public ip address with an instance in a VPC.(bool)",
+		Label: "Enter associate_public_ip_address.(Optional)Associate a public ip address with an instance in a VPC.",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"true", "false"},
@@ -128,7 +141,7 @@ func AWSInstanceBuilderPrompt() {
 	selectOrder = append(selectOrder, "vpc_security_group_ids")
 
 	selects["placement_group"] = types.TfSelect{
-		Label: "The Placement Group to start the instance in",
+		Label: "Enter placement_group:\nThe Placement Group to start the instance in",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"cluster", "partition", "spread"},
@@ -137,7 +150,7 @@ func AWSInstanceBuilderPrompt() {
 	selectOrder = append(selectOrder, "placement_group")
 
 	selects["hibernation"] = types.TfSelect{
-		Label: "If true, the launched EC2 instance will support hibernation.",
+		Label: "Enter hibernation.\n(Optional)If true, the launched EC2 instance will support hibernation.",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"true", "false"},
@@ -145,7 +158,7 @@ func AWSInstanceBuilderPrompt() {
 	}
 	selectOrder = append(selectOrder, "hibernation")
 
-	builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
 	color.Green("\nDo you want to fill nested blocks like connection, timeouts: [y/n]\n\n", "text")
 	ynPrompt := promptui.Prompt{}
@@ -154,6 +167,10 @@ func AWSInstanceBuilderPrompt() {
 	if yn == "n" {
 		return
 	}
+
+
+
+	builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
 
 }
 
