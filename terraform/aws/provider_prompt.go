@@ -160,7 +160,7 @@ func ProviderPrompt() {
 		fmt.Println(err)
 	}
 
-	if yn == "n" {
+	if yn == "n" || yn == "" {
 		builder.ProviderBuilder("aws", promptOrder, selectOrder, providerInfo)
 		return
 	}

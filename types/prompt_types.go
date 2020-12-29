@@ -15,6 +15,10 @@ type TfSelect struct {
 	Select promptui.Select
 }
 
+type TFCli interface {
+	Run() (string, error)
+}
+
 func (p TfPrompt) Run() (string, error) {
 	color.Green("\n"+p.Label+"\n\n", "text")
 

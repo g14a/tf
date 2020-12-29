@@ -12,8 +12,9 @@ import (
 func AWSInstanceBuilderPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
+	color.Green("\nEnter block name(required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
-		Label: "Enter block name(required) e.g. web",
+		Label: "",
 	}
 
 	blockName, err := blockPrompt.Run()
@@ -138,7 +139,7 @@ func AWSInstanceBuilderPrompt() {
 			Items: []string{"true", "false"},
 		},
 	}
-	selectOrder = append(selectOrder, "vpc_security_group_ids")
+	selectOrder = append(selectOrder, "associate_public_ip_address")
 
 	selects["placement_group"] = types.TfSelect{
 		Label: "Enter placement_group:\nThe Placement Group to start the instance in",
@@ -160,16 +161,37 @@ func AWSInstanceBuilderPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	color.Green("\nDo you want to fill nested blocks like connection, timeouts: [y/n]\n\n", "text")
-	ynPrompt := promptui.Prompt{}
-	yn, err := ynPrompt.Run()
+	color.Yellow("\nConfigure nested settings like tags [y/n]?\n\n", "text")
 
-	if yn == "n" {
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
 		return
 	}
 
+	tagPrompt := map[string]types.TfPrompt{}
+	var nestedOrder []string
 
+	color.Green("\nEnter tags (Optional) A map of tags to assign to the resource:\n\n")
 
+	tagPrompt["Name"] = types.TfPrompt{
+		Label: "Enter Name: ",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "Name")
+	selectOrder = append(selectOrder, "tags")
+
+	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, tagPrompt, nil)
 	builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
 
 }

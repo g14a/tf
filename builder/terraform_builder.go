@@ -127,7 +127,11 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 				}
 			}
 		case map[string]interface{}:
-			strBuilder.WriteString("  " + o + " {\n")
+			if o == "tags" {
+				strBuilder.WriteString("  " + o + " = {\n")
+			} else {
+				strBuilder.WriteString("  " + o + " {\n")
+			}
 			for nestedK, i := range v.(map[string]interface{}) {
 				if i.(string) != "" {
 					if govalidator.IsInt(i.(string)) {
