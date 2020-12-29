@@ -77,6 +77,16 @@ func ProviderPrompt() {
 	}
 	promptOrder = append(promptOrder, "token")
 
+	prompts["shared_credentials_file"] = types.TfPrompt{
+		Label: "Enter shared_credentials_file :\n(Optional) This is the path to the shared " +
+			"credentials file. If this is not set and a profile is specified," +
+			" ~/.aws/credentials will be used.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "shared_credentials_file")
+
 	var selectOrder []string
 	selects := map[string]types.TfSelect{}
 

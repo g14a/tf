@@ -19,7 +19,12 @@ func IntValidator(input string) error {
 
 func StringValidator(input string) error {
 	if input == "" {
-		return errors.New("empty file path")
+		_, err := strconv.ParseFloat(input, 64)
+		if err == nil {
+			return errors.New("not a string")
+		} else {
+			return nil
+		}
 	}
 	return nil
 }

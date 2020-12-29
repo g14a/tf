@@ -14,20 +14,22 @@ import (
 func ProviderBuilder(provider string, promptOrder, selectOrder []string, providerBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
-	providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
-	providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, providerBlock)
-	providerInfo.WriteString("}\n")
+	if provider != "" {
+		providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
+		providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, providerBlock)
+		providerInfo.WriteString("}\n")
 
-	_, err := file.TerraformFile.WriteString(providerInfo.String())
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	if terraformExists() {
-		cmd := exec.Command("terraform", "fmt")
-		err := cmd.Run()
+		_, err := file.TerraformFile.WriteString(providerInfo.String())
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
+		}
+
+		if terraformExists() {
+			cmd := exec.Command("terraform", "fmt")
+			err := cmd.Run()
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }
@@ -35,21 +37,23 @@ func ProviderBuilder(provider string, promptOrder, selectOrder []string, provide
 func ResourceBuilder(resource, blockName string, promptOrder, selectOrder []string, resourceBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
-	providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
+	if resource != "" {
+		providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
 
-	providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, resourceBlock)
-	providerInfo.WriteString("}\n")
+		providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, resourceBlock)
+		providerInfo.WriteString("}\n")
 
-	_, err := file.TerraformFile.WriteString(providerInfo.String())
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	if terraformExists() {
-		cmd := exec.Command("terraform", "fmt")
-		err := cmd.Run()
+		_, err := file.TerraformFile.WriteString(providerInfo.String())
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
+		}
+
+		if terraformExists() {
+			cmd := exec.Command("terraform", "fmt")
+			err := cmd.Run()
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }
@@ -132,28 +136,30 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 			} else {
 				strBuilder.WriteString("  " + o + " {\n")
 			}
-			for nestedK, i := range v.(map[string]interface{}) {
-				if i.(string) != "" {
-					if govalidator.IsInt(i.(string)) {
-						temp, err := strconv.Atoi(i.(string))
-						if err != nil {
-							log.Fatal(err)
+			if len(v.(map[string]interface{})) != 0 {
+				for nestedK, i := range v.(map[string]interface{}) {
+					if i.(string) != "" {
+						if govalidator.IsInt(i.(string)) {
+							temp, err := strconv.Atoi(i.(string))
+							if err != nil {
+								log.Fatal(err)
+							}
+							s := fmt.Sprintf("  "+nestedK+" = %d \n", temp)
+							strBuilder.WriteString(s)
+						} else if i.(string) == "true" || i.(string) == "false" {
+							b, err := strconv.ParseBool(i.(string))
+							if err != nil {
+								fmt.Println(err)
+							}
+							s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
+							strBuilder.WriteString(s)
+						} else if strings.HasPrefix(i.(string), "[") && strings.HasSuffix(i.(string), "]") {
+							s := fmt.Sprintf("  " + nestedK + "= " + i.(string) + "\n")
+							strBuilder.WriteString(s)
+						} else {
+							s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
+							strBuilder.WriteString(s)
 						}
-						s := fmt.Sprintf("  "+nestedK+" = %d \n", temp)
-						strBuilder.WriteString(s)
-					} else if i.(string) == "true" || i.(string) == "false" {
-						b, err := strconv.ParseBool(i.(string))
-						if err != nil {
-							fmt.Println(err)
-						}
-						s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
-						strBuilder.WriteString(s)
-					} else if strings.HasPrefix(i.(string), "[") && strings.HasSuffix(i.(string), "]") {
-						s := fmt.Sprintf("  " + nestedK + "= " + i.(string) + "\n")
-						strBuilder.WriteString(s)
-					} else {
-						s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
-						strBuilder.WriteString(s)
 					}
 				}
 			}

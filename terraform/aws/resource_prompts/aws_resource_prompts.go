@@ -114,7 +114,7 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "iam_instance_profile")
 
 	prompts["security_groups"] = types.TfPrompt{
-		Label: "A list of security group names (EC2-Classic) or IDs (default VPC) to associate with\ne.g.[a,b,c]",
+		Label: "A list of security group names (EC2-Classic) or IDs (default VPC) to associate with\ne.g.[\"a\",\"b\",\"c\"]",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -122,7 +122,7 @@ func AWSInstanceBuilderPrompt() {
 	promptOrder = append(promptOrder, "security_groups")
 
 	prompts["vpc_security_group_ids"] = types.TfPrompt{
-		Label: "A list of security group IDs to associate with(Only VPC) e.g. [a,b,c]",
+		Label: "A list of security group IDs to associate with(Only VPC) e.g. [\"a\",\"b\",\"c\"]",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -197,10 +197,10 @@ func AWSInstanceBuilderPrompt() {
 }
 
 func AWSVPCPrompt() {
-	prompts := map[string]types.TfPrompt{}
 
+	color.Green("\nEnter block name(required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
-		Label: "Enter block name(required) e.g. web",
+		Label: "",
 	}
 
 	blockName, err := blockPrompt.Run()
@@ -208,9 +208,11 @@ func AWSVPCPrompt() {
 		fmt.Println(err)
 	}
 
+	prompts := map[string]types.TfPrompt{}
 	var promptOrder []string
+
 	prompts["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block(required)",
+		Label: "Enter cidr_block:\n(Required) The CIDR block for the VPC",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -229,7 +231,7 @@ func AWSVPCPrompt() {
 	selects := map[string]types.TfSelect{}
 
 	selects["instance_tenancy"] = types.TfSelect{
-		Label: "A tenancy option for instances launched into the VPC. Default is `default`",
+		Label: "Enter instance_tenancy:\bTenancy of instances spin up within VPC. Default is `default`",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"dedicated", "host"},
@@ -238,7 +240,7 @@ func AWSVPCPrompt() {
 	selectOrder = append(selectOrder, "instance_tenancy")
 
 	selects["enable_classiclink"] = types.TfSelect{
-		Label: "A boolean flag to enable/disable ClassicLink for the VPC.",
+		Label: "Enter enable_classiclink:\nWhether or not the VPC has Classiclink enabled",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"true", "false"},
@@ -247,7 +249,7 @@ func AWSVPCPrompt() {
 	selectOrder = append(selectOrder, "enable_classiclink")
 
 	selects["enable_dns_hostnames"] = types.TfSelect{
-		Label: "A boolean flag to enable/disable DNS hostnames in the VPC.",
+		Label: "Enter enable_dns_hostnames:\nWhether or not the VPC has DNS hostname support",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"true", "false"},
@@ -256,7 +258,7 @@ func AWSVPCPrompt() {
 	selectOrder = append(selectOrder, "enable_dns_hostnames")
 
 	selects["enable_dns_support"] = types.TfSelect{
-		Label: "A boolean flag to enable/disable DNS hostnames in the VPC.",
+		Label: "Enter enable_dns_hostnames:\nWhether or not the VPC has DNS support",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"true", "false"},
@@ -265,7 +267,8 @@ func AWSVPCPrompt() {
 	selectOrder = append(selectOrder, "enable_dns_support")
 
 	selects["enable_classiclink_dns_support"] = types.TfSelect{
-		Label: "A boolean flag to enable/disable ClassicLink DNS Support for the VPC. \nOnly valid in regions and accounts that support EC2 Classic.",
+		Label: "Enter enable_classiclink_dns_support:\n(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC." +
+			" Only valid in regions and accounts that support EC2 Classic.",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"true", "false"},
@@ -274,7 +277,9 @@ func AWSVPCPrompt() {
 	selectOrder = append(selectOrder, "enable_classiclink_dns_support")
 
 	selects["assign_generated_ipv6_cidr_block"] = types.TfSelect{
-		Label: "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC",
+		Label: "Enter assign_generated_ipv6_cidr_block:\nEnter (Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix " +
+			"length for the VPC. You cannot specify the range of IP addresses, " +
+			"or the size of the CIDR block. Default is false",
 		Select: promptui.Select{
 			Label: ",",
 			Items: []string{"true", "false"},
@@ -282,7 +287,41 @@ func AWSVPCPrompt() {
 	}
 	selectOrder = append(selectOrder, "assign_generated_ipv6_cidr_block")
 
-	builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	color.Yellow("\nConfigure nested settings like tags [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
+		return
+	}
+
+	tagPrompt := map[string]types.TfPrompt{}
+	var nestedOrder []string
+
+	color.Green("\nEnter tags (Optional) A map of tags to assign to the resource:\n\n")
+
+	tagPrompt["Name"] = types.TfPrompt{
+		Label: "Enter Name: ",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "Name")
+	selectOrder = append(selectOrder, "tags")
+
+	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, tagPrompt, nil)
+
+	builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
 
 }
 
