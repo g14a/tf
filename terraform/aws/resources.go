@@ -300,5 +300,9 @@ func ResourcePrompt() {
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":
 		resource_prompts.AWSDBInstancePrompt()
+	case "aws_acm_certificate":
+		resource_prompts.AWSACMCertificatePrompt()
+	case "aws_acmpca_certificate_authority":
+		resource_prompts.AWSACMPCACertificatePrompt()
 	}
 }

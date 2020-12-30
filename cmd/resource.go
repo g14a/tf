@@ -27,13 +27,19 @@ var resourceCmd = &cobra.Command{
 	Short: "Select resource information in your Terraform configuration",
 	Run: func(cmd *cobra.Command, args []string) {
 		file.Prompt()
-		tfProvider := terraform.ProvidersPrompt()
-		terraform.SelectResourceTree(tfProvider)
+		provider, _ := cmd.Flags().GetString("provider")
+		if provider != "" {
+			terraform.SelectResourceTree(provider)
+		} else {
+			tfProvider := terraform.ProvidersPrompt()
+			terraform.SelectResourceTree(tfProvider)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(resourceCmd)
+	resourceCmd.Flags().StringP("provider", "p", "", "Specify provider directly \ne.g. tf resource --provider aws")
 
 	// Here you will define your flags and configuration settings.
 
