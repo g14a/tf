@@ -326,8 +326,10 @@ func AWSVPCPrompt() {
 }
 
 func AWSS3BucketPrompt() {
+
+	color.Green("\nEnter block name(required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
-		Label: "Enter block name(required) e.g. web",
+		Label: "",
 	}
 
 	blockName, err := blockPrompt.Run()
@@ -350,7 +352,7 @@ func AWSS3BucketPrompt() {
 	var selectOrder []string
 
 	selects["acl"] = types.TfSelect{
-		Label: "The canned ACL to apply",
+		Label: "Enter acl:\nThe canned ACL to apply",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"private", "public-read", "public-read-write", "aws-exec-read", "authenticated-read", "log-delivery-write"},
@@ -359,7 +361,9 @@ func AWSS3BucketPrompt() {
 	selectOrder = append(selectOrder, "acl")
 
 	selects["force_destroy"] = types.TfSelect{
-		Label: "indicates all objects (including any locked objects) should be deleted from the bucket so that the bucket can be destroyed without error",
+		Label: "Enter force_destroy:\n(Optional, Default:false) A boolean that indicates all objects \n" +
+			"(including any locked objects) should be deleted from the bucket \n" +
+			"so that the bucket can be destroyed without error. These objects are not recoverable.",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"true", "false"},
@@ -368,13 +372,125 @@ func AWSS3BucketPrompt() {
 	selectOrder = append(selectOrder, "force_destroy")
 
 	selects["acceleration_status"] = types.TfSelect{
-		Label: "Sets the accelerate configuration of an existing bucket.",
+		Label: "Enter acceleration_status:\n(Optional) Sets the accelerate " +
+			"configuration of an existing bucket. Can be Enabled or Suspended",
 		Select: promptui.Select{
 			Label: "",
 			Items: []string{"Enabled", "Suspended"},
 		},
 	}
 	selectOrder = append(selectOrder, "acceleration_status")
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, builder.PSOrder(promptOrder, selectOrder, prompts, selects))
+	color.Yellow("\nConfigure nested settings like cors_rule/versioning/website etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
+		return
+	}
+
+	corsRulePrompt := map[string]types.TfPrompt{}
+	var nestedOrder []string
+
+	color.Green("\nEnter cors_rule (Optional) A rule of Cross-Origin Resource Sharing :\n\n")
+
+	corsRulePrompt["allowed_headers"] = types.TfPrompt{
+		Label: "Enter allowed_headers:\n(Optional) Specifies which headers are allowed",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "allowed_headers")
+
+	corsRulePrompt["allowed_methods"] = types.TfPrompt{
+		Label: "Enter allowed_methods:\nRequired) Specifies which methods are allowed. Can be GET, PUT, POST, DELETE or HEAD.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "allowed_methods")
+
+	corsRulePrompt["allowed_origins"] = types.TfPrompt{
+		Label: "Enter allowed_origins:\n(Required) Specifies which origins are allowed.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "allowed_origins")
+
+	corsRulePrompt["exposed_headers"] = types.TfPrompt{
+		Label: "Enter exposed_headers:\n(Optional) Specifies expose header in the response.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "exposed_headers")
+
+	corsRulePrompt["max_age_seconds"] = types.TfPrompt{
+		Label: "Enter max_age_seconds:\n(Optional) Specifies time in seconds " +
+			"that browser can cache the response for a preflight request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "max_age_seconds")
+	selectOrder = append(selectOrder, "cors_rule")
+
+	resourceBlock["cors_rule"] = builder.NestedPSOrder(nestedOrder, corsRulePrompt, nil)
+
+	color.Green("\nEnter website:\nThe website object supports the following:" +
+		"\n1.index_document\n2.error_document\n3.redirect_all_requests_to\n4.routing_rules\n\n")
+
+	websitePrompt := map[string]types.TfPrompt{}
+
+	websitePrompt["index_document"] = types.TfPrompt{
+		Label: "Enter index_document:\n(Required), unless using redirect_all_requests_to) Amazon S3\n" +
+			" returns this index document when requests are made to the" +
+			" root domain or any of the subfolders.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "index_document")
+
+	websitePrompt["error_document"] = types.TfPrompt{
+		Label: "Enter error_document:\n(Optional) An absolute path to the document to return in case of a 4XX error.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "error_document")
+
+	websitePrompt["redirect_all_requests_to"] = types.TfPrompt{
+		Label: "Enter redirect_all_requests_to:\nOptional) A hostname to redirect all website requests for \n" +
+			"this bucket to. Hostname can optionally be prefixed with a \n" +
+			"protocol (http:// or https://) to use when redirecting requests. \n" +
+			"The default is the protocol that is used in the original request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "redirect_all_requests_to")
+
+	websitePrompt["routing_rules"] = types.TfPrompt{
+		Label: "Enter routing_rules:\n(Optional) A json array containing routing rules describing redirect behavior and when redirects are applied.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "routing_rules")
+	selectOrder = append(selectOrder, "website")
+	
+	resourceBlock["website"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-4:], websitePrompt, nil)
+
+	builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
 }
