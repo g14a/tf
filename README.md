@@ -1,6 +1,6 @@
 ## Tf
  
-Tf is a command line tool to generate your Terraform configuration with an interactive prompt.
+Tf is a command line tool to easily generate your Terraform configuration with an interactive prompt.
 
 ### Inspiration
 Boredom in Covid-19
