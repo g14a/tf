@@ -296,5 +296,7 @@ func ResourcePrompt() {
 		resource_prompts.AWSVPCPrompt()
 	case "aws_s3_bucket":
 		resource_prompts.AWSS3BucketPrompt()
+	case "aws_elb":
+		resource_prompts.AWSELBPrompt()
 	}
 }

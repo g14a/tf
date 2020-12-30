@@ -216,7 +216,7 @@ func ProviderPrompt() {
 	nestedOrder = append(nestedOrder, "role_arn")
 	selectOrder = append(selectOrder, "assume_role")
 
-	providerInfo["assume_role"] = builder.NestedPSOrder(nestedOrder, assumeRolePrompts, nil)
+	providerInfo["assume_role"] = builder.NestedPSOrder(nestedOrder, nil, assumeRolePrompts, nil)
 
 	ignoreTagsPrompts := map[string]types.TfPrompt{}
 
@@ -225,7 +225,7 @@ func ProviderPrompt() {
 
 	ignoreTagsPrompts["keys"] = types.TfPrompt{
 		Label: "Enter keys([\"a\",\"b\",\"c\"]):(Optional) List of exact resource tag keys to ignore \nacross all resources handled by this provider." +
-			"Check https://registry.terraform.io/providers/hashicorp/aws/latest/docs#ignore_tags-configuration-block for more info.",
+			"\nCheck https://registry.terraform.io/providers/hashicorp/aws/latest/docs#ignore_tags-configuration-block for more info.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -234,7 +234,7 @@ func ProviderPrompt() {
 
 	ignoreTagsPrompts["key_prefixes"] = types.TfPrompt{
 		Label: "Enter key_prefixes([\"a\",\"b\",\"c\"])(Optional) List of resource tag key prefixes to ignore across all resources handled by this provider." +
-			"Check https://registry.terraform.io/providers/hashicorp/aws/latest/docs#key_prefixes for more info",
+			"\nCheck https://registry.terraform.io/providers/hashicorp/aws/latest/docs#key_prefixes for more info",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -242,7 +242,7 @@ func ProviderPrompt() {
 	nestedOrder = append(nestedOrder, "key_prefixes")
 	selectOrder = append(selectOrder, "ignore_tags")
 
-	providerInfo["ignore_tags"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], ignoreTagsPrompts, nil)
+	providerInfo["ignore_tags"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], nil, ignoreTagsPrompts, nil)
 
 	builder.ProviderBuilder("aws", promptOrder, selectOrder, providerInfo)
 }

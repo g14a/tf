@@ -63,39 +63,56 @@ func PSOrder(promptOrder, selectOrder []string,
 	selects map[string]types.TfSelect) map[string]interface{} {
 	resourceBlock := map[string]interface{}{}
 
-	for _, v := range promptOrder {
-		p := prompts[v]
-		value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
+	if len(promptOrder) > 0 {
+		for _, v := range promptOrder {
+			p := prompts[v]
+			value, err := p.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
+			resourceBlock[v] = value
 		}
-		resourceBlock[v] = value
 	}
 
-	for _, v := range selectOrder {
-		p := selects[v]
-		value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
+	if len(selectOrder) > 0 {
+		for _, v := range selectOrder {
+			p := selects[v]
+			value, err := p.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
+			resourceBlock[v] = value
 		}
-		resourceBlock[v] = value
 	}
 
 	return resourceBlock
 }
 
-func NestedPSOrder(nestedOrder []string,
-	nestedPrompts map[string]types.TfPrompt,
+func NestedPSOrder(promptOrder []string, selectOrder []string,
+	prompts map[string]types.TfPrompt,
 	selects map[string]types.TfSelect) map[string]interface{} {
 	nestedBlock := map[string]interface{}{}
 
-	for _, v := range nestedOrder {
-		p := nestedPrompts[v]
-		value, err := p.Run()
-		if err != nil {
-			fmt.Println(err)
+	if len(promptOrder) > 0 {
+		for _, v := range promptOrder {
+			p := prompts[v]
+			value, err := p.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
+			nestedBlock[v] = value
 		}
-		nestedBlock[v] = value
+	}
+
+	if len(selectOrder) > 0 {
+		for _, v := range selectOrder {
+			p := selects[v]
+			value, err := p.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
+			nestedBlock[v] = value
+		}
 	}
 
 	return nestedBlock
