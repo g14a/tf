@@ -185,7 +185,7 @@ func ProviderPrompt() {
 	assumeRolePrompts["duration_seconds"] = types.TfPrompt{
 		Label: "\nEnter duration_seconds:\n(Optional) Number of seconds to restrict the assume role session duration.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}

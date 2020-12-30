@@ -20,7 +20,7 @@ func RegionPrompt() types.TfSelect {
 	return types.TfSelect{
 		Label: "Select one of the AWS regions",
 		Select: promptui.Select{
-			Label: "",
+			Label:             "",
 			Size:              20,
 			Items:             GetRegions(),
 			StartInSearchMode: true,

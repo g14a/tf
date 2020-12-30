@@ -33,7 +33,7 @@ func Prompt() {
 	color.Green("\nEnter terraform file name to save your configuration in this directory\n", "text")
 
 	filePrompt := promptui.Prompt{
-		Label: "",
+		Label:    "",
 		Validate: utils.StringValidator,
 	}
 
