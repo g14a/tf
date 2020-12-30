@@ -304,5 +304,9 @@ func ResourcePrompt() {
 		resource_prompts.AWSACMCertificatePrompt()
 	case "aws_acmpca_certificate_authority":
 		resource_prompts.AWSACMPCACertificatePrompt()
+	case "aws_api_gateway_account":
+		resource_prompts.AWSAPIGatewayAccountPrompt()
+	case "aws_api_gateway_api_key":
+		resource_prompts.AWSAPIGatewaApiKeyPrompt()
 	}
 }
