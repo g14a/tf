@@ -21,6 +21,13 @@ Boredom in Covid-19
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
 
+### Stability
+This is a highly work in progress project, but I do my best to keep it stable so that things don't break.
+Please report issues if you find this tool useful and I will try to make time to resolve most of them.
+
+* Contributions are most welcome too :heart:
+* Upload a [asciinema cast]() in your PR if you're developing a feature or adding extra support as it would be useful for tracking progress.
+
 ### Roadmap
 * Google and Azure
 * Two level nested configuration
