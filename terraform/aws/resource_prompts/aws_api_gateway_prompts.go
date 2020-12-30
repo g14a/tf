@@ -2,10 +2,11 @@ package resource_prompts
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/manifoldco/promptui"
 	"tf/builder"
 	"tf/types"
+
+	"github.com/fatih/color"
+	"github.com/manifoldco/promptui"
 )
 
 func AWSAPIGatewayAccountPrompt() {
@@ -37,7 +38,7 @@ func AWSAPIGatewayAccountPrompt() {
 	builder.ResourceBuilder("aws_api_gateway_account", blockName, promptOrder, nil, resourceBlock)
 }
 
-func AWSAPIGatewaApiKeyPrompt()  {
+func AWSAPIGatewaApiKeyPrompt() {
 	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
