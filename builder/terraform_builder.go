@@ -39,7 +39,6 @@ func ResourceBuilder(resource, blockName string, promptOrder, selectOrder []stri
 
 	if resource != "" {
 		providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
-
 		providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, resourceBlock)
 		providerInfo.WriteString("}\n")
 
@@ -154,6 +153,7 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 				}
 			}
 		case map[string]interface{}:
+			strBuilder.WriteString("  " + o + " = {\n")
 			if len(v.(map[string]interface{})) != 0 {
 				for nestedK, i := range v.(map[string]interface{}) {
 					if i.(string) != "" {
@@ -176,6 +176,7 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 							strBuilder.WriteString(s)
 						} else {
 							s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
+							fmt.Println(s,"=========")
 							strBuilder.WriteString(s)
 						}
 					}

@@ -393,3 +393,94 @@ func AWSAPIGatewayDeploymentPrompt()  {
 
 	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
 }
+
+func AWSAPIGatewayDocumentationPartPrompt()  {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder, nestedPromptOrder, nestedSelectOrder []string
+
+	prompts["properties"] = types.TfPrompt{
+		Label: "Enter properties:\n(Required) A content map of API-specific key-value pairs describing \n" +
+			"the targeted API entity. The map must be encoded as a JSON string, \n" +
+			"e.g., \"{ \\\"description\\\": \\\"The API does …\\\" }\". \n" +
+			"Only Swagger-compliant key-value pairs can be exported and, hence, published.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "properties")
+
+	prompts["rest_api_id"] = types.TfPrompt{
+		Label: "Enter rest_api_id:\n(Required) The ID of the associated REST API",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "rest_api_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter location:\n(Required) The location of the targeted API entity of the to-be-created documentation part.\n" +
+		"The location block supports:" +
+		"\n1.method\n2.name\n3.path\n4.status_code\n5.type")
+
+	locationPrompt := map[string]types.TfPrompt{}
+
+	locationPrompt["method"] = types.TfPrompt{
+		Label: "Enter method:\n(Optional) The HTTP verb of a method. The default value is * for any method.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "method")
+
+	locationPrompt["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional) The name of the targeted API entity.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "name")
+
+	locationPrompt["path"] = types.TfPrompt{
+		Label: "Enter path:\n(Optional) The URL path of the target. The default value is / for the root resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "path")
+
+	locationPrompt["status_code"] = types.TfPrompt{
+		Label: "Enter status_code:\n(Optional) The HTTP status code of a response. The default value is * for any status code.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "status_code")
+
+	locationSelect := map[string]types.TfSelect{}
+
+	locationSelect["type"] = types.TfSelect{
+		Label: "Enter type:\n(Required) The type of API entity to which the documentation content applies",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"API", "METHOD","REQUEST_BODY"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "type")
+	selectOrder = append(selectOrder, "location")
+
+	resourceBlock["location"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
+
+	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, promptOrder, selectOrder, resourceBlock)
+
+}

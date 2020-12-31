@@ -316,6 +316,7 @@ func ResourcePrompt() {
 		resource_prompts.AWSAPIGatewayClientCertificatePrompt()
 	case "aws_api_gateway_deployment":
 		resource_prompts.AWSAPIGatewayDeploymentPrompt()
-
+	case "aws_api_gateway_documentation_part":
+		resource_prompts.AWSAPIGatewayDocumentationPartPrompt()
 	}
 }
