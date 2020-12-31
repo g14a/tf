@@ -122,6 +122,12 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 	order := append(promptOrder, selectOrder...)
 	for _, o := range order {
 		v := infoBlock[o]
+		if o == "tags" {
+			strBuilder.WriteString("  " + o + " = {\n")
+			s := tags(v.(string))
+			strBuilder.WriteString(s)
+			break
+		}
 		switch v.(type) {
 		case string:
 			if v.(string) != "" {
@@ -148,11 +154,6 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 				}
 			}
 		case map[string]interface{}:
-			if o == "tags" {
-				strBuilder.WriteString("  " + o + " = {\n")
-			} else {
-				strBuilder.WriteString("  " + o + " {\n")
-			}
 			if len(v.(map[string]interface{})) != 0 {
 				for nestedK, i := range v.(map[string]interface{}) {
 					if i.(string) != "" {
@@ -185,6 +186,18 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 	}
 
 	return *strBuilder
+}
+
+// tags deal with input such as "name=g14a,environment=dev" and populate it into the tags field of the config
+func tags(input string) string {
+	tags := strings.Split(input, ",")
+	var tagsString strings.Builder
+	for _, v := range tags {
+		tag := strings.Split(v,"=")
+		tagsString.WriteString(tag[0] + " = \"" + tag[1] + "\"\n")
+	}
+	tagsString.WriteString("}\n")
+	return tagsString.String()
 }
 
 func terraformExists() bool {

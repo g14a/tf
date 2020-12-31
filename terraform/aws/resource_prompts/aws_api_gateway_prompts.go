@@ -281,3 +281,80 @@ func AWSAPIGatewayClientCertificatePrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, promptOrder, selectOrder, resourceBlock)
 }
+
+func AWSAPIGatewayDeploymentPrompt()  {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["rest_api_id"] = types.TfPrompt{
+		Label: "Enter rest_api_id:\n(Required) The ID of the associated REST API",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "rest_api_id")
+
+	prompts["stage_name"] = types.TfPrompt{
+		Label: "Enter stage_name:\n(Optional) The name of the stage. If the specified stage already exists, \n" +
+			"it will be updated to point to the new deployment. If the stage does not exist, \n" +
+			"a new one will be created and point to this deployment.\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "stage_name")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) The description of the deployment",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["stage_description"] = types.TfPrompt{
+		Label: "Enter stage_description:\n(Optional) The description of the stage",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "stage_description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n Follow the format k1=v1,k2=v2",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like variables etc [y/n]?\n\n")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
+		return
+	}
+
+	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
+}
