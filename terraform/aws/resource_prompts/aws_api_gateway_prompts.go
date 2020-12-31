@@ -178,11 +178,64 @@ func AWSAPiGatewayAuthorizer() {
 			"\nor COGNITO_USER_POOLS for using an Amazon Cognito user pool. Defaults to TOKEN",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"TOKEN","REQUEST","COGNITO_USER_POOLS"},
+			Items: []string{"TOKEN", "REQUEST", "COGNITO_USER_POOLS"},
 		},
 	}
 	selectOrder = append(selectOrder, "type")
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 	builder.ResourceBuilder("aws_api_gateway_authorizer", blockName, promptOrder, selectOrder, resourceBlock)
+}
+
+func AWSAPIGatewayBasePathMappingPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["api_id"] = types.TfPrompt{
+		Label: "Enter api_id:\n(Required) The id of the API to connect.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "api_id")
+
+	prompts["domain_name"] = types.TfPrompt{
+		Label: "Enter domain_name:\n(Required) The already-registered domain name to connect the API to.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "domain_name")
+
+	prompts["stage_name"] = types.TfPrompt{
+		Label: "Enter stage_name:\n(Optional) The name of a specific deployment stage to expose at the given path. \n" +
+			"If omitted, callers may select any stage by including its name as a path element after the base path.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "stage_name")
+
+	prompts["base_path"] = types.TfPrompt{
+		Label: "Enter base_path:\n(Optional) Path segment that must be prepended to the path when accessing \n" +
+			"the API via this mapping. If omitted, the API is exposed at the root of the given domain.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "base_path")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_api_gateway_base_path_mapping", blockName, promptOrder, nil, resourceBlock)
 }
