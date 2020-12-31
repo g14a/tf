@@ -80,7 +80,7 @@ func AWSACMCertificatePrompt() {
 			"imported into ACM and then into Terraform.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"DNS","EMAIL","NONE"},
+			Items: []string{"DNS", "EMAIL", "NONE"},
 		},
 	}
 	selectOrder = append(selectOrder, "validation_method")

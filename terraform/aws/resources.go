@@ -307,6 +307,8 @@ func ResourcePrompt() {
 	case "aws_api_gateway_account":
 		resource_prompts.AWSAPIGatewayAccountPrompt()
 	case "aws_api_gateway_api_key":
-		resource_prompts.AWSAPIGatewaApiKeyPrompt()
+		resource_prompts.AWSAPIGatewayApiKeyPrompt()
+	case "aws_api_gateway_authorizer":
+		resource_prompts.AWSAPiGatewayAuthorizer()
 	}
 }

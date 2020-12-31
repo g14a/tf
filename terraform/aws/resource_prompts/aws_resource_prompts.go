@@ -804,8 +804,8 @@ func AWSDBInstancePrompt() {
 		Label: "Enter engine:\n The database engine.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"aurora","aurora-mysql","aurora-postgresql","mariadb","mysql","oracle-ee",
-				"oracle-se2","oracle-se1","oracle-se","postgres","sqlserver-ee","sqlserver-se","sqlserver-ex","sqlserver-web"},
+			Items: []string{"aurora", "aurora-mysql", "aurora-postgresql", "mariadb", "mysql", "oracle-ee",
+				"oracle-se2", "oracle-se1", "oracle-se", "postgres", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web"},
 		},
 	}
 	selectOrder = append(selectOrder, "engine")
