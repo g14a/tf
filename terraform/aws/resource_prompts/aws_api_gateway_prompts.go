@@ -239,3 +239,45 @@ func AWSAPIGatewayBasePathMappingPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_base_path_mapping", blockName, promptOrder, nil, resourceBlock)
 }
+
+func AWSAPIGatewayClientCertificatePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder, nestedOrder []string
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) The description of the client certificate.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter tags:\n")
+
+	tagsPrompt := map[string]types.TfPrompt{}
+
+	tagsPrompt["Name"] = types.TfPrompt{
+		Label: "Enter Name:\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "Name")
+	selectOrder = append(selectOrder, "tags")
+
+	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, nil, tagsPrompt, nil)
+
+	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, promptOrder, selectOrder, resourceBlock)
+}

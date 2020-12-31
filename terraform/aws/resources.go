@@ -312,5 +312,7 @@ func ResourcePrompt() {
 		resource_prompts.AWSAPiGatewayAuthorizer()
 	case "aws_api_gateway_base_path_mapping":
 		resource_prompts.AWSAPIGatewayBasePathMappingPrompt()
+	case "aws_api_gateway_client_certificate":
+		resource_prompts.AWSAPIGatewayClientCertificatePrompt()
 	}
 }
