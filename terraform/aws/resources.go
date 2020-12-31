@@ -318,5 +318,11 @@ func ResourcePrompt() {
 		resource_prompts.AWSAPIGatewayDeploymentPrompt()
 	case "aws_api_gateway_documentation_part":
 		resource_prompts.AWSAPIGatewayDocumentationPartPrompt()
+	case "aws_api_gateway_documentation_version":
+		resource_prompts.AWSAPIGatewayDocumentationVersionPrompt()
+	case "aws_api_gateway_domain_name":
+		resource_prompts.AWSAPIGatewayDomainNamePrompt()
+	case "aws_api_gateway_gateway_response":
+		resource_prompts.AWSAPIGatewayGatewayResponsePrompt()
 	}
 }

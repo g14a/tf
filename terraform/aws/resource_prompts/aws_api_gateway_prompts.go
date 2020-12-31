@@ -282,7 +282,7 @@ func AWSAPIGatewayClientCertificatePrompt() {
 	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, promptOrder, selectOrder, resourceBlock)
 }
 
-func AWSAPIGatewayDeploymentPrompt()  {
+func AWSAPIGatewayDeploymentPrompt() {
 	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -394,7 +394,7 @@ func AWSAPIGatewayDeploymentPrompt()  {
 	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
 }
 
-func AWSAPIGatewayDocumentationPartPrompt()  {
+func AWSAPIGatewayDocumentationPartPrompt() {
 	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -473,7 +473,7 @@ func AWSAPIGatewayDocumentationPartPrompt()  {
 		Label: "Enter type:\n(Required) The type of API entity to which the documentation content applies",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"API", "METHOD","REQUEST_BODY"},
+			Items: []string{"API", "METHOD", "REQUEST_BODY"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "type")
@@ -482,5 +482,250 @@ func AWSAPIGatewayDocumentationPartPrompt()  {
 	resourceBlock["location"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
 
 	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, promptOrder, selectOrder, resourceBlock)
+}
 
+func AWSAPIGatewayDocumentationVersionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["version"] = types.TfPrompt{
+		Label: "Enter version:\n(Required) The version identifier of the API documentation snapshot.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "version")
+
+	prompts["rest_api_id"] = types.TfPrompt{
+		Label: "Enter rest_api_id:\n(Required) The ID of the associated Rest API" +
+			"",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "rest_api_id")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) The description of the API documentation version." +
+			"",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	builder.ResourceBuilder("aws_api_gateway_documentation_version", blockName, promptOrder, nil, builder.PSOrder(promptOrder, nil, prompts, nil))
+}
+
+// aws_api_gateway_domain_name
+func AWSAPIGatewayDomainNamePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	selects := map[string]types.TfSelect{}
+
+	var promptOrder, selectOrder, nestedSelectOrder []string
+
+	prompts["domain_name"] = types.TfPrompt{
+		Label: "Enter domain_name:\n(Required) The fully-qualified domain name to register",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "domain_name")
+
+	prompts["certificate_arn"] = types.TfPrompt{
+		Label: "Enter certificate_arn:\n(Optional) The ARN for an AWS-managed certificate. \n" +
+			"AWS Certificate Manager is the only supported source. Used when an edge-optimized domain name is desired. \n" +
+			"Conflicts with certificate_name, certificate_body, certificate_chain, certificate_private_key, \nregional_certificate_arn, and regional_certificate_name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_arn")
+
+	prompts["regional_certificate_arn"] = types.TfPrompt{
+		Label: "Enter regional_certificate_arn:\n(Optional) The unique name to use when registering this \n" +
+			"certificate as an IAM server certificate. \n" +
+			"Conflicts with certificate_arn, regional_certificate_arn, and \n" +
+			"regional_certificate_name. Required if certificate_arn is not set.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "regional_certificate_arn")
+
+	prompts["certificate_name"] = types.TfPrompt{
+		Label: "Enter certificate_name:\n(Optional) The unique name to use when registering this certificate as an IAM server certificate. \n" +
+			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name. \n" +
+			"Required if certificate_arn is not set.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_name")
+
+	prompts["certificate_body"] = types.TfPrompt{
+		Label: "Enter certificate_body:\n(Optional) The certificate issued for the domain name \n" +
+			"being registered, in PEM format. Only valid for EDGE endpoint configuration type. \n" +
+			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_body")
+
+	prompts["certificate_chain"] = types.TfPrompt{
+		Label: "Enter certificate_chain:\n(Optional) The certificate for the CA that issued the \n" +
+			"certificate, along with any intermediate CA certificates required to create an \n" +
+			"unbroken chain to a certificate trusted by the intended API clients. \n" +
+			"Only valid for EDGE endpoint configuration type. \n" +
+			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_chain")
+
+	prompts["certificate_private_key"] = types.TfPrompt{
+		Label: "Enter certificate_private_key:\n(Optional) The private key associated with the domain \n" +
+			"certificate given in certificate_body. Only valid for EDGE endpoint configuration type. \n" +
+			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_private_key")
+
+	prompts["regional_certificate_name"] = types.TfPrompt{
+		Label: "Enter regional_certificate_name:\n(Optional) The user-friendly name of the certificate that will be used by \n" +
+			"regional endpoint for this domain name. \n" +
+			"Conflicts with certificate_arn, certificate_name, certificate_body, certificate_chain, and certificate_private_key",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "regional_certificate_name")
+
+	selects["security_policy"] = types.TfSelect{
+		Label: "Enter domain_name:\n(Optional) The Transport Layer Security (TLS) version + cipher suite for this DomainName.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"TLS_1_0", "TLS_1_2"},
+		},
+	}
+	selectOrder = append(selectOrder, "security_policy")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ProviderBuilder("aws_api_gateway_domain_name", promptOrder, selectOrder, resourceBlock)
+		return
+	}
+
+	endpointConfigSelect := map[string]types.TfSelect{}
+	endpointConfigSelect["types"] = types.TfSelect{
+		Label: "Enter types: [\"t1\",\"t2\"]\n(Required) A list of endpoint types. This resource currently only supports managing a single value. \n" +
+			"Valid values: EDGE or REGIONAL. If unspecified, defaults to EDGE. \n" +
+			"Must be declared as REGIONAL in non-Commercial partitions. \n" +
+			"Refer to https://docs.aws.amazon.com/apigateway/latest/developerguide/create-regional-api.html \n" +
+			"for more information on the difference between edge-optimized and regional APIs.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"EDGE", "REGIONAL"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "types")
+	selectOrder = append(selectOrder, "endpoint_configuration")
+
+	resourceBlock["endpoint_configuration"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
+	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, promptOrder, selectOrder, resourceBlock)
+}
+
+func AWSAPIGatewayGatewayResponsePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["rest_api_id"] = types.TfPrompt{
+		Label: "Enter rest_api_id:\n(Required) The string identifier of the associated REST API.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "rest_api_id")
+
+	prompts["response_type"] = types.TfPrompt{
+		Label: "Enter response_type:\n(Required) The response type of the associated GatewayResponse.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "response_type")
+
+	prompts["status_code"] = types.TfPrompt{
+		Label: "Enter status_code:\n(Optional) The HTTP status code of the Gateway Response.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "status_code")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter response_templates:\n(Optional) A map specifying the templates used to transform the response body.")
+
+	responseTemplatesPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	responseTemplatesPrompt["application/json"] = types.TfPrompt{
+		Label: "Enter application/json:\nCheck https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_gateway_response",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "application/json")
+	selectOrder = append(selectOrder, "response_templates")
+
+	resourceBlock["response_templates"] = builder.NestedPSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
+
+	builder.ResourceBuilder("aws_api_gateway_account", blockName, promptOrder, selectOrder, resourceBlock)
 }

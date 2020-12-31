@@ -176,7 +176,6 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 							strBuilder.WriteString(s)
 						} else {
 							s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
-							fmt.Println(s,"=========")
 							strBuilder.WriteString(s)
 						}
 					}
@@ -194,7 +193,7 @@ func repeatingConfig(input string) string {
 	rc := strings.Split(input, ",")
 	var rcString strings.Builder
 	for _, v := range rc {
-		v := strings.Split(v,"=")
+		v := strings.Split(v, "=")
 		rcString.WriteString(v[0] + " = \"" + v[1] + "\"\n")
 	}
 	rcString.WriteString("}\n")
