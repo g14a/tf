@@ -122,11 +122,11 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 	order := append(promptOrder, selectOrder...)
 	for _, o := range order {
 		v := infoBlock[o]
-		if o == "tags" {
+		if o == "tags" || o == "variables" {
 			strBuilder.WriteString("  " + o + " = {\n")
-			s := tags(v.(string))
+			s := repeatingConfig(v.(string))
 			strBuilder.WriteString(s)
-			break
+			continue
 		}
 		switch v.(type) {
 		case string:
@@ -188,16 +188,16 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 	return *strBuilder
 }
 
-// tags deal with input such as "name=g14a,environment=dev" and populate it into the tags field of the config
-func tags(input string) string {
-	tags := strings.Split(input, ",")
-	var tagsString strings.Builder
-	for _, v := range tags {
-		tag := strings.Split(v,"=")
-		tagsString.WriteString(tag[0] + " = \"" + tag[1] + "\"\n")
+// tags deal with input such as "k1=v1,k2=v2" and populate it into the tags field of the config
+func repeatingConfig(input string) string {
+	rc := strings.Split(input, ",")
+	var rcString strings.Builder
+	for _, v := range rc {
+		v := strings.Split(v,"=")
+		rcString.WriteString(v[0] + " = \"" + v[1] + "\"\n")
 	}
-	tagsString.WriteString("}\n")
-	return tagsString.String()
+	rcString.WriteString("}\n")
+	return rcString.String()
 }
 
 func terraformExists() bool {

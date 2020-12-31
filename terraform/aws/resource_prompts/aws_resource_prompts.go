@@ -129,6 +129,14 @@ func AWSInstanceBuilderPrompt() {
 	}
 	promptOrder = append(promptOrder, "vpc_security_group_ids")
 
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n Follow the format k1=v1,k2=v2",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
 	selects := map[string]types.TfSelect{}
 	var selectOrder []string
 
@@ -161,39 +169,7 @@ func AWSInstanceBuilderPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	color.Yellow("\nConfigure nested settings like tags [y/n]?\n\n", "text")
-
-	ynPrompt := promptui.Prompt{
-		Label: "",
-	}
-
-	yn, err := ynPrompt.Run()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
-		return
-	}
-
-	tagPrompt := map[string]types.TfPrompt{}
-	var nestedOrder []string
-
-	color.Green("\nEnter tags (Optional) A map of tags to assign to the resource:\n\n")
-
-	tagPrompt["Name"] = types.TfPrompt{
-		Label: "Enter Name: ",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "Name")
-	selectOrder = append(selectOrder, "tags")
-
-	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, nil, tagPrompt, nil)
 	builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
-
 }
 
 func AWSVPCPrompt() {
@@ -226,6 +202,14 @@ func AWSVPCPrompt() {
 		},
 	}
 	promptOrder = append(promptOrder, "owner_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n For e.g. k1=v1,k2=v2",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
 
 	var selectOrder []string
 	selects := map[string]types.TfSelect{}
@@ -305,24 +289,7 @@ func AWSVPCPrompt() {
 		return
 	}
 
-	tagPrompt := map[string]types.TfPrompt{}
-	var nestedOrder []string
-
-	color.Green("\nEnter tags (Optional) A map of tags to assign to the resource:\n\n")
-
-	tagPrompt["Name"] = types.TfPrompt{
-		Label: "Enter Name: ",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "Name")
-	selectOrder = append(selectOrder, "tags")
-
-	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, nil, tagPrompt, nil)
-
 	builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
-
 }
 
 func AWSS3BucketPrompt() {

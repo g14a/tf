@@ -331,30 +331,65 @@ func AWSAPIGatewayDeploymentPrompt()  {
 	promptOrder = append(promptOrder, "stage_description")
 
 	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n Follow the format k1=v1,k2=v2",
+		Label: "Enter tags:\n For e.g. k1=v1,k2=v2",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
 
+	prompts["variables"] = types.TfPrompt{
+		Label: "Enter variables: For e.g. k1=v1,k2=v2\n(Optional) A map that defines variables for the stage",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "variables")
+
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	color.Yellow("\nConfigure nested settings like variables etc [y/n]?\n\n")
+	lifecyclePrompt := map[string]types.TfPrompt{}
+	var nestedOrder []string
 
-	ynPrompt := promptui.Prompt{
-		Label: "",
-	}
+	color.Green("\nEnter lifecycle block(Recommended):\n")
 
-	yn, err := ynPrompt.Run()
-	if err != nil {
-		fmt.Println(err)
+	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
+		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
+			"that cannot be updated in-place due to remote API limitations, \n" +
+			"Terraform will instead destroy the existing object and then \n" +
+			"create a new replacement object with the new configured arguments.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
 	}
+	nestedOrder = append(nestedOrder, "create_before_destroy")
 
-	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
-		return
+	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
+		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
+			"reject with an error any plan that would destroy the infrastructure \n" +
+			"object associated with the resource, as long as the argument \n" +
+			"remains present in the configuration.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
 	}
+	nestedOrder = append(nestedOrder, "prevent_destroy")
+
+	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
+		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
+			"current settings of a real infrastructure object and plans to " +
+			"update the remote object to match configuration." +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedOrder = append(nestedOrder, "ignore_changes")
+	selectOrder = append(selectOrder, "lifecycle")
+
+	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
 }
