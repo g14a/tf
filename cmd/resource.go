@@ -49,9 +49,9 @@ var resourceCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(resourceCmd)
-	resourceCmd.Flags().StringP("provider", "p", "", "Specify provider directly \ne.g. tf resource --provider aws")
-	resourceCmd.Flags().StringP("resource", "r", "", "Specify resource directly")
-	resourceCmd.Flags().BoolP("boilerplate", "b", true, "Boilerplate configuration for the resource")
+	resourceCmd.Flags().StringP("provider", "p", "", "Specify provider directly\ne.g. tf resource --provider aws\n")
+	resourceCmd.Flags().StringP("resource", "r", "", "Specify resource directly\ne.g tf resource -p aws -r aws_instance\n")
+	resourceCmd.Flags().BoolP("boilerplate", "b", true, "Boilerplate configuration for the resource\ne.g tf resource -p aws -r aws_instance -b\n")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
