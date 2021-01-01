@@ -20,6 +20,8 @@ func ResourceBP(resource string) {
 		resource_bps.AWSSNSPlatformApplicationBP()
 	case "aws_elastic_beanstalk_application":
 		resource_bps.AWSElasticBeanstalkApplication()
+	case "aws_lambda_function":
+		resource_bps.AWSLambdaFunctionBP()
 	default:
 		color.Red("No such resource present in AWS")
 	}
