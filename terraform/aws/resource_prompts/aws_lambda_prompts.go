@@ -9,7 +9,7 @@ import (
 	"tf/utils"
 )
 
-func AWSLambdaAliasPrompt()  {
+func AWSLambdaAliasPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
@@ -56,10 +56,10 @@ func AWSLambdaAliasPrompt()  {
 	}
 	promptOrder = append(promptOrder, "function_version")
 
-	builder.ResourceBuilder("aws_lambda_alias", blockName, promptOrder, nil,  builder.PSOrder(promptOrder, nil, prompts, nil))
+	builder.ResourceBuilder("aws_lambda_alias", blockName, promptOrder, nil, builder.PSOrder(promptOrder, nil, prompts, nil))
 }
 
-func AWSLambdaCodeSigningConfigPrompt()  {
+func AWSLambdaCodeSigningConfigPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
@@ -98,7 +98,7 @@ func AWSLambdaCodeSigningConfigPrompt()  {
 			"Valid values: Warn, Enforce. Default value: Warn",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"Warn","Enforce"},
+			Items: []string{"Warn", "Enforce"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "untrusted_artifact_on_deployment")
@@ -125,7 +125,7 @@ func AWSLambdaCodeSigningConfigPrompt()  {
 	builder.ResourceBuilder("aws_lambda_code_signing_config", blockName, promptOrder, selectOrder, resourceBlock)
 }
 
-func AWSLambdaEventSourceMappingPrompt()  {
+func AWSLambdaEventSourceMappingPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
@@ -157,7 +157,7 @@ func AWSLambdaEventSourceMappingPrompt()  {
 			"\navailable in the stream. If the batch it reads from the stream/queue only has one record " +
 			"\nin it, Lambda only sends one record to the function.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -192,7 +192,7 @@ func AWSLambdaEventSourceMappingPrompt()  {
 	prompts["parallelization_factor"] = types.TfPrompt{
 		Label: "Enter parallelization_factor:\n(Optional) The number of batches to process from each shard concurrently. Only available for stream sources (DynamoDB and Kinesis). Minimum and default of 1, maximum of 10.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -203,7 +203,7 @@ func AWSLambdaEventSourceMappingPrompt()  {
 			"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 0, maximum and " +
 			"\ndefault of 10000.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -214,7 +214,7 @@ func AWSLambdaEventSourceMappingPrompt()  {
 			"\nfor processing. Only available for stream sources (DynamoDB and Kinesis). " +
 			"\nMinimum of 60, maximum and default of 604800.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -248,7 +248,7 @@ func AWSLambdaEventSourceMappingPrompt()  {
 			"\nfrom Kinesis or DynamoDB. Must not be provided if getting events from SQS.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"AT_TIMESTAMP","LATEST","TRIM_HORIZON"},
+			Items: []string{"AT_TIMESTAMP", "LATEST", "TRIM_HORIZON"},
 		},
 	}
 	selectOrder = append(selectOrder, "starting_position")
@@ -372,7 +372,7 @@ func AWSLambdaFunctionPrompt() {
 	prompts["memory_size"] = types.TfPrompt{
 		Label: "Enter memory_size:\n(Optional) Amount of memory in MB your Lambda Function can use at runtime. Defaults to 128. See Limits",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
