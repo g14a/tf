@@ -353,14 +353,6 @@ func AWSLambdaFunctionPrompt() {
 	}
 	promptOrder = append(promptOrder, "image_uri")
 
-	prompts["image_uri"] = types.TfPrompt{
-		Label: "Enter image_uri:\n(Optional) The ECR image URI containing the function's deployment package. Conflicts with filename, s3_bucket, s3_key, and s3_object_version",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "image_uri")
-
 	prompts["description"] = types.TfPrompt{
 		Label: "Enter description:\n(Optional) Description of what your Lambda Function does.",
 		Prompt: promptui.Prompt{
@@ -379,24 +371,6 @@ func AWSLambdaFunctionPrompt() {
 
 	prompts["memory_size"] = types.TfPrompt{
 		Label: "Enter memory_size:\n(Optional) Amount of memory in MB your Lambda Function can use at runtime. Defaults to 128. See Limits",
-		Prompt: promptui.Prompt{
-			Label: "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "memory_size")
-
-	prompts["memory_size"] = types.TfPrompt{
-		Label: "Enter memory_size:\n(Optional) The amount of time your Lambda Function has to run in seconds. Defaults to 3.",
-		Prompt: promptui.Prompt{
-			Label: "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "memory_size")
-
-	prompts["memory_size"] = types.TfPrompt{
-		Label: "Enter memory_size:\n(Optional) The amount of time your Lambda Function has to run in seconds. Defaults to 3.",
 		Prompt: promptui.Prompt{
 			Label: "",
 			Validate: utils.IntValidator,
@@ -444,6 +418,15 @@ func AWSLambdaFunctionPrompt() {
 	}
 	promptOrder = append(promptOrder, "tags")
 
+	selects := map[string]types.TfSelect{}
+	selects["package_type"] = types.TfSelect{
+		Label: "Enter package_type:\n(Optional) The Lambda deployment package type. Valid values are Zip and Image. Defaults to Zip.",
+		Select: promptui.Select{
+			Label: "",
+		},
+	}
+	selectOrder = append(selectOrder, "package_type")
+
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
 	color.Green("Would you like to configure nested settings like vpc_config/file_system_config etc:")
@@ -460,7 +443,7 @@ func AWSLambdaFunctionPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ProviderBuilder("aws", promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_lambda_function", blockName, promptOrder, nil, resourceBlock)
 		return
 	}
 

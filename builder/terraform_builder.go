@@ -190,14 +190,17 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 
 // tags deal with input such as "k1=v1,k2=v2" and populate it into the tags field of the config
 func repeatingConfig(input string) string {
-	rc := strings.Split(input, ",")
-	var rcString strings.Builder
-	for _, v := range rc {
-		v := strings.Split(v, "=")
-		rcString.WriteString(v[0] + " = \"" + v[1] + "\"\n")
+	if input != "" {
+		rc := strings.Split(input, ",")
+		var rcString strings.Builder
+		for _, v := range rc {
+			v := strings.Split(v, "=")
+			rcString.WriteString(v[0] + " = \"" + v[1] + "\"\n")
+		}
+		rcString.WriteString("}\n")
+		return rcString.String()
 	}
-	rcString.WriteString("}\n")
-	return rcString.String()
+	return ""
 }
 
 func terraformExists() bool {

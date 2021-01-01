@@ -42,6 +42,7 @@ var resourceCmd = &cobra.Command{
 				// prompt and directly select resources
 				terraform.SelectResourceTree(provider, resource)
 			} else {
+				fmt.Println("came in")
 				// if provider is not provided in flags, give the provider prompt
 				provider := terraform.ProvidersPrompt()
 				terraform.SelectResourceTree(provider, resource)
