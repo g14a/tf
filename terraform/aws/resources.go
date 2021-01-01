@@ -263,6 +263,14 @@ func resources() []string {
 		"aws_elastictranscoder_preset",
 		"aws_elb",
 		"aws_elb_attachment",
+		"aws_lambda_alias",
+		"aws_lambda_code_signing_config",
+		"aws_lambda_event_source_mapping",
+		"aws_lambda_function",
+		"aws_lambda_function_event_invoke_config",
+		"aws_lambda_layer_version",
+		"aws_lambda_permission",
+		"aws_lambda_provisioned_concurrency_config",
 	}
 }
 
@@ -327,6 +335,12 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSAPIGatewayDomainNamePrompt()
 	case "aws_api_gateway_gateway_response":
 		resource_prompts.AWSAPIGatewayGatewayResponsePrompt()
+	case "aws_lambda_alias":
+		resource_prompts.AWSLambdaAliasPrompt()
+	case "aws_lambda_code_signing_config":
+		resource_prompts.AWSLambdaCodeSigningConfigPrompt()
+	case "aws_lambda_event_source_mapping":
+		resource_prompts.AWSLambdaEventSourceMappingPrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}

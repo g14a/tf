@@ -22,6 +22,8 @@ func ResourceBP(resource string) {
 		resource_bps.AWSElasticBeanstalkApplication()
 	case "aws_lambda_function":
 		resource_bps.AWSLambdaFunctionBP()
+	case "aws_cloudfront_distribution":
+		resource_bps.AWSCloudFrontDistributionPrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}

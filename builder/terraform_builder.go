@@ -153,7 +153,7 @@ func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string,
 				}
 			}
 		case map[string]interface{}:
-			strBuilder.WriteString("  " + o + " = {\n")
+			strBuilder.WriteString("  " + o + " {\n")
 			if len(v.(map[string]interface{})) != 0 {
 				for nestedK, i := range v.(map[string]interface{}) {
 					if i.(string) != "" {
