@@ -30,6 +30,7 @@ var resourceCmd = &cobra.Command{
 		provider, _ := cmd.Flags().GetString("provider")
 		boilerPlate, _ := cmd.Flags().GetBool("boilerplate")
 		resource, _ := cmd.Flags().GetString("resource")
+
 		if boilerPlate {
 			boilerplate.SelectResourceBP(provider, resource)
 		} else {
