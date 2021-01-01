@@ -729,3 +729,7 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_account", blockName, promptOrder, selectOrder, resourceBlock)
 }
+
+func AWSAPIGatewayIntegration() {
+
+}

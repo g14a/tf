@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"tf/boilerplate"
 	"tf/file"
 	"tf/terraform"
 )
@@ -26,13 +27,22 @@ var resourceCmd = &cobra.Command{
 	Use:   "resource",
 	Short: "Select resource information in your Terraform configuration",
 	Run: func(cmd *cobra.Command, args []string) {
-		file.Prompt()
 		provider, _ := cmd.Flags().GetString("provider")
-		if provider != "" {
-			terraform.SelectResourceTree(provider)
+		boilerPlate, _ := cmd.Flags().GetBool("boilerplate")
+		resource, _ := cmd.Flags().GetString("resource")
+		if boilerPlate {
+			boilerplate.SelectResourceBP(provider, resource)
 		} else {
-			tfProvider := terraform.ProvidersPrompt()
-			terraform.SelectResourceTree(tfProvider)
+			file.Prompt()
+			if provider != "" {
+				// if provider is provided, bypass the provider
+				// prompt and directly select resources
+				terraform.SelectResourceTree(provider, resource)
+			} else {
+				// if provider is not provided in flags, give the provider prompt
+				provider := terraform.ProvidersPrompt()
+				terraform.SelectResourceTree(provider, resource)
+			}
 		}
 	},
 }
@@ -40,7 +50,8 @@ var resourceCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(resourceCmd)
 	resourceCmd.Flags().StringP("provider", "p", "", "Specify provider directly \ne.g. tf resource --provider aws")
-
+	resourceCmd.Flags().StringP("resource", "r", "", "Specify resource directly")
+	resourceCmd.Flags().BoolP("boilerplate", "b", true, "Boilerplate configuration for the resource")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

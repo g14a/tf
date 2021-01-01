@@ -266,27 +266,30 @@ func resources() []string {
 	}
 }
 
-func ResourcePrompt() {
+func ResourcePrompt(resource string) {
 
-	color.Green("\nSelect aws Resources(e.g. aws_instance, aws_vpc):\n\n", "text")
+	if resource == "" {
+		color.Green("\nSelect aws Resources(e.g. aws_instance, aws_vpc):\n\n", "text")
 
-	resourcePrompt := promptui.Select{
-		Label:             "",
-		Size:              20,
-		Items:             resources(),
-		StartInSearchMode: true,
-		Searcher: func(input string, index int) bool {
-			provider := resources()[index]
-			name := strings.Replace(strings.ToLower(provider), " ", "", -1)
-			input = strings.Replace(strings.ToLower(input), " ", "", -1)
+		resourcePrompt := promptui.Select{
+			Label:             "",
+			Size:              20,
+			Items:             resources(),
+			StartInSearchMode: true,
+			Searcher: func(input string, index int) bool {
+				provider := resources()[index]
+				name := strings.Replace(strings.ToLower(provider), " ", "", -1)
+				input = strings.Replace(strings.ToLower(input), " ", "", -1)
 
-			return strings.Contains(name, input)
-		},
-	}
+				return strings.Contains(name, input)
+			},
+		}
 
-	_, resource, err := resourcePrompt.Run()
-	if err != nil {
-		fmt.Println(err)
+		var err error
+		_, resource, err = resourcePrompt.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	switch resource {
@@ -324,5 +327,7 @@ func ResourcePrompt() {
 		resource_prompts.AWSAPIGatewayDomainNamePrompt()
 	case "aws_api_gateway_gateway_response":
 		resource_prompts.AWSAPIGatewayGatewayResponsePrompt()
+	default:
+		color.Red("No such resource present in AWS")
 	}
 }
