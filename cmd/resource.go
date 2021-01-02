@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"tf/boilerplate"
 	"tf/file"
@@ -31,8 +30,6 @@ var resourceCmd = &cobra.Command{
 		provider, _ := cmd.Flags().GetString("provider")
 		boilerPlate, _ := cmd.Flags().GetBool("boilerplate")
 		resource, _ := cmd.Flags().GetString("resource")
-		fmt.Println(provider, boilerPlate, resource)
-
 		if boilerPlate {
 			boilerplate.SelectResourceBP(provider, resource)
 		} else {
@@ -42,7 +39,6 @@ var resourceCmd = &cobra.Command{
 				// prompt and directly select resources
 				terraform.SelectResourceTree(provider, resource)
 			} else {
-				fmt.Println("came in")
 				// if provider is not provided in flags, give the provider prompt
 				provider := terraform.ProvidersPrompt()
 				terraform.SelectResourceTree(provider, resource)

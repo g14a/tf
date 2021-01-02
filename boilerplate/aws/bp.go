@@ -20,10 +20,20 @@ func ResourceBP(resource string) {
 		resource_bps.AWSSNSPlatformApplicationBP()
 	case "aws_elastic_beanstalk_application":
 		resource_bps.AWSElasticBeanstalkApplication()
-	case "aws_lambda_function":
-		resource_bps.AWSLambdaFunctionBP()
 	case "aws_cloudfront_distribution":
 		resource_bps.AWSCloudFrontDistributionPrompt()
+	case "aws_lambda_function":
+		resource_bps.AWSLambdaFunctionBP()
+	case "aws_lambda_code_signing_config":
+		resource_bps.AWSLambdaCodeSigningConfigBP()
+	case "aws_lambda_layer_version":
+		resource_bps.AWSLambdaLayerVersionBP()
+	case "aws_lambda_permission":
+		resource_bps.AWSLambdaPermissionBP()
+	case "aws_lambda_function_event_invoke_config":
+		resource_bps.AWSLambdaFunctionEventInvokeConfigBP()
+	case "aws_lambda_provisioned_concurrency_config":
+		resource_bps.AWSLambdaProvisionedConcurrencyConfig()
 	default:
 		color.Red("No such resource present in AWS")
 	}
