@@ -345,6 +345,8 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSLambdaFunctionPrompt()
 	case "aws_lambda_layer_version":
 		resource_prompts.AWSLambdaLayerVersionPrompt()
+	case "aws_lambda_permission":
+		resource_prompts.AWSLambdaPermissionPrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}
