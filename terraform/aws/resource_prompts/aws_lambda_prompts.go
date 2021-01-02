@@ -779,3 +779,48 @@ func AWSLambdaPermissionPrompt() {
 	builder.ResourceBuilder("aws_lambda_permission", blockName, promptOrder, nil, resourceBlock)
 
 }
+
+func AWSLambdaProvisionedConcurrencyConfigPrompt()  {
+	prompts := map[string]types.TfPrompt{}
+
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var promptOrder []string
+
+	prompts["function_name"] = types.TfPrompt{
+		Label: "Enter function_name:\n(Required) Name or Amazon Resource Name (ARN) of the Lambda Function.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "function_name")
+
+	prompts["provisioned_concurrent_executions"] = types.TfPrompt{
+		Label: "Enter provisioned_concurrent_executions:\n(Required) Amount of capacity to allocate. Must be greater than or equal to 1.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "provisioned_concurrent_executions")
+
+	prompts["qualifier"] = types.TfPrompt{
+		Label: "Enter qualifier:\n(Required) Lambda Function version or Lambda Alias name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "qualifier")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	builder.ResourceBuilder("aws_lambda_provisioned_concurrency_config", blockName, promptOrder, nil, resourceBlock)
+
+}

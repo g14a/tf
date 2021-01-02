@@ -347,6 +347,8 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSLambdaLayerVersionPrompt()
 	case "aws_lambda_permission":
 		resource_prompts.AWSLambdaPermissionPrompt()
+	case "aws_lambda_provisioned_concurrency_config":
+		resource_prompts.AWSLambdaProvisionedConcurrencyConfigPrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}
