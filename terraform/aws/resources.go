@@ -315,6 +315,8 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSDBClusterSnapshotPrompt()
 	case "aws_db_event_subscription":
 		resource_prompts.AWSDBEventSubscriptionPrompt()
+	case "aws_db_instance_role_association":
+		resource_prompts.AWSDBInstanceRoleAssociationPrompt()
 	case "aws_acm_certificate":
 		resource_prompts.AWSACMCertificatePrompt()
 	case "aws_acmpca_certificate_authority":

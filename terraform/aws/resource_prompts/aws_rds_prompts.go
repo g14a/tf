@@ -173,6 +173,7 @@ func AWSDBClusterSnapshotPrompt() {
 
 func AWSDBEventSubscriptionPrompt() {
 	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
 	blockPrompt := promptui.Prompt{
 		Label: "",
 	}
@@ -242,7 +243,7 @@ func AWSDBEventSubscriptionPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label:    "",
+			Label: "",
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -292,4 +293,52 @@ func AWSDBEventSubscriptionPrompt() {
 	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_event_subscription", blockName, promptOrder, selectOrder, resourceBlock)
+}
+
+func AWSDBInstanceRoleAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder []string
+
+	prompts["db_instance_identifier"] = types.TfPrompt{
+		Label: "Enter db_instance_identifier:\n(Required) DB Instance Identifier to associate with the IAM Role.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_instance_identifier")
+
+	prompts["feature_name"] = types.TfPrompt{
+		Label: "Enter feature_name:\n(Required) Name of the feature for association. This can be found in the " +
+			"\nAWS documentation relevant to the integration or a full list is available in the SupportedFeatureNames list returned by AWS CLI rds describe-db-engine-versions." +
+			"\nCheckout https://docs.aws.amazon.com/cli/latest/reference/rds/describe-db-engine-versions.html",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "feature_name")
+
+	prompts["role_arn"] = types.TfPrompt{
+		Label: "Enter role_arn:\n(Required) Amazon Resource Name (ARN) of the IAM Role to associate with the DB Instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "role_arn")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_db_instance_role_association", blockName, promptOrder, nil, resourceBlock)
+
 }
