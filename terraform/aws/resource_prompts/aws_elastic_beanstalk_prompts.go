@@ -9,7 +9,7 @@ import (
 	"tf/utils"
 )
 
-func AWSElasticBeanstalkApplicationPrompt()  {
+func AWSElasticBeanstalkApplicationPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
@@ -43,7 +43,7 @@ func AWSElasticBeanstalkApplicationPrompt()  {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2:\n(Optional) Key-value map of tags for the Elastic Beanstalk Application.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -70,7 +70,7 @@ func AWSElasticBeanstalkApplicationPrompt()  {
 	appVersionLifecyclePrompt["max_count"] = types.TfPrompt{
 		Label: "Enter max_count:\n(Optional) The maximum number of application versions to retain ('max_age_in_days' and 'max_count' cannot be enabled simultaneously.).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -79,7 +79,7 @@ func AWSElasticBeanstalkApplicationPrompt()  {
 	appVersionLifecyclePrompt["max_age_in_days"] = types.TfPrompt{
 		Label: "Enter max_age_in_days:\n(Optional) The number of days to retain an application version ('max_age_in_days' and 'max_count' cannot be enabled simultaneously.).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -88,7 +88,7 @@ func AWSElasticBeanstalkApplicationPrompt()  {
 	appVersionLifecyclePrompt["delete_source_from_s3"] = types.TfPrompt{
 		Label: "Enter delete_source_from_s3:(true/false)\n(Optional) Set to true to delete a version's source bundle from S3 when the application version is deleted.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -160,7 +160,7 @@ func AWSElasticBeanstalkApplicationVersionPrompt() {
 		Label: "Enter force_delete:\n(Optional) On delete, force an Application Version to be deleted " +
 			"\nwhen it may be in use by multiple Elastic Beanstalk Environments.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -169,7 +169,7 @@ func AWSElasticBeanstalkApplicationVersionPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2\nKey-value map of tags for the Elastic Beanstalk Application Version.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}

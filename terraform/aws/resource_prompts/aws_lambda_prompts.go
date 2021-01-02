@@ -780,7 +780,7 @@ func AWSLambdaPermissionPrompt() {
 
 }
 
-func AWSLambdaProvisionedConcurrencyConfigPrompt()  {
+func AWSLambdaProvisionedConcurrencyConfigPrompt() {
 	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
@@ -806,7 +806,7 @@ func AWSLambdaProvisionedConcurrencyConfigPrompt()  {
 	prompts["provisioned_concurrent_executions"] = types.TfPrompt{
 		Label: "Enter provisioned_concurrent_executions:\n(Required) Amount of capacity to allocate. Must be greater than or equal to 1.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
