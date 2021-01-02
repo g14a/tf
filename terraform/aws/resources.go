@@ -349,6 +349,12 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSLambdaPermissionPrompt()
 	case "aws_lambda_provisioned_concurrency_config":
 		resource_prompts.AWSLambdaProvisionedConcurrencyConfigPrompt()
+	case "aws_elastic_beanstalk_application":
+		resource_prompts.AWSElasticBeanstalkApplicationPrompt()
+	case "aws_elastic_beanstalk_application_version":
+		resource_prompts.AWSElasticBeanstalkApplicationVersionPrompt()
+	case "aws_elastic_beanstalk_configuration_template":
+		resource_prompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}

@@ -2,9 +2,12 @@ package utils
 
 import (
 	"errors"
+	"regexp"
 	"strconv"
 	"strings"
 )
+
+var r *regexp.Regexp
 
 func IntValidator(input string) error {
 	if input != "" {
@@ -49,3 +52,15 @@ func BoolValidator(input string) error {
 	}
 	return nil
 }
+
+func BlockNameValidator(input string) error {
+	if !r.MatchString(input) {
+		return errors.New("a block name must start with a letter or underscore and may contain only letters, digits, underscore and dashes")
+	}
+	return nil
+}
+
+//
+//func init() {
+//	r, _ = regexp.Compile("^[a-zA-Z0-9_]*$")
+//}
