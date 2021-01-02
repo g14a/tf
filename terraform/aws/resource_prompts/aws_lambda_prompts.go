@@ -176,7 +176,8 @@ func AWSLambdaEventSourceMappingPrompt() {
 	prompts["enabled"] = types.TfPrompt{
 		Label: "Enter enabled:\n(Optional) Determines if the mapping will be enabled on creation. Defaults to true",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "enabled")
@@ -224,7 +225,8 @@ func AWSLambdaEventSourceMappingPrompt() {
 		Label: "Enter bisect_batch_on_function_error:\n(Optional) If the function returns an error, split the batch in two and retry. " +
 			"\nOnly available for stream sources (DynamoDB and Kinesis). Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "bisect_batch_on_function_error")
@@ -381,7 +383,8 @@ func AWSLambdaFunctionPrompt() {
 	prompts["publish"] = types.TfPrompt{
 		Label: "Enter publish(true/false):\n(Optional) Whether to publish creation/change as new Lambda Function Version. Defaults to false.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "publish")
@@ -391,7 +394,8 @@ func AWSLambdaFunctionPrompt() {
 			"\nA value of 0 disables lambda from being triggered and -1 removes any concurrency limitations. " +
 			"\nDefaults to Unreserved Concurrency Limits -1",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "reserved_concurrent_executions")
@@ -413,7 +417,8 @@ func AWSLambdaFunctionPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: For e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the object.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
+			Validate: utils.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -429,9 +434,7 @@ func AWSLambdaFunctionPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	color.Green("Would you like to configure nested settings like vpc_config/file_system_config etc:")
-
-	color.Yellow("\nConfigure nested settings like assume_role/ignore_tags [y/n]?\n\n", "text")
+	color.Yellow("\nWould you like to configure nested settings like vpc_config/file_system_config etc: [y/n]?\n\n", "text")
 
 	ynPrompt := promptui.Prompt{
 		Label: "",
@@ -531,4 +534,147 @@ func AWSLambdaFunctionPrompt() {
 	resourceBlock["dead_letter_config"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
 
 	builder.ResourceBuilder("aws_lambda_function", blockName, promptOrder, selectOrder, resourceBlock)
+}
+
+func AWSLambdaLayerVersionPrompt() {
+	prompts := map[string]types.TfPrompt{}
+
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var promptOrder, selectOrder []string
+
+	prompts["layer_name"] = types.TfPrompt{
+		Label: "Enter layer_name:\n(Required) A unique name for your Lambda Layer",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "layer_name")
+
+	prompts["filename"] = types.TfPrompt{
+		Label: "Enter filename:\n(Optional) The path to the function's deployment package within the local filesystem. " +
+			"\nIf defined, The s3_-prefixed options cannot be used.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "filename")
+
+	prompts["s3_bucket"] = types.TfPrompt{
+		Label: "Enter s3_bucket:\n(Optional) The S3 bucket location containing the function's deployment package. " +
+			"\nConflicts with filename. This bucket must reside in the same AWS region where you are " +
+			"\ncreating the Lambda function.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "s3_bucket")
+
+	prompts["s3_key"] = types.TfPrompt{
+		Label: "Enter s3_key:\n(Optional) The S3 key of an object containing the function's deployment package. Conflicts with filename",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "s3_key")
+
+	prompts["s3_object_version"] = types.TfPrompt{
+		Label: "Enter s3_object_version:\n(Optional) The object version containing the function's deployment package. Conflicts with filename",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "s3_object_version")
+
+	prompts["compatible_runtimes"] = types.TfPrompt{
+		Label: "Enter compatible_runtimes: e.g. [\"nodejs12.x\"]\n(Optional) A list of Runtimes this layer is compatible with. Up to 5 runtimes can be specified.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "compatible_runtimes")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of what your Lambda Layer does.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["license_info"] = types.TfPrompt{
+		Label: "Enter license_info:\n(Optional) License info for your Lambda Layer. " +
+			"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/API_PublishLayerVersion.html#SSS-PublishLayerVersion-request-LicenseInfo",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "license_info")
+
+	prompts["source_code_hash"] = types.TfPrompt{
+		Label: "Enter source_code_hash:\n(Optional) Used to trigger updates. Must be set to a base64-encoded SHA256 hash of the package " +
+			"\nfile specified with either filename or s3_key. The usual way to set this is ${filebase64sha256(\"file.zip\")}",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_code_hash")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	lifecyclePrompt := map[string]types.TfPrompt{}
+	var nestedSelectOrder []string
+
+	color.Green("Enter lifecycle block:\nThe lifecycle block supports" +
+		"\n1.create_before_destroy\n2.prevent_destroy\n3.ignore_changes\n")
+
+	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
+		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
+			"that cannot be updated in-place due to remote API limitations, \n" +
+			"Terraform will instead destroy the existing object and then \n" +
+			"create a new replacement object with the new configured arguments.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "create_before_destroy")
+
+	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
+		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
+			"reject with an error any plan that would destroy the infrastructure \n" +
+			"object associated with the resource, as long as the argument \n" +
+			"remains present in the configuration.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "prevent_destroy")
+
+	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
+		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
+			"current settings of a real infrastructure object and plans to " +
+			"update the remote object to match configuration." +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
+		Prompt: promptui.Prompt{
+			Label:    "",
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "ignore_changes")
+	selectOrder = append(selectOrder, "lifecycle")
+
+	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
+
+	builder.ResourceBuilder("aws_lambda_layer_version", blockName, promptOrder, selectOrder, resourceBlock)
 }

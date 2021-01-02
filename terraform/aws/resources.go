@@ -342,8 +342,9 @@ func ResourcePrompt(resource string) {
 	case "aws_lambda_event_source_mapping":
 		resource_prompts.AWSLambdaEventSourceMappingPrompt()
 	case "aws_lambda_function":
-		fmt.Println("came inside aws_lambda_fn =============")
 		resource_prompts.AWSLambdaFunctionPrompt()
+	case "aws_lambda_layer_version":
+		resource_prompts.AWSLambdaLayerVersionPrompt()
 	default:
 		color.Red("No such resource present in AWS")
 	}
