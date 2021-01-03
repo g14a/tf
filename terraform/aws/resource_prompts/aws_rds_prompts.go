@@ -922,3 +922,92 @@ func AWSDBProxyTargetPrompt() {
 	builder.ResourceBuilder("aws_db_proxy_target", blockName, promptOrder, nil, resourceBlock)
 
 }
+
+func AWSDBSecurityGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder, selectOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of the DB security group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) The description of the DB security group. Defaults to \"Managed by Terraform\".",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter ingress:\n(Required) A list of ingress rules." +
+		"\nThe auth block supports the following arguments:" +
+		"\n1.cidr\n2.security_group_name\n3.security_group_id\n4.security_group_owner_id\n")
+
+	ingressPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	ingressPrompt["cidr"] = types.TfPrompt{
+		Label: "Enter cidr:\n  The CIDR block to accept",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr")
+
+	ingressPrompt["security_group_name"] = types.TfPrompt{
+		Label: "Enter security_group_name:\nThe name of the security group to authorize",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "security_group_name")
+
+	ingressPrompt["security_group_id"] = types.TfPrompt{
+		Label: "Enter security_group_id:\nThe ID of the security group to authorize",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "security_group_id")
+
+	ingressPrompt["security_group_owner_id"] = types.TfPrompt{
+		Label: "Enter security_group_owner_id:\nThe owner Id of the security group provided by security_group_name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "security_group_owner_id")
+	selectOrder = append(selectOrder, "ingress")
+
+	resourceBlock["ingress"] = builder.NestedPSOrder(nestedPromptOrder, nil, ingressPrompt, nil)
+
+	builder.ResourceBuilder("aws_db_security_group", blockName, promptOrder, selectOrder, resourceBlock)
+
+}

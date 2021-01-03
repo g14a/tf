@@ -330,6 +330,8 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSDBProxyDefaultTargetGroupPrompt()
 	case "aws_db_proxy_target":
 		resource_prompts.AWSDBProxyTargetPrompt()
+	case "aws_db_security_group":
+		resource_prompts.AWSDBSecurityGroupPrompt()
 	case "aws_acm_certificate":
 		resource_prompts.AWSACMCertificatePrompt()
 	case "aws_acmpca_certificate_authority":
