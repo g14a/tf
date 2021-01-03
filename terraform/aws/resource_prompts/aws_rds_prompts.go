@@ -635,7 +635,7 @@ func AWSDbProxyPrompt() {
 	prompts["idle_client_timeout"] = types.TfPrompt{
 		Label: "Enter idle_client_timeout:\n(Optional) The number of seconds that a connection to the proxy can be inactive before the proxy disconnects it. You can set this value higher or lower than the connection timeout limit for the associated database.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -647,7 +647,7 @@ func AWSDbProxyPrompt() {
 			"\nvalue higher or lower than the connection timeout limit for the " +
 			"\nassociated database.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -656,7 +656,7 @@ func AWSDbProxyPrompt() {
 	prompts["role_arn"] = types.TfPrompt{
 		Label: "Enter role_arn(true/false):\n(Required) The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access secrets in AWS Secrets Manager.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -681,7 +681,7 @@ func AWSDbProxyPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A mapping of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -763,7 +763,7 @@ func AWSDbProxyPrompt() {
 		Label: "Enter iam_auth:\n(Optional) Whether to require or disallow AWS Identity and Access Management (IAM) authentication for connections to the proxy. One of DISABLED, REQUIRED",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"DISABLED","REQUIRED"},
+			Items: []string{"DISABLED", "REQUIRED"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "iam_auth")
