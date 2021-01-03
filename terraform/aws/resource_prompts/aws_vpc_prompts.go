@@ -54,9 +54,9 @@ func AWSCustomerGatewayPrompt() {
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
-	
+
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
-	
+
 	builder.ResourceBuilder("aws_customer_gateway", blockName, promptOrder, nil, resourceBlock)
 }
 
@@ -85,7 +85,7 @@ func AWSDefaultRouteTablePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -245,65 +245,65 @@ func AWSVPCPrompt() {
 	}
 	promptOrder = append(promptOrder, "tags")
 
+	prompts["enable_classiclink"] = types.TfPrompt{
+		Label: "Enter enable_classiclink(true/false):\nWhether or not the VPC has Classiclink enabled",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "enable_classiclink")
+
+	prompts["enable_dns_hostnames"] = types.TfPrompt{
+		Label: "Enter enable_dns_hostnames(true/false):\nWhether or not the VPC has DNS hostname support",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "enable_dns_hostnames")
+
+	prompts["enable_dns_support"] = types.TfPrompt{
+		Label: "Enter enable_dns_hostnames(true/false):\nWhether or not the VPC has DNS support",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "enable_dns_support")
+
+	prompts["enable_classiclink_dns_support"] = types.TfPrompt{
+		Label: "Enter enable_classiclink_dns_support(true/false):\n(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC." +
+			" Only valid in regions and accounts that support EC2 Classic.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "enable_classiclink_dns_support")
+
+	prompts["assign_generated_ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter assign_generated_ipv6_cidr_block(true/false):\nEnter (Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix " +
+			"length for the VPC. You cannot specify the range of IP addresses, " +
+			"or the size of the CIDR block. Default is false",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "assign_generated_ipv6_cidr_block")
+
 	var selectOrder []string
 	selects := map[string]types.TfSelect{}
 
 	selects["instance_tenancy"] = types.TfSelect{
 		Label: "Enter instance_tenancy:\bTenancy of instances spin up within VPC. Default is `default`",
 		Select: promptui.Select{
-			Label: ",",
+			Label: "",
 			Items: []string{"dedicated", "host"},
 		},
 	}
 	selectOrder = append(selectOrder, "instance_tenancy")
-
-	selects["enable_classiclink"] = types.TfSelect{
-		Label: "Enter enable_classiclink:\nWhether or not the VPC has Classiclink enabled",
-		Select: promptui.Select{
-			Label: ",",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "enable_classiclink")
-
-	selects["enable_dns_hostnames"] = types.TfSelect{
-		Label: "Enter enable_dns_hostnames:\nWhether or not the VPC has DNS hostname support",
-		Select: promptui.Select{
-			Label: ",",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "enable_dns_hostnames")
-
-	selects["enable_dns_support"] = types.TfSelect{
-		Label: "Enter enable_dns_hostnames:\nWhether or not the VPC has DNS support",
-		Select: promptui.Select{
-			Label: ",",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "enable_dns_support")
-
-	selects["enable_classiclink_dns_support"] = types.TfSelect{
-		Label: "Enter enable_classiclink_dns_support:\n(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC." +
-			" Only valid in regions and accounts that support EC2 Classic.",
-		Select: promptui.Select{
-			Label: ",",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "enable_classiclink_dns_support")
-
-	selects["assign_generated_ipv6_cidr_block"] = types.TfSelect{
-		Label: "Enter assign_generated_ipv6_cidr_block:\nEnter (Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix " +
-			"length for the VPC. You cannot specify the range of IP addresses, " +
-			"or the size of the CIDR block. Default is false",
-		Select: promptui.Select{
-			Label: ",",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "assign_generated_ipv6_cidr_block")
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
@@ -323,6 +323,48 @@ func AWSVPCPrompt() {
 		return
 	}
 
+	lifecyclePrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	color.Green("Enter lifecycle block:\n")
+
+	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
+		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
+			"that cannot be updated in-place due to remote API limitations, \n" +
+			"Terraform will instead destroy the existing object and then \n" +
+			"create a new replacement object with the new configured arguments.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "create_before_destroy")
+
+	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
+		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
+			"reject with an error any plan that would destroy the infrastructure \n" +
+			"object associated with the resource, as long as the argument \n" +
+			"remains present in the configuration.\n" +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "prevent_destroy")
+
+	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
+		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
+			"current settings of a real infrastructure object and plans to " +
+			"update the remote object to match configuration." +
+			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "ignore_changes")
+	selectOrder = append(selectOrder, "lifecycle")
+
+	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
+
 	builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
 }
-

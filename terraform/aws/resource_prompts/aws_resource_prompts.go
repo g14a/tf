@@ -63,13 +63,14 @@ func AWSInstancePrompt() {
 	promptOrder = append(promptOrder, "cpu_threads_per_core")
 
 	prompts["ebs_optimized"] = types.TfPrompt{
-		Label: "Select true/false for EBS-optimized(bool):\n(Optional) If true, the launched EC2 instance will be EBS-optimized. " +
-			"Note that if this is not set on an instance type that is optimized by default then this will show " +
-			"as disabled but if the instance type is optimized by default then there is no " +
-			"need to set this and there is no effect to disabling it. See the " +
-			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
+		Label: "Enter EBS-optimized(true/false):\n(Optional) If true, the launched EC2 instance will be EBS-optimized. " +
+			"\nNote that if this is not set on an instance type that is optimized by default then this will show " +
+			"\nas disabled but if the instance type is optimized by default then there is no " +
+			"\nneed to set this and there is no effect to disabling it. " +
+			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
 		Prompt: promptui.Prompt{
 			Label: "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ebs_optimized")
@@ -79,6 +80,7 @@ func AWSInstancePrompt() {
 			"If true, the launched EC2 instance will have detailed monitoring enabled",
 		Prompt: promptui.Prompt{
 			Label: "",
+			Validate: utils.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "monitoring")
@@ -130,24 +132,33 @@ func AWSInstancePrompt() {
 	promptOrder = append(promptOrder, "vpc_security_group_ids")
 
 	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n Follow the format k1=v1,k2=v2",
+		Label: "Enter tags: e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
 
-	selects := map[string]types.TfSelect{}
-	var selectOrder []string
-
-	selects["associate_public_ip_address"] = types.TfSelect{
-		Label: "Enter associate_public_ip_address.(Optional)Associate a public ip address with an instance in a VPC.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
+	prompts["associate_public_ip_address"] = types.TfPrompt{
+		Label: "Enter associate_public_ip_address:\n(Optional)Associate a public ip address with an instance in a VPC.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
 		},
 	}
-	selectOrder = append(selectOrder, "associate_public_ip_address")
+	promptOrder = append(promptOrder, "associate_public_ip_address")
+
+	prompts["hibernation"] = types.TfPrompt{
+		Label: "Enter hibernation(true/false).\n(Optional)If true, the launched EC2 instance will support hibernation.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "hibernation")
+
+	selects := map[string]types.TfSelect{}
+	var selectOrder []string
 
 	selects["placement_group"] = types.TfSelect{
 		Label: "Enter placement_group:\nThe Placement Group to start the instance in",
@@ -157,15 +168,6 @@ func AWSInstancePrompt() {
 		},
 	}
 	selectOrder = append(selectOrder, "placement_group")
-
-	selects["hibernation"] = types.TfSelect{
-		Label: "Enter hibernation.\n(Optional)If true, the launched EC2 instance will support hibernation.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "hibernation")
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
