@@ -1057,3 +1057,67 @@ func AWSDBSnapshotPrompt() {
 
 	builder.ResourceBuilder("aws_db_snapshot", blockName, promptOrder, nil, resourceBlock)
 }
+
+func AWSDBSubnetGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional, Forces new resource) The name of the DB subnet group. " +
+			"\nIf omitted, Terraform will assign a random, unique name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["name_prefix"] = types.TfPrompt{
+		Label: "Enter name_prefix:\n(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. " +
+			"\nConflicts with name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name_prefix")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) The description of the DB subnet group. Defaults to \"Managed by Terraform\".",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["subnet_ids"] = types.TfPrompt{
+		Label: "Enter subnet_ids: e.g.[\"id1\",\"id2\"]\n(Required) A list of VPC subnet IDs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_ids")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_db_subnet_group", blockName, promptOrder, nil, resourceBlock)
+}
