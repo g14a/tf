@@ -462,7 +462,7 @@ func AWSDBOptionGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "version")
 
 	optionPrompt["db_security_group_memberships"] = types.TfPrompt{
-		Label: "Enter db_security_group_memberships:\n(Optional) A list of DB Security Groups for which the option is enabled.",
+		Label: "Enter db_security_group_memberships: e.g.[\"g1\",\"g2\"]\n(Optional) A list of DB Security Groups for which the option is enabled.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -470,7 +470,7 @@ func AWSDBOptionGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "db_security_group_memberships")
 
 	optionPrompt["vpc_security_group_memberships"] = types.TfPrompt{
-		Label: "Enter vpc_security_group_memberships:\n(Optional) A list of VPC Security Groups for which the option is enabled.",
+		Label: "Enter vpc_security_group_memberships: e.g.[\"g1\",\"g2\"]\n(Optional) A list of VPC Security Groups for which the option is enabled.",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -482,4 +482,113 @@ func AWSDBOptionGroupPrompt() {
 
 	builder.ResourceBuilder("aws_db_option_group", blockName, promptOrder, selectOrder, resourceBlock)
 
+}
+
+func AWSDBParameterGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder, selectOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional, Forces new resource) The name of the DB parameter group. If omitted, " +
+			"\nTerraform will assign a random, unique name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["name_prefix"] = types.TfPrompt{
+		Label: "Enter name_prefix:\n(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. Conflicts with name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name_prefix")
+
+	prompts["family"] = types.TfPrompt{
+		Label: "Enter family:\n(Required, Forces new resource) The family of the DB parameter group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "family")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional, Forces new resource) The description of the DB parameter group. Defaults to \"Managed by Terraform\".",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n (Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like options etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_db_parameter_group", blockName, promptOrder, nil, resourceBlock)
+		return
+	}
+
+	parameterPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	parameterPrompt["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of the DB parameter.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "name")
+
+	parameterPrompt["value"] = types.TfPrompt{
+		Label: "Enter value:\n(Required) The value of the DB parameter.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "value")
+
+	parameterPrompt["apply_method"] = types.TfPrompt{
+		Label: "Enter apply_method:\n(Optional) \"immediate\" (default), or \"pending-reboot\". Some engines can't apply some parameters without a reboot, and you will need to specify \"pending-reboot\" here",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "apply_method")
+	selectOrder = append(selectOrder, "parameter")
+
+	resourceBlock["parameter"] = builder.NestedPSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
+
+	builder.ResourceBuilder("aws_db_parameter_group", blockName, promptOrder, selectOrder, resourceBlock)
 }
