@@ -773,3 +773,114 @@ func AWSDbProxyPrompt() {
 
 	builder.ResourceBuilder("aws_db_proxy", blockName, promptOrder, selectOrder, resourceBlock)
 }
+
+func AWSDBProxyDefaultTargetGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder, selectOrder []string
+
+	prompts["db_proxy_name"] = types.TfPrompt{
+		Label: "Enter db_proxy_name:\n(Required) Name of the RDS DB Proxy.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_proxy_name")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	connectionPoolConfigPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	connectionPoolConfigPrompt["connection_borrow_timeout"] = types.TfPrompt{
+		Label: "Enter connection_borrow_timeout:\n(Optional) The number of seconds for a proxy to wait for a connection to become " +
+			"\navailable in the connection pool. Only applies when the proxy has " +
+			"\nopened its maximum number of connections and all connections are busy with client sessions.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "connection_borrow_timeout")
+
+	connectionPoolConfigPrompt["init_query"] = types.TfPrompt{
+		Label: "Enter init_query:\n(Optional) One or more SQL statements for the proxy to run when opening each " +
+			"\nnew database connection. Typically used with SET statements to make sure that " +
+			"\neach connection has identical settings such as time zone and character set. " +
+			"\nThis setting is empty by default. For multiple statements, use semicolons as the separator. " +
+			"\nYou can also include multiple variables in a single SET statement, such as SET x=1, y=2.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "init_query")
+
+	connectionPoolConfigPrompt["max_connections_percent"] = types.TfPrompt{
+		Label: "Enter max_connections_percent:\n(Optional) The maximum size of the connection pool for each target in a " +
+			"\ntarget group. For Aurora MySQL, it is expressed as a " +
+			"\npercentage of the max_connections setting for the RDS DB " +
+			"\ninstance or Aurora DB cluster used by the target group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "max_connections_percent")
+
+	connectionPoolConfigPrompt["max_idle_connections_percent"] = types.TfPrompt{
+		Label: "Enter max_idle_connections_percent:\n(Optional) The maximum size of the connection pool for each target in a " +
+			"\ntarget group. For Aurora MySQL, it is expressed as a " +
+			"\npercentage of the max_connections setting for the RDS DB " +
+			"\ninstance or Aurora DB cluster used by the target group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "max_idle_connections_percent")
+
+	connectionPoolConfigPrompt["session_pinning_filters"] = types.TfPrompt{
+		Label: "Enter session_pinning_filters:\n(Optional) Each item in the list represents a class of SQL operations " +
+			"\nthat normally cause all later statements in a session using " +
+			"\na proxy to be pinned to the same underlying database connection. Including an item in the list exempts that class of SQL operations from the pinning behavior. Currently, the only allowed value is EXCLUDE_VARIABLE_SETS",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "session_pinning_filters")
+	selectOrder = append(selectOrder, "connection_pool_config")
+
+	resourceBlock["connection_pool_config"] = builder.NestedPSOrder(nestedPromptOrder, nil, connectionPoolConfigPrompt, nil)
+
+	builder.ResourceBuilder("aws_db_proxy_default_target_group", blockName, promptOrder, selectOrder, resourceBlock)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
