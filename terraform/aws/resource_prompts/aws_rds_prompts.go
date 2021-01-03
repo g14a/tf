@@ -867,20 +867,58 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 
 }
 
+func AWSDBProxyTargetPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
 
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
 
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	prompts := map[string]types.TfPrompt{}
 
+	var promptOrder []string
 
+	prompts["db_proxy_name"] = types.TfPrompt{
+		Label: "Enter db_proxy_name:\n(Required, Forces new resource) The name of the DB proxy.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_proxy_name")
 
+	prompts["target_group_name"] = types.TfPrompt{
+		Label: "Enter target_group_name:\n(Required, Forces new resource) The name of the target group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "target_group_name")
 
+	color.Yellow("\nEither db_instance_identifier or db_cluster_identifier should be specified and both should not be specified together\n")
 
+	prompts["db_instance_identifier"] = types.TfPrompt{
+		Label: "Enter db_instance_identifier:\n(Optional, Forces new resource) DB instance identifier.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_instance_identifier")
 
+	prompts["db_cluster_identifier"] = types.TfPrompt{
+		Label: "Enter db_cluster_identifier:\n(Optional, Forces new resource) DB cluster identifier.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_cluster_identifier")
 
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
+	builder.ResourceBuilder("aws_db_proxy_target", blockName, promptOrder, nil, resourceBlock)
 
-
-
-
-
-
+}
