@@ -1047,7 +1047,7 @@ func AWSDBSnapshotPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
