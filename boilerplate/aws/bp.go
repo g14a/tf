@@ -12,6 +12,28 @@ func ResourceBP(resource string) {
 		resource_bps.AWSEC2BP()
 	case "aws_db_instance":
 		resource_bps.AWSDBInstanceBP()
+	case "aws_db_cluster_snapshot":
+		resource_bps.AWSDBClusterSnapshotBP()
+	case "aws_db_event_subscription":
+		resource_bps.AWSDBEventSubscriptionBP()
+	case "aws_db_instance_role_association":
+		resource_bps.AWSDBInstanceRoleAssociationBP()
+	case "aws_db_option_group":
+		resource_bps.AWSDBOptionGroupBP()
+	case "aws_db_parameter_option":
+		resource_bps.AWSDBParameterOptionBP()
+	case "aws_db_proxy":
+		resource_bps.AWSDBProxyBP()
+	case "aws_db_proxy_default_target_group":
+		resource_bps.AWSDBProxyDefaultTargetGroupBP()
+	case "aws_db_proxy_target_group":
+		resource_bps.AWSDBProxyTargetGroupBP()
+	case "aws_db_security_group":
+		resource_bps.AWSDBSecurityGroupBP()
+	case "aws_db_snapshot":
+		resource_bps.AWSDBSnapshotBP()
+	case "aws_db_subnet_group":
+		resource_bps.AWSDBSubnetGroupBP()
 	case "aws_s3_bucket":
 		resource_bps.AWSS3BucketBP()
 	case "aws_vpc":
