@@ -160,6 +160,7 @@ func resources() []string {
 		"aws_db_instance_role_association",
 		"aws_db_option_group",
 		"aws_db_parameter_group",
+		"aws_db_proxy",
 		"aws_db_security_group",
 		"aws_db_snapshot",
 		"aws_db_subnet_group",
@@ -321,6 +322,8 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSDBOptionGroupPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
+	case "aws_db_proxy":
+		resource_prompts.AWSDbProxyPrompt()
 	case "aws_acm_certificate":
 		resource_prompts.AWSACMCertificatePrompt()
 	case "aws_acmpca_certificate_authority":

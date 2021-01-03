@@ -447,7 +447,7 @@ func AWSDBOptionGroupPrompt() {
 	optionPrompt["port"] = types.TfPrompt{
 		Label: "Enter port:\n(Optional) The Port number when connecting to the Option (e.g. 11211).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -536,7 +536,7 @@ func AWSDBParameterGroupPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n (Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -591,4 +591,185 @@ func AWSDBParameterGroupPrompt() {
 	resourceBlock["parameter"] = builder.NestedPSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_parameter_group", blockName, promptOrder, selectOrder, resourceBlock)
+}
+
+func AWSDbProxyPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder, selectOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The identifier for the proxy. This name must be unique for all proxies owned by your AWS " +
+			"\naccount in the specified AWS Region. An identifier must begin with a letter and must " +
+			"\ncontain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["debug_logging"] = types.TfPrompt{
+		Label: "Enter debug_logging:\n(Optional) Whether the proxy includes detailed information about SQL statements " +
+			"\nin its logs. This information helps you to debug issues involving SQL " +
+			"\nbehavior or the performance and scalability of the proxy connections. " +
+			"\nThe debug information includes the text of SQL statements that you submit " +
+			"\nthrough the proxy. Thus, only enable this setting when needed for debugging, " +
+			"\nand only when you have security measures in place to safeguard any sensitive information that appears in the logs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "debug_logging")
+
+	prompts["idle_client_timeout"] = types.TfPrompt{
+		Label: "Enter idle_client_timeout:\n(Optional) The number of seconds that a connection to the proxy can be inactive before the proxy disconnects it. You can set this value higher or lower than the connection timeout limit for the associated database.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "idle_client_timeout")
+
+	prompts["require_tls"] = types.TfPrompt{
+		Label: "Enter require_tls(true/false):\n(Optional) The number of seconds that a connection to the proxy " +
+			"\ncan be inactive before the proxy disconnects it. You can set this " +
+			"\nvalue higher or lower than the connection timeout limit for the " +
+			"\nassociated database.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "require_tls")
+
+	prompts["role_arn"] = types.TfPrompt{
+		Label: "Enter role_arn(true/false):\n(Required) The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access secrets in AWS Secrets Manager.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "role_arn")
+
+	prompts["vpc_security_group_ids"] = types.TfPrompt{
+		Label: "Enter vpc_security_group_ids:\n(Optional) One or more VPC security group IDs to associate with the new proxy.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_security_group_ids")
+
+	prompts["vpc_subnet_ids"] = types.TfPrompt{
+		Label: "Enter vpc_subnet_ids:\n(Required) One or more VPC subnet IDs to associate with the new proxy.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_subnet_ids")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A mapping of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["engine_family"] = types.TfSelect{
+		Label: "Enter engine_family:\n(Required, Forces new resource) The kinds of databases that the proxy can connect to. This value determines which database network protocol the proxy recognizes when it interprets network traffic to and from the database. The engine family applies to MySQL and PostgreSQL for both RDS and Aurora. Valid values are MYSQL and POSTGRESQL",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"MYSQL", "POSTGRESQL"},
+		},
+	}
+	selectOrder = append(selectOrder, "engine_family")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	color.Yellow("\nConfigure nested settings like auth etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_db_proxy", blockName, promptOrder, selectOrder, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter auth:\n(Required) Configuration block(s) with authorization mechanisms to connect to the associated instances or clusters" +
+		"\nThe auth block supports the following arguments:" +
+		"\n1.auth_scheme\n2.description\n3.iam_auth\n4.secret_arn\n5.username\n")
+
+	authPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder, nestedSelectOrder []string
+
+	authPrompt["auth_scheme"] = types.TfPrompt{
+		Label: "Enter auth_scheme:\n(Optional) The type of authentication that the proxy uses for connections " +
+			"\nfrom the proxy to the underlying database. One of SECRETS",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "auth_scheme")
+
+	authPrompt["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A user-specified description about the authentication used by a proxy to log in as a specific database user.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "description")
+
+	authPrompt["secret_arn"] = types.TfPrompt{
+		Label: "Enter secret_arn:\n(Optional) The Amazon Resource Name (ARN) representing the secret that the proxy uses " +
+			"\nto authenticate to the RDS DB instance or Aurora DB cluster. These secrets are stored within Amazon Secrets Manager.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "secret_arn")
+
+	authPrompt["username"] = types.TfPrompt{
+		Label: "Enter username:\n(Optional) The name of the database user to which the proxy connects.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "username")
+
+	authSelect := map[string]types.TfSelect{}
+
+	authSelect["iam_auth"] = types.TfSelect{
+		Label: "Enter iam_auth:\n(Optional) Whether to require or disallow AWS Identity and Access Management (IAM) authentication for connections to the proxy. One of DISABLED, REQUIRED",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"DISABLED","REQUIRED"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "iam_auth")
+	selectOrder = append(selectOrder, "auth")
+
+	resourceBlock["auth"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, authPrompt, authSelect)
+
+	builder.ResourceBuilder("aws_db_proxy", blockName, promptOrder, selectOrder, resourceBlock)
 }
