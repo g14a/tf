@@ -87,75 +87,77 @@ func ProviderPrompt() {
 	}
 	promptOrder = append(promptOrder, "shared_credentials_file")
 
+
+	prompts["insecure"] = types.TfPrompt{
+		Label: "Enter insecure(true/false):\nExplicitly allow the provider to perform \"insecure\" SSL \n" +
+			"requests(bool).If omitted, the default value is false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "insecure")
+
+	prompts["skip_credentials_validation"] = types.TfPrompt{
+		Label: "Enter skip_credentials_validation(true/false):\nSkip the credentials validation via the STS API.\n" +
+			"Useful for AWS API implementations that do not have STS available or implemented.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+
+	promptOrder = append(promptOrder, "skip_credentials_validation")
+
+	prompts["skip_get_ec2_platforms"] = types.TfPrompt{
+		Label: "Enter skip_get_ec2_platforms(true/false):\nSkip getting the supported EC2 platforms. \n" +
+			"Used by users that don't have ec2:DescribeAccountAttributes permissions.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "skip_get_ec2_platforms")
+
+	prompts["skip_metadata_api_check"] = types.TfPrompt{
+		Label: "Enter skip_metadata_api_check(true/false):\nSkip the AWS Metadata API check. \n" +
+			"Useful for AWS API implementations that do not have a metadata \n" +
+			"API endpoint. Setting to true prevents Terraform from authenticating via the Metadata API.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "skip_metadata_api_check")
+
+	prompts["skip_requesting_account_id"] = types.TfPrompt{
+		Label: "Enter skip_requesting_account_id(true/false):\nSkip requesting the account ID. \n" +
+			"Useful for AWS API implementations that do not \n" +
+			"have the IAM, STS API, or metadata API.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "skip_requesting_account_id")
+
+	prompts["skip_region_validation"] = types.TfPrompt{
+		Label: "Enter skip_region_validation(true/false):\nSkip validation of provided region name. \n" +
+			"Useful for AWS-like implementations that use their own \n" +
+			"region names or to bypass the validation for regions \nthat aren't publicly available yet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "skip_region_validation")
+
 	var selectOrder []string
 	selects := map[string]types.TfSelect{}
 
 	selects["region"] = RegionPrompt()
+
 	selectOrder = append(selectOrder, "region")
-
-	selects["insecure"] = types.TfSelect{
-		Label: "Enter insecure:\n Explicitly allow the provider to perform \"insecure\" SSL \n" +
-			"requests(bool).If omitted, the default value is false",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "insecure")
-
-	selects["skip_credentials_validation"] = types.TfSelect{
-		Label: "Enter skip_credentials_validation:\nSkip the credentials validation via the STS API.\n" +
-			"Useful for AWS API implementations that do not have STS available or implemented.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-
-	selectOrder = append(selectOrder, "skip_credentials_validation")
-
-	selects["skip_get_ec2_platforms"] = types.TfSelect{
-		Label: "Enter skip_get_ec2_platforms:\nSkip getting the supported EC2 platforms. \n" +
-			"Used by users that don't have ec2:DescribeAccountAttributes permissions.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "skip_get_ec2_platforms")
-
-	selects["skip_metadata_api_check"] = types.TfSelect{
-		Label: "Enter skip_metadata_api_check:\nSkip the AWS Metadata API check. \n" +
-			"Useful for AWS API implementations that do not have a metadata \n" +
-			"API endpoint. Setting to true prevents Terraform from authenticating via the Metadata API.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "skip_metadata_api_check")
-
-	selects["skip_requesting_account_id"] = types.TfSelect{
-		Label: "Enter skip_requesting_account_id:\nSkip requesting the account ID. \n" +
-			"Useful for AWS API implementations that do not \n" +
-			"have the IAM, STS API, or metadata API.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "skip_requesting_account_id")
-
-	selects["skip_region_validation"] = types.TfSelect{
-		Label: "Enter skip_region_validation:\nSkip validation of provided region name. \n" +
-			"Useful for AWS-like implementations that use their own \n" +
-			"region names or to bypass the validation for regions \nthat aren't publicly available yet.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
-		},
-	}
-	selectOrder = append(selectOrder, "skip_region_validation")
 
 	providerInfo := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
