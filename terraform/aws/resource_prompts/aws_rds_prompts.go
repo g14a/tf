@@ -808,7 +808,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\navailable in the connection pool. Only applies when the proxy has " +
 			"\nopened its maximum number of connections and all connections are busy with client sessions.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -832,7 +832,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\npercentage of the max_connections setting for the RDS DB " +
 			"\ninstance or Aurora DB cluster used by the target group.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -844,7 +844,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\npercentage of the max_connections setting for the RDS DB " +
 			"\ninstance or Aurora DB cluster used by the target group.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -958,7 +958,7 @@ func AWSDBSecurityGroupPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1010,4 +1010,50 @@ func AWSDBSecurityGroupPrompt() {
 
 	builder.ResourceBuilder("aws_db_security_group", blockName, promptOrder, selectOrder, resourceBlock)
 
+}
+
+func AWSDBSnapshotPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder []string
+
+	prompts["db_instance_identifier"] = types.TfPrompt{
+		Label: "Enter db_instance_identifier:\n(Required) The DB Instance Identifier from which to take the snapshot.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_instance_identifier")
+
+	prompts["db_snapshot_identifier"] = types.TfPrompt{
+		Label: "Enter db_snapshot_identifier:\n(Required) The Identifier for the snapshot.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "db_snapshot_identifier")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_db_snapshot", blockName, promptOrder, nil, resourceBlock)
 }
