@@ -1,7 +1,6 @@
 package aws
 
 import (
-	"github.com/fatih/color"
 	"tf/boilerplate/aws/resource_bps"
 )
 
@@ -56,7 +55,5 @@ func ResourceBP(resource string) {
 		resource_bps.AWSLambdaFunctionEventInvokeConfigBP()
 	case "aws_lambda_provisioned_concurrency_config":
 		resource_bps.AWSLambdaProvisionedConcurrencyConfig()
-	default:
-		color.Red("No such resource present in AWS")
 	}
 }

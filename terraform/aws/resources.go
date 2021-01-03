@@ -5,6 +5,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"strings"
+	boilerplate2 "tf/boilerplate"
 	"tf/terraform/aws/resource_prompts"
 )
 
@@ -277,7 +278,7 @@ func resources() []string {
 	}
 }
 
-func ResourcePrompt(resource string) {
+func ResourcePrompt(resource string, boilerplate bool) {
 
 	if resource == "" {
 		color.Green("\nSelect aws Resources(e.g. aws_instance, aws_vpc):\n\n", "text")
@@ -301,6 +302,11 @@ func ResourcePrompt(resource string) {
 		if err != nil {
 			fmt.Println(err)
 		}
+
+		if boilerplate {
+			boilerplate2.SelectResourceBP("aws", resource)
+			return
+		}
 	}
 
 	switch resource {
@@ -308,6 +314,10 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSInstancePrompt()
 	case "aws_vpc":
 		resource_prompts.AWSVPCPrompt()
+	case "aws_customer_gateway":
+		resource_prompts.AWSCustomerGatewayPrompt()
+	case "aws_default_route_table":
+		resource_prompts.AWSDefaultRouteTablePrompt()
 	case "aws_s3_bucket":
 		resource_prompts.AWSS3BucketPrompt()
 	case "aws_elb":
@@ -380,8 +390,7 @@ func ResourcePrompt(resource string) {
 		resource_prompts.AWSElasticBeanstalkApplicationVersionPrompt()
 	case "aws_elastic_beanstalk_configuration_template":
 		resource_prompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
-
 	default:
-		color.Red("No such resource present in AWS")
+		color.Red("No support added yet for your resource! Coming soon...")
 	}
 }
