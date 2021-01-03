@@ -342,3 +342,144 @@ func AWSDBInstanceRoleAssociationPrompt() {
 	builder.ResourceBuilder("aws_db_instance_role_association", blockName, promptOrder, nil, resourceBlock)
 
 }
+
+func AWSDBOptionGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+
+	var promptOrder, selectOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional, Forces new resource) The name of the option group. " +
+			"\nIf omitted, Terraform will assign a random, unique name. Must be lowercase, " +
+			"\nto match as it is stored in AWS.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["name_prefix"] = types.TfPrompt{
+		Label: "Enter name_prefix:\n(Optional, Forces new resource) Creates a unique name beginning " +
+			"\nwith the specified prefix. Conflicts with name. Must be lowercase, " +
+			"\nto match as it is stored in AWS.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name_prefix")
+
+	prompts["option_group_description"] = types.TfPrompt{
+		Label: "Enter option_group_description:\n(Optional) The description of the option group. Defaults to \"Managed by Terraform\".",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "option_group_description")
+
+	prompts["engine_name"] = types.TfPrompt{
+		Label: "Enter engine_name:\n(Required) Specifies the name of the engine that this option group should be associated with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "engine_name")
+
+	prompts["major_engine_version"] = types.TfPrompt{
+		Label: "Enter major_engine_version:\n(Required) Specifies the major version of the engine that this option group should be associated with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "major_engine_version")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like options etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_db_option_group", blockName, promptOrder, nil, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter option:\nThe option block supports the following arguments:" +
+		"\n1.option_name\n2.option_settings(not supported by this cli yet)\n3.port\n4.version\n5.db_security_group_memberships\n6.vpc_security_group_memberships\n")
+
+	optionPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	optionPrompt["option_name"] = types.TfPrompt{
+		Label: "Enter option_name:\n(Required) The Name of the Option (e.g. MEMCACHED).",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "option_name")
+
+	optionPrompt["port"] = types.TfPrompt{
+		Label: "Enter port:\n(Optional) The Port number when connecting to the Option (e.g. 11211).",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "port")
+
+	optionPrompt["version"] = types.TfPrompt{
+		Label: "Enter version:\n(Optional) The version of the option (e.g. 13.1.0.0).",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "version")
+
+	optionPrompt["db_security_group_memberships"] = types.TfPrompt{
+		Label: "Enter db_security_group_memberships:\n(Optional) A list of DB Security Groups for which the option is enabled.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "db_security_group_memberships")
+
+	optionPrompt["vpc_security_group_memberships"] = types.TfPrompt{
+		Label: "Enter vpc_security_group_memberships:\n(Optional) A list of VPC Security Groups for which the option is enabled.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "vpc_security_group_memberships")
+	selectOrder = append(selectOrder, "option")
+
+	resourceBlock["option"] = builder.NestedPSOrder(nestedPromptOrder, nil, optionPrompt, nil)
+
+	builder.ResourceBuilder("aws_db_option_group", blockName, promptOrder, selectOrder, resourceBlock)
+
+}
