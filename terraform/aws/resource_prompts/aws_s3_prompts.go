@@ -466,3 +466,70 @@ func AWSS3BucketAnalyticsConfigurationPrompt() {
 	builder.ResourceBuilder("aws_s3_bucket_analytics_configuration", blockName, promptOrder, nil, resourceBlock)
 }
 
+func AWSS3BucketMetricPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The name of the bucket to put metric configuration.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) Unique identifier of the metrics configuration for the bucket.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like filter [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_s3_bucket_metric", blockName, promptOrder, nil, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter filter:\n(Optional) Object filtering that accepts a prefix, tags, or a logical AND of prefix and tags" +
+		"\nThe filter block supports:\n1.prefix\n2.tags(not supported by this cli yet)")
+
+	filterPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	filterPrompt["prefix"] = types.TfPrompt{
+		Label: "Enter prefix:\n(Optional) Object prefix for filtering (singular).",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "prefix")
+	selectOrder = append(selectOrder, "filter")
+
+	resourceBlock["filter"] = builder.NestedPSOrder(nestedPromptOrder, nil, filterPrompt, nil)
+
+	builder.ResourceBuilder("aws_s3_bucket_metric", blockName, promptOrder, selectOrder, resourceBlock)
+}
