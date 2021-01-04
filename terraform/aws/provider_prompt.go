@@ -87,12 +87,11 @@ func ProviderPrompt() {
 	}
 	promptOrder = append(promptOrder, "shared_credentials_file")
 
-
 	prompts["insecure"] = types.TfPrompt{
 		Label: "Enter insecure(true/false):\nExplicitly allow the provider to perform \"insecure\" SSL \n" +
 			"requests(bool).If omitted, the default value is false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -102,7 +101,7 @@ func ProviderPrompt() {
 		Label: "Enter skip_credentials_validation(true/false):\nSkip the credentials validation via the STS API.\n" +
 			"Useful for AWS API implementations that do not have STS available or implemented.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -113,7 +112,7 @@ func ProviderPrompt() {
 		Label: "Enter skip_get_ec2_platforms(true/false):\nSkip getting the supported EC2 platforms. \n" +
 			"Used by users that don't have ec2:DescribeAccountAttributes permissions.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -124,7 +123,7 @@ func ProviderPrompt() {
 			"Useful for AWS API implementations that do not have a metadata \n" +
 			"API endpoint. Setting to true prevents Terraform from authenticating via the Metadata API.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -135,7 +134,7 @@ func ProviderPrompt() {
 			"Useful for AWS API implementations that do not \n" +
 			"have the IAM, STS API, or metadata API.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -146,7 +145,7 @@ func ProviderPrompt() {
 			"Useful for AWS-like implementations that use their own \n" +
 			"region names or to bypass the validation for regions \nthat aren't publicly available yet.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}

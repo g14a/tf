@@ -69,7 +69,7 @@ func AWSInstancePrompt() {
 			"\nneed to set this and there is no effect to disabling it. " +
 			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -79,7 +79,7 @@ func AWSInstancePrompt() {
 		Label: "Select true/false for monitoring:\n(Optional) " +
 			"If true, the launched EC2 instance will have detailed monitoring enabled",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}

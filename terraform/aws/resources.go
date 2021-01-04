@@ -334,6 +334,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSS3AccessPointPrompt()
 	case "aws_s3_account_public_access_block":
 		resource_prompts.AWSS3AccountPublicAccessBlockPrompt()
+	case "aws_s3_bucket_analytics_configuration":
+		resource_prompts.AWSS3BucketAnalyticsConfigurationPrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":
@@ -406,5 +408,6 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
 	default:
 		color.Red("No support added yet for your resource! Coming soon...")
+		color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")
 	}
 }

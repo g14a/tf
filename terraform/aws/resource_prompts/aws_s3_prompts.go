@@ -86,7 +86,7 @@ func AWSS3AccessPointPrompt() {
 			"PUT Object calls fail if the request includes a public ACL.\n    " +
 			"PUT Bucket calls fail if the request includes a public ACL.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -97,7 +97,7 @@ func AWSS3AccessPointPrompt() {
 			"\nDefaults to true. Enabling this setting does not affect existing bucket policies. " +
 			"\nWhen set to true causes Amazon S3 to:\n\n    Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -108,7 +108,7 @@ func AWSS3AccessPointPrompt() {
 			"\nDefaults to true. Enabling this setting does not affect the persistence of any " +
 			"\nexisting ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:\n\n    Ignore all public ACLs on buckets in this account and any objects that they contain.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -120,7 +120,7 @@ func AWSS3AccessPointPrompt() {
 			"\nbucket policies, except that public and cross-account access within any public bucket policy, " +
 			"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    Only the bucket owner and AWS Services can access buckets with public policies.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -173,7 +173,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 			"\nDefaults to false. Enabling this setting does not affect existing policies or ACLs. " +
 			"\nWhen set to true causes the following behavior:\n\n    PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.\n    PUT Object calls will fail if the request includes an object ACL.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -184,7 +184,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 			"\nDefaults to false. Enabling this setting does not affect existing bucket policies. " +
 			"\nWhen set to true causes Amazon S3 to:\n\n    Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -195,7 +195,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 			"\nEnabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new " +
 			"\npublic ACLs from being set. When set to true causes Amazon S3 to:\n\n    Ignore all public ACLs on buckets in this account and any objects that they contain.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -207,7 +207,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 			"\nexcept that public and cross-account access within any public bucket policy, " +
 			"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    Only the bucket owner and AWS Services can access buckets with public policies.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -430,3 +430,39 @@ func AWSS3BucketPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
 }
+
+func AWSS3BucketAnalyticsConfigurationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The name of the bucket this analytics configuration is associated with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) Unique identifier of the analytics configuration for the bucket.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_s3_bucket_analytics_configuration", blockName, promptOrder, nil, resourceBlock)
+}
+
