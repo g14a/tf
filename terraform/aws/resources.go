@@ -14,6 +14,16 @@ func resources() []string {
 		"aws_instance",
 		"aws_vpc",
 		"aws_s3_bucket",
+		"aws_s3_access_point",
+		"aws_s3_account_public_access_block",
+		"aws_s3_bucket_analytics_configuration",
+		"aws_s3_bucket_inventory",
+		"aws_s3_bucket_metric",
+		"aws_s3_bucket_notification",
+		"aws_s3_bucket_object",
+		"aws_s3_bucket_ownership_controls",
+		"aws_s3_bucket_policy",
+		"aws_s3_bucket_public_access_block",
 		"aws_access_analyzer_analyzer",
 		"aws_acm_certificate",
 		"aws_acm_certificate_validation",
@@ -320,6 +330,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSDefaultRouteTablePrompt()
 	case "aws_s3_bucket":
 		resource_prompts.AWSS3BucketPrompt()
+	case "aws_s3_access_point":
+		resource_prompts.AWSS3AccessPointPrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":
