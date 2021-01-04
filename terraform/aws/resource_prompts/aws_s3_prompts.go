@@ -145,6 +145,79 @@ func AWSS3AccessPointPrompt() {
 	builder.ResourceBuilder("aws_s3_access_point", blockName, promptOrder, selectOrder, resourceBlock)
 }
 
+func AWSS3AccountPublicAccessBlockPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["account_id"] = types.TfPrompt{
+		Label: "Enter account_id:\n(Optional) AWS account ID to configure. Defaults to " +
+			"\nautomatically determined account ID of the Terraform AWS provider.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "account_id")
+
+	prompts["block_public_acls"] = types.TfPrompt{
+		Label: "Enter block_public_acls:\n(Optional) Whether Amazon S3 should block public ACLs for buckets in this account. " +
+			"\nDefaults to false. Enabling this setting does not affect existing policies or ACLs. " +
+			"\nWhen set to true causes the following behavior:\n\n    PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.\n    PUT Object calls will fail if the request includes an object ACL.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "block_public_acls")
+
+	prompts["block_public_policy"] = types.TfPrompt{
+		Label: "Enter block_public_policy:\n(Optional) Whether Amazon S3 should block public bucket policies for buckets in this account. " +
+			"\nDefaults to false. Enabling this setting does not affect existing bucket policies. " +
+			"\nWhen set to true causes Amazon S3 to:\n\n    Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "block_public_policy")
+
+	prompts["ignore_public_acls"] = types.TfPrompt{
+		Label: "Enter ignore_public_acls:\n(Optional) Whether Amazon S3 should ignore public ACLs for buckets in this account. Defaults to false. " +
+			"\nEnabling this setting does not affect the persistence of any existing ACLs and doesn't prevent new " +
+			"\npublic ACLs from being set. When set to true causes Amazon S3 to:\n\n    Ignore all public ACLs on buckets in this account and any objects that they contain.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ignore_public_acls")
+
+	prompts["restrict_public_buckets"] = types.TfPrompt{
+		Label: "Enter restrict_public_buckets:\n(Optional) Whether Amazon S3 should restrict public bucket policies for buckets in this account. " +
+			"\nDefaults to false. Enabling this setting does not affect previously stored bucket policies, " +
+			"\nexcept that public and cross-account access within any public bucket policy, " +
+			"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    Only the bucket owner and AWS Services can access buckets with public policies.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "restrict_public_buckets")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_s3_account_public_access_block", blockName, promptOrder, nil, resourceBlock)
+}
+
 func AWSS3BucketPrompt() {
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")

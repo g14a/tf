@@ -332,6 +332,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
 		resource_prompts.AWSS3AccessPointPrompt()
+	case "aws_s3_account_public_access_block":
+		resource_prompts.AWSS3AccountPublicAccessBlockPrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":
