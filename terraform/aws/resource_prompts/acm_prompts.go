@@ -99,7 +99,7 @@ func AWSACMCertificatePrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
+		builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 		return
 	}
 
@@ -160,7 +160,7 @@ func AWSACMCertificatePrompt() {
 
 	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-1:], nil, tagsPrompt, nil)
 
-	builder.ResourceBuilder("aws_acm_certificate", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_acm_certificate", blockName, resourceBlock)
 }
 
 func AWSACMPCACertificatePrompt() {
@@ -208,6 +208,6 @@ func AWSACMPCACertificatePrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	builder.ResourceBuilder("aws_acmpca_certificate_authority", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_acmpca_certificate_authority", blockName, resourceBlock)
 
 }

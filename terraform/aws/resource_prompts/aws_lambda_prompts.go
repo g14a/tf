@@ -56,7 +56,7 @@ func AWSLambdaAliasPrompt() {
 	}
 	promptOrder = append(promptOrder, "function_version")
 
-	builder.ResourceBuilder("aws_lambda_alias", blockName, promptOrder, nil, builder.PSOrder(promptOrder, nil, prompts, nil))
+	builder.ResourceBuilder("aws_lambda_alias", blockName, builder.PSOrder(promptOrder, nil, prompts, nil))
 }
 
 func AWSLambdaCodeSigningConfigPrompt() {
@@ -122,7 +122,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 
 	resourceBlock["allowed_publishers"] = builder.NestedPSOrder(nestedPromptOrder, nil, allowedPublishersPrompt, nil)
 
-	builder.ResourceBuilder("aws_lambda_code_signing_config", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_code_signing_config", blockName, resourceBlock)
 }
 
 func AWSLambdaEventSourceMappingPrompt() {
@@ -257,7 +257,7 @@ func AWSLambdaEventSourceMappingPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	builder.ResourceBuilder("aws_lambda_event_source_mapping", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_event_source_mapping", blockName, resourceBlock)
 
 }
 
@@ -446,7 +446,7 @@ func AWSLambdaFunctionPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_lambda_function", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_lambda_function", blockName, resourceBlock)
 		return
 	}
 
@@ -533,7 +533,7 @@ func AWSLambdaFunctionPrompt() {
 
 	resourceBlock["dead_letter_config"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
 
-	builder.ResourceBuilder("aws_lambda_function", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_function", blockName, resourceBlock)
 }
 
 func AWSLambdaLayerVersionPrompt() {
@@ -676,7 +676,7 @@ func AWSLambdaLayerVersionPrompt() {
 
 	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
 
-	builder.ResourceBuilder("aws_lambda_layer_version", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_layer_version", blockName, resourceBlock)
 }
 
 func AWSLambdaPermissionPrompt() {
@@ -776,7 +776,7 @@ func AWSLambdaPermissionPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_lambda_permission", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_permission", blockName, resourceBlock)
 
 }
 
@@ -821,6 +821,6 @@ func AWSLambdaProvisionedConcurrencyConfigPrompt() {
 	promptOrder = append(promptOrder, "qualifier")
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
-	builder.ResourceBuilder("aws_lambda_provisioned_concurrency_config", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_lambda_provisioned_concurrency_config", blockName, resourceBlock)
 
 }

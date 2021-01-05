@@ -36,7 +36,7 @@ func AWSAPIGatewayAccountPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_account", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_account", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayApiKeyPrompt() {
@@ -88,7 +88,7 @@ func AWSAPIGatewayApiKeyPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_api_key", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_api_key", blockName, resourceBlock)
 }
 
 func AWSAPiGatewayAuthorizer() {
@@ -184,7 +184,7 @@ func AWSAPiGatewayAuthorizer() {
 	selectOrder = append(selectOrder, "type")
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
-	builder.ResourceBuilder("aws_api_gateway_authorizer", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_authorizer", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayBasePathMappingPrompt() {
@@ -237,7 +237,7 @@ func AWSAPIGatewayBasePathMappingPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_base_path_mapping", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_base_path_mapping", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayClientCertificatePrompt() {
@@ -279,7 +279,7 @@ func AWSAPIGatewayClientCertificatePrompt() {
 
 	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, nil, tagsPrompt, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayDeploymentPrompt() {
@@ -391,7 +391,7 @@ func AWSAPIGatewayDeploymentPrompt() {
 
 	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayDocumentationPartPrompt() {
@@ -481,7 +481,7 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 
 	resourceBlock["location"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
 
-	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayDocumentationVersionPrompt() {
@@ -524,7 +524,7 @@ func AWSAPIGatewayDocumentationVersionPrompt() {
 	}
 	promptOrder = append(promptOrder, "description")
 
-	builder.ResourceBuilder("aws_api_gateway_documentation_version", blockName, promptOrder, nil, builder.PSOrder(promptOrder, nil, prompts, nil))
+	builder.ResourceBuilder("aws_api_gateway_documentation_version", blockName, builder.PSOrder(promptOrder, nil, prompts, nil))
 }
 
 // aws_api_gateway_domain_name
@@ -648,7 +648,7 @@ func AWSAPIGatewayDomainNamePrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ProviderBuilder("aws_api_gateway_domain_name", promptOrder, selectOrder, resourceBlock)
+		builder.ProviderBuilder("aws_api_gateway_domain_name", resourceBlock)
 		return
 	}
 
@@ -668,7 +668,7 @@ func AWSAPIGatewayDomainNamePrompt() {
 	selectOrder = append(selectOrder, "endpoint_configuration")
 
 	resourceBlock["endpoint_configuration"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
-	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayGatewayResponsePrompt() {
@@ -727,7 +727,7 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 
 	resourceBlock["response_templates"] = builder.NestedPSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
 
-	builder.ResourceBuilder("aws_api_gateway_account", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_api_gateway_account", blockName, resourceBlock)
 }
 
 func AWSAPIGatewayIntegration() {

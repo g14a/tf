@@ -97,7 +97,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 
 	resourceBlock["appversion_lifecycle"] = builder.NestedPSOrder(nestedPromptOrder, nil, appVersionLifecyclePrompt, nil)
 
-	builder.ResourceBuilder("aws_elastic_beanstalk_application", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_elastic_beanstalk_application", blockName, resourceBlock)
 
 }
 
@@ -177,7 +177,7 @@ func AWSElasticBeanstalkApplicationVersionPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_elastic_beanstalk_application_version", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_elastic_beanstalk_application_version", blockName, resourceBlock)
 
 }
 
@@ -271,5 +271,5 @@ func AWSElasticBeanstalkConfigurationTemplatePrompt() {
 	selectOrder = append(selectOrder, "setting")
 
 	resourceBlock["setting"] = builder.NestedPSOrder(nestedPromptOrder, nil, settingPrompt, nil)
-	builder.ResourceBuilder("aws_elastic_beanstalk_configuration_template", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_elastic_beanstalk_configuration_template", blockName, resourceBlock)
 }

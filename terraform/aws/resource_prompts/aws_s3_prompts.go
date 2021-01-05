@@ -71,7 +71,7 @@ func AWSS3AccessPointPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_s3_access_point", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_s3_access_point", blockName, resourceBlock)
 		return
 	}
 
@@ -142,7 +142,7 @@ func AWSS3AccessPointPrompt() {
 
 	resourceBlock["vpc_configuration"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, vpcConfigPrompt, nil)
 
-	builder.ResourceBuilder("aws_s3_access_point", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_s3_access_point", blockName, resourceBlock)
 }
 
 func AWSS3AccountPublicAccessBlockPrompt() {
@@ -215,7 +215,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_s3_account_public_access_block", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_s3_account_public_access_block", blockName, resourceBlock)
 }
 
 func AWSS3BucketPrompt() {
@@ -287,7 +287,7 @@ func AWSS3BucketPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
+		builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 		return
 	}
 
@@ -428,7 +428,7 @@ func AWSS3BucketPrompt() {
 
 	resourceBlock["logging"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], nil, loggingPrompt, nil)
 
-	builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 }
 
 func AWSS3BucketAnalyticsConfigurationPrompt() {
@@ -463,7 +463,7 @@ func AWSS3BucketAnalyticsConfigurationPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_s3_bucket_analytics_configuration", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_s3_bucket_analytics_configuration", blockName, resourceBlock)
 }
 
 func AWSS3BucketMetricPrompt() {
@@ -510,7 +510,7 @@ func AWSS3BucketMetricPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_s3_bucket_metric", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_s3_bucket_metric", blockName, resourceBlock)
 		return
 	}
 
@@ -531,5 +531,5 @@ func AWSS3BucketMetricPrompt() {
 
 	resourceBlock["filter"] = builder.NestedPSOrder(nestedPromptOrder, nil, filterPrompt, nil)
 
-	builder.ResourceBuilder("aws_s3_bucket_metric", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_s3_bucket_metric", blockName, resourceBlock)
 }

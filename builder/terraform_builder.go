@@ -12,7 +12,7 @@ import (
 	"tf/types"
 )
 
-func ProviderBuilder(provider string, promptOrder, selectOrder []string, providerBlock map[string]interface{}) {
+func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
 	if provider != "" {
@@ -35,7 +35,7 @@ func ProviderBuilder(provider string, promptOrder, selectOrder []string, provide
 	}
 }
 
-func ResourceBuilder(resource, blockName string, promptOrder, selectOrder []string, resourceBlock map[string]interface{}) {
+func ResourceBuilder(resource, blockName string, resourceBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
 	if resource != "" {
@@ -185,77 +185,6 @@ func NestedPSOrder(promptOrder []string, selectOrder []string,
 	return nestedBlock
 }
 
-func infoBuilder(strBuilder *strings.Builder, promptOrder, selectOrder []string, infoBlock map[string]interface{}) strings.Builder {
-	order := append(promptOrder, selectOrder...)
-	for _, o := range order {
-		v := infoBlock[o]
-		if o == "tags" || o == "variables" {
-			strBuilder.WriteString("  " + o + " = {\n")
-			s := repeatingConfig(v.(string))
-			strBuilder.WriteString(s)
-			continue
-		}
-		switch v.(type) {
-		case string:
-			if v.(string) != "" {
-				if govalidator.IsInt(v.(string)) {
-					temp, err := strconv.Atoi(v.(string))
-					if err != nil {
-						log.Fatal(err)
-					}
-					s := fmt.Sprintf("  "+o+"= %d \n", temp)
-					strBuilder.WriteString(s)
-				} else if v.(string) == "true" || v.(string) == "false" {
-					b, err := strconv.ParseBool(v.(string))
-					if err != nil {
-						fmt.Println(err)
-					}
-					s := fmt.Sprintf("  "+o+"= %t \n", b)
-					strBuilder.WriteString(s)
-				} else if strings.HasPrefix(v.(string), "[") && strings.HasSuffix(v.(string), "]") {
-					s := fmt.Sprintf("  " + o + "= " + v.(string) + "\n")
-					strBuilder.WriteString(s)
-				} else {
-					s := fmt.Sprintf("  " + o + "= \"" + v.(string) + "\"\n")
-					strBuilder.WriteString(s)
-				}
-			}
-		case map[string]interface{}:
-			strBuilder.WriteString("  " + o + " {\n")
-			if len(v.(map[string]interface{})) != 0 {
-				for nestedK, i := range v.(map[string]interface{}) {
-					if i.(string) != "" {
-						if govalidator.IsInt(i.(string)) {
-							temp, err := strconv.Atoi(i.(string))
-							if err != nil {
-								log.Fatal(err)
-							}
-							s := fmt.Sprintf("  "+nestedK+" = %d \n", temp)
-							strBuilder.WriteString(s)
-						} else if i.(string) == "true" || i.(string) == "false" {
-							b, err := strconv.ParseBool(i.(string))
-							if err != nil {
-								fmt.Println(err)
-							}
-							s := fmt.Sprintf("  "+nestedK+" = %t \n", b)
-							strBuilder.WriteString(s)
-						} else if strings.HasPrefix(i.(string), "[") && strings.HasSuffix(i.(string), "]") {
-							s := fmt.Sprintf("  " + nestedK + "= " + i.(string) + "\n")
-							strBuilder.WriteString(s)
-						} else {
-							s := fmt.Sprintf("  " + nestedK + " = \"" + i.(string) + "\"\n")
-							strBuilder.WriteString(s)
-						}
-					}
-				}
-			}
-			strBuilder.WriteString("}\n")
-		}
-	}
-
-	return *strBuilder
-}
-
 // tags deal with input such as "k1=v1,k2=v2" and populate it into the tags field of the config
 func repeatingConfig(input string) string {
 	if input != "" {
@@ -269,11 +198,6 @@ func repeatingConfig(input string) string {
 		return rcString.String()
 	}
 	return ""
-}
-
-func terraformExists() bool {
-	_, err := exec.LookPath("terraform")
-	return err == nil
 }
 
 func walk(strBuilder *strings.Builder, v reflect.Value) {
@@ -296,6 +220,8 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 				strBuilder.WriteString(fmt.Sprintf("%s = %d\n", k, v.MapIndex(k)))
 			case strings.Contains(s, "bool"):
 				strBuilder.WriteString(fmt.Sprintf("%s = %t\n", k, v.MapIndex(k)))
+			case strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]"):
+				strBuilder.WriteString(fmt.Sprintf("%s = %s\n", k, v.MapIndex(k)))
 			default:
 				strBuilder.WriteString(fmt.Sprintf("%s = \"%s\"\n", k, v.MapIndex(k)))
 			}
@@ -308,4 +234,9 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 func recursiveBuilder(str *strings.Builder, v reflect.Value) strings.Builder {
 	walk(str, v)
 	return *str
+}
+
+func terraformExists() bool {
+	_, err := exec.LookPath("terraform")
+	return err == nil
 }

@@ -123,7 +123,7 @@ func AWSDBInstancePrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	builder.ResourceBuilder("aws_db_instance", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_instance", blockName, resourceBlock)
 }
 
 func AWSDBClusterSnapshotPrompt() {
@@ -168,7 +168,7 @@ func AWSDBClusterSnapshotPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_db_cluster_snapshot", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_db_cluster_snapshot", blockName, resourceBlock)
 }
 
 func AWSDBEventSubscriptionPrompt() {
@@ -292,7 +292,7 @@ func AWSDBEventSubscriptionPrompt() {
 
 	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
 
-	builder.ResourceBuilder("aws_db_event_subscription", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_event_subscription", blockName, resourceBlock)
 }
 
 func AWSDBInstanceRoleAssociationPrompt() {
@@ -339,7 +339,7 @@ func AWSDBInstanceRoleAssociationPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_db_instance_role_association", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_db_instance_role_association", blockName, resourceBlock)
 
 }
 
@@ -426,7 +426,7 @@ func AWSDBOptionGroupPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_db_option_group", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_db_option_group", blockName, resourceBlock)
 		return
 	}
 
@@ -480,7 +480,7 @@ func AWSDBOptionGroupPrompt() {
 
 	resourceBlock["option"] = builder.NestedPSOrder(nestedPromptOrder, nil, optionPrompt, nil)
 
-	builder.ResourceBuilder("aws_db_option_group", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_option_group", blockName, resourceBlock)
 
 }
 
@@ -556,7 +556,7 @@ func AWSDBParameterGroupPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_db_parameter_group", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_db_parameter_group", blockName, resourceBlock)
 		return
 	}
 
@@ -590,7 +590,7 @@ func AWSDBParameterGroupPrompt() {
 
 	resourceBlock["parameter"] = builder.NestedPSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
 
-	builder.ResourceBuilder("aws_db_parameter_group", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_parameter_group", blockName, resourceBlock)
 }
 
 func AWSDbProxyPrompt() {
@@ -712,7 +712,7 @@ func AWSDbProxyPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_db_proxy", blockName, promptOrder, selectOrder, resourceBlock)
+		builder.ResourceBuilder("aws_db_proxy", blockName, resourceBlock)
 		return
 	}
 
@@ -771,7 +771,7 @@ func AWSDbProxyPrompt() {
 
 	resourceBlock["auth"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, authPrompt, authSelect)
 
-	builder.ResourceBuilder("aws_db_proxy", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_proxy", blockName, resourceBlock)
 }
 
 func AWSDBProxyDefaultTargetGroupPrompt() {
@@ -863,7 +863,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 
 	resourceBlock["connection_pool_config"] = builder.NestedPSOrder(nestedPromptOrder, nil, connectionPoolConfigPrompt, nil)
 
-	builder.ResourceBuilder("aws_db_proxy_default_target_group", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_proxy_default_target_group", blockName, resourceBlock)
 
 }
 
@@ -919,7 +919,7 @@ func AWSDBProxyTargetPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_db_proxy_target", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_db_proxy_target", blockName, resourceBlock)
 
 }
 
@@ -1008,7 +1008,7 @@ func AWSDBSecurityGroupPrompt() {
 
 	resourceBlock["ingress"] = builder.NestedPSOrder(nestedPromptOrder, nil, ingressPrompt, nil)
 
-	builder.ResourceBuilder("aws_db_security_group", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_db_security_group", blockName, resourceBlock)
 
 }
 
@@ -1055,7 +1055,7 @@ func AWSDBSnapshotPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_db_snapshot", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_db_snapshot", blockName, resourceBlock)
 }
 
 func AWSDBSubnetGroupPrompt() {
@@ -1119,5 +1119,5 @@ func AWSDBSubnetGroupPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_db_subnet_group", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_db_subnet_group", blockName, resourceBlock)
 }

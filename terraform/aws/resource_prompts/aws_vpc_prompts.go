@@ -57,7 +57,7 @@ func AWSCustomerGatewayPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_customer_gateway", blockName, promptOrder, nil, resourceBlock)
+	builder.ResourceBuilder("aws_customer_gateway", blockName, resourceBlock)
 }
 
 func AWSDefaultRouteTablePrompt() {
@@ -113,7 +113,7 @@ func AWSDefaultRouteTablePrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_default_route_table", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_default_route_table", blockName, resourceBlock)
 		return
 	}
 
@@ -203,7 +203,7 @@ func AWSDefaultRouteTablePrompt() {
 
 	resourceBlock["route"] = builder.NestedPSOrder(nestedPromptOrder, nil, routePrompt, nil)
 
-	builder.ResourceBuilder("aws_default_route_table", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_default_route_table", blockName, resourceBlock)
 }
 
 func AWSVPCPrompt() {
@@ -319,7 +319,7 @@ func AWSVPCPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
+		builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
 		return
 	}
 
@@ -366,5 +366,5 @@ func AWSVPCPrompt() {
 
 	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
 
-	builder.ResourceBuilder("aws_vpc", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
 }

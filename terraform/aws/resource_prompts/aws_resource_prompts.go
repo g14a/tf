@@ -140,7 +140,7 @@ func AWSInstancePrompt() {
 	promptOrder = append(promptOrder, "tags")
 
 	prompts["associate_public_ip_address"] = types.TfPrompt{
-		Label: "Enter associate_public_ip_address:\n(Optional)Associate a public ip address with an instance in a VPC.",
+		Label: "Enter associate_public_ip_address(true/false):\n(Optional)Associate a public ip address with an instance in a VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
 			Validate: utils.BoolValidator,
@@ -171,7 +171,7 @@ func AWSInstancePrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
-	builder.ResourceBuilder("aws_instance", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_instance", blockName, resourceBlock)
 }
 
 func AWSELBPrompt() {
@@ -254,7 +254,7 @@ func AWSELBPrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_s3_bucket", blockName, promptOrder, nil, resourceBlock)
+		builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 		return
 	}
 
@@ -395,5 +395,5 @@ func AWSELBPrompt() {
 
 	resourceBlock["health_check"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, healthCheckPrompt, nil)
 
-	builder.ResourceBuilder("aws_elb", blockName, promptOrder, selectOrder, resourceBlock)
+	builder.ResourceBuilder("aws_elb", blockName, resourceBlock)
 }
