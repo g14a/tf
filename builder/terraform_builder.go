@@ -5,6 +5,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"log"
 	"os/exec"
+	"reflect"
 	"strconv"
 	"strings"
 	"tf/file"
@@ -16,7 +17,7 @@ func ProviderBuilder(provider string, promptOrder, selectOrder []string, provide
 
 	if provider != "" {
 		providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
-		providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, providerBlock)
+		providerInfo = recursiveBuilder(&providerInfo, reflect.ValueOf(providerBlock))
 		providerInfo.WriteString("}\n")
 
 		_, err := file.TerraformFile.WriteString(providerInfo.String())
@@ -39,8 +40,7 @@ func ResourceBuilder(resource, blockName string, promptOrder, selectOrder []stri
 
 	if resource != "" {
 		providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
-		providerInfo = infoBuilder(&providerInfo, promptOrder, selectOrder, resourceBlock)
-		providerInfo.WriteString("}\n")
+		providerInfo = recursiveBuilder(&providerInfo, reflect.ValueOf(resourceBlock))
 
 		_, err := file.TerraformFile.WriteString(providerInfo.String())
 		if err != nil {
@@ -69,7 +69,24 @@ func PSOrder(promptOrder, selectOrder []string,
 			if err != nil {
 				fmt.Println(err)
 			}
-			resourceBlock[v] = value
+			if value != "" {
+				switch {
+				case govalidator.IsInt(value):
+					intValue, err := strconv.Atoi(value)
+					if err != nil {
+						log.Fatal(err)
+					}
+					resourceBlock[v] = intValue
+				case value == "true" || value == "false":
+					boolValue, err := strconv.ParseBool(value)
+					if err != nil {
+						fmt.Println(err)
+					}
+					resourceBlock[v] = boolValue
+				default:
+					resourceBlock[v] = value
+				}
+			}
 		}
 	}
 
@@ -80,7 +97,24 @@ func PSOrder(promptOrder, selectOrder []string,
 			if err != nil {
 				fmt.Println(err)
 			}
-			resourceBlock[v] = value
+			if value != "" {
+				switch {
+				case govalidator.IsInt(value):
+					intValue, err := strconv.Atoi(value)
+					if err != nil {
+						log.Fatal(err)
+					}
+					resourceBlock[v] = intValue
+				case value == "true" || value == "false":
+					boolValue, err := strconv.ParseBool(value)
+					if err != nil {
+						fmt.Println(err)
+					}
+					resourceBlock[v] = boolValue
+				default:
+					resourceBlock[v] = value
+				}
+			}
 		}
 	}
 
@@ -99,7 +133,24 @@ func NestedPSOrder(promptOrder []string, selectOrder []string,
 			if err != nil {
 				fmt.Println(err)
 			}
-			nestedBlock[v] = value
+			if value != "" {
+				switch {
+				case govalidator.IsInt(value):
+					intValue, err := strconv.Atoi(value)
+					if err != nil {
+						log.Fatal(err)
+					}
+					nestedBlock[v] = intValue
+				case value == "true" || value == "false":
+					boolValue, err := strconv.ParseBool(value)
+					if err != nil {
+						fmt.Println(err)
+					}
+					nestedBlock[v] = boolValue
+				default:
+					nestedBlock[v] = value
+				}
+			}
 		}
 	}
 
@@ -110,7 +161,24 @@ func NestedPSOrder(promptOrder []string, selectOrder []string,
 			if err != nil {
 				fmt.Println(err)
 			}
-			nestedBlock[v] = value
+			if value != "" {
+				switch {
+				case govalidator.IsInt(value):
+					intValue, err := strconv.Atoi(value)
+					if err != nil {
+						log.Fatal(err)
+					}
+					nestedBlock[v] = intValue
+				case value == "true" || value == "false":
+					boolValue, err := strconv.ParseBool(value)
+					if err != nil {
+						fmt.Println(err)
+					}
+					nestedBlock[v] = boolValue
+				default:
+					nestedBlock[v] = value
+				}
+			}
 		}
 	}
 
@@ -195,7 +263,7 @@ func repeatingConfig(input string) string {
 		var rcString strings.Builder
 		for _, v := range rc {
 			v := strings.Split(v, "=")
-			rcString.WriteString(v[0] + " = \"" + v[1] + "\"\n")
+			rcString.WriteString("  " + v[0] + " = \"" + v[1] + "\"\n")
 		}
 		rcString.WriteString("}\n")
 		return rcString.String()
@@ -206,4 +274,38 @@ func repeatingConfig(input string) string {
 func terraformExists() bool {
 	_, err := exec.LookPath("terraform")
 	return err == nil
+}
+
+func walk(strBuilder *strings.Builder, v reflect.Value) {
+
+	for v.Kind() == reflect.Ptr || v.Kind() == reflect.Interface {
+		v = v.Elem()
+	}
+	switch v.Kind() {
+	case reflect.Map:
+		for _, k := range v.MapKeys() {
+			s := fmt.Sprintf("%s", v.MapIndex(k))
+			switch {
+			case k.String() == "tags" || k.String() == "variables":
+				temp := fmt.Sprintf("%s = %s", k, "{\n")
+				strBuilder.WriteString(temp)
+				strBuilder.WriteString(repeatingConfig(s))
+			case strings.HasPrefix(s, "map"):
+				strBuilder.WriteString(fmt.Sprintf("%s %s", k, "{\n"))
+			case strings.Contains(s, "int"):
+				strBuilder.WriteString(fmt.Sprintf("%s = %d\n", k, v.MapIndex(k)))
+			case strings.Contains(s, "bool"):
+				strBuilder.WriteString(fmt.Sprintf("%s = %t\n", k, v.MapIndex(k)))
+			default:
+				strBuilder.WriteString(fmt.Sprintf("%s = \"%s\"\n", k, v.MapIndex(k)))
+			}
+			walk(strBuilder, v.MapIndex(k))
+		}
+		strBuilder.WriteString("}\n")
+	}
+}
+
+func recursiveBuilder(str *strings.Builder, v reflect.Value) strings.Builder {
+	walk(str, v)
+	return *str
 }
