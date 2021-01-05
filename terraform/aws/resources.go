@@ -338,6 +338,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSS3BucketAnalyticsConfigurationPrompt()
 	case "aws_s3_bucket_metric":
 		resource_prompts.AWSS3BucketMetricPrompt()
+	case "aws_s3_bucket_notification":
+		resource_prompts.AWSS3BucketNotificationPrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":

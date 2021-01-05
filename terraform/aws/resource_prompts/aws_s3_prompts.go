@@ -533,3 +533,191 @@ func AWSS3BucketMetricPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket_metric", blockName, resourceBlock)
 }
+
+func AWSS3BucketNotificationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The name of the bucket to put notification configuration.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like topic/queue/lambda_function etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_s3_bucket_notification", blockName, resourceBlock)
+		return
+	}
+
+	topicPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	color.Green("\nEnter topic:\n(Optional) The notification configuration to SNS Topic (documented below)." +
+		"\nThe topic notification configuration supports the following:" +
+		"\n1.id\n2.topic_arn\n3.events\n4.filter_prefix\n5.filter_suffix\n")
+
+	topicPrompt["id"] = types.TfPrompt{
+		Label: "Enter id:\n(Optional) Specifies unique identifier for each of the notification configurations.\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "id")
+
+	topicPrompt["topic_arn"] = types.TfPrompt{
+		Label: "Enter topic_arn:\n(Required) Specifies Amazon SNS topic ARN.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "topic_arn")
+
+	topicPrompt["events"] = types.TfPrompt{
+		Label: "Enter events:\n(Required) Specifies event for which to send notifications.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "events")
+
+	topicPrompt["filter_prefix"] = types.TfPrompt{
+		Label: "Enter filter_prefix:\n(Optional) Specifies object key name prefix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_prefix")
+
+	topicPrompt["filter_suffix"] = types.TfPrompt{
+		Label: "Enter filter_suffix:\n(Optional) Specifies object key name suffix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
+
+	resourceBlock["topic"] = builder.NestedPSOrder(nestedPromptOrder, nil, topicPrompt, nil)
+
+	color.Green("\nEnter queue:\n(Optional) The notification configuration to SQS Queue (documented below)." +
+		"\nThe queue notification configuration supports the following:" +
+		"\n1.id\n2.queue_arn\n3.events\n4.filter_prefix\n5.filter_suffix\n")
+
+	queuePrompt := map[string]types.TfPrompt{}
+
+	queuePrompt["id"] = types.TfPrompt{
+		Label: "Enter id:\n(Optional) Specifies unique identifier for each of the notification configurations.\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "id")
+
+	queuePrompt["queue_arn"] = types.TfPrompt{
+		Label: "Enter queue_arn:\n(Required) Specifies Amazon SQS queue ARN.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "queue_arn")
+
+	queuePrompt["events"] = types.TfPrompt{
+		Label: "Enter events:\n(Required) Specifies event for which to send notifications.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "events")
+
+	queuePrompt["filter_prefix"] = types.TfPrompt{
+		Label: "Enter filter_prefix:\n(Optional) Specifies object key name prefix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_prefix")
+
+	queuePrompt["filter_suffix"] = types.TfPrompt{
+		Label: "Enter filter_suffix:\n(Optional) Specifies object key name suffix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
+
+	resourceBlock["queue"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, queuePrompt, nil)
+
+	color.Green("\nEnter lambda_function:\n(Optional, Multiple) Used to configure notifications to a Lambda Function" +
+		"\nThe queue notification configuration supports the following:" +
+		"\n1.id\n2.lambda_function_arn\n3.events\n4.filter_prefix\n5.filter_suffix\n")
+
+	lambdaFunctionPrompt := map[string]types.TfPrompt{}
+
+	lambdaFunctionPrompt["id"] = types.TfPrompt{
+		Label: "Enter id:\n(Optional) Specifies unique identifier for each of the notification configurations.\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "id")
+
+	lambdaFunctionPrompt["lambda_function_arn"] = types.TfPrompt{
+		Label: "Enter lambda_function_arn:\n(Required) Specifies Amazon Lambda function ARN.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "lambda_function_arn")
+
+	lambdaFunctionPrompt["events"] = types.TfPrompt{
+		Label: "Enter events:\n(Required) Specifies event for which to send notifications.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "events")
+
+	lambdaFunctionPrompt["filter_prefix"] = types.TfPrompt{
+		Label: "Enter filter_prefix:\n(Optional) Specifies object key name prefix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_prefix")
+
+	lambdaFunctionPrompt["filter_suffix"] = types.TfPrompt{
+		Label: "Enter filter_suffix:\n(Optional) Specifies object key name suffix.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
+
+	resourceBlock["lambda_function"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, lambdaFunctionPrompt, nil)
+
+	builder.ResourceBuilder("aws_s3_bucket_notification", blockName, resourceBlock)
+}
