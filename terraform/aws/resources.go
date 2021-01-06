@@ -342,6 +342,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSS3BucketNotificationPrompt()
 	case "aws_s3_bucket_object":
 		resource_prompts.AWSS3BucketObjectPrompt()
+	case "aws_s3_bucket_ownership_controls":
+		resource_prompts.AWSS3BucketOwnershipControlsPrompt()
+	case "aws_s3_bucket_public_access_block":
+		resource_prompts.AWSS3BucketPublicAccessBlockPrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":

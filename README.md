@@ -17,7 +17,7 @@ Boredom in Covid-19
 * In place documentation of fields
 * One level nested configuration
 * Less development overhead(I guess :blush:)
-* Currently supports AWS(EC2, S3, ELB for now)
+* Currently supports AWS S3, RDS, ELB, Lambda, VPC
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
 

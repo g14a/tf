@@ -936,3 +936,126 @@ func AWSS3BucketObjectPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket_object", blockName, resourceBlock)
 }
+
+func AWSS3BucketOwnershipControlsPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The name of the bucket that you want to associate this access point with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like rule [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_s3_bucket_ownership_controls", blockName, resourceBlock)
+		return
+	}
+
+	roleSelect := map[string]types.TfSelect{}
+	var nestedSelectOrder []string
+	roleSelect["object_ownership"] = types.TfSelect{
+		Label: "Enter object_ownership:\n(Optional) Object ownership.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"BucketOwnerPreferred","ObjectWriter"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "object_ownership")
+
+	resourceBlock["rule"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, roleSelect)
+
+	builder.ResourceBuilder("aws_s3_bucket_ownership_controls", blockName, resourceBlock)
+}
+
+func AWSS3BucketPublicAccessBlockPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["block_public_acls"] = types.TfPrompt{
+		Label: "Enter block_public_acls(true/false):\nOptional) Whether Amazon S3 should block public ACLs for buckets in this account. " +
+			"\nDefaults to true. Enabling this setting does not affect existing policies or ACLs. " +
+			"\nWhen set to true causes the following behavior:\n\n    " +
+			"PUT Bucket acl and PUT Object acl calls fail if the specified ACL is public.\n    " +
+			"PUT Object calls fail if the request includes a public ACL.\n    " +
+			"PUT Bucket calls fail if the request includes a public ACL.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "block_public_acls")
+
+	prompts["block_public_policy"] = types.TfPrompt{
+		Label: "Enter block_public_policy(true/false):\n(Optional) Whether Amazon S3 should block public bucket policies for buckets in this account. " +
+			"\nDefaults to true. Enabling this setting does not affect existing bucket policies. " +
+			"\nWhen set to true causes Amazon S3 to:\n\n    Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "block_public_policy")
+
+	prompts["ignore_public_acls"] = types.TfPrompt{
+		Label: "Enter ignore_public_acls(true/false):\n(Optional) Whether Amazon S3 should ignore public ACLs for buckets in this account. " +
+			"\nDefaults to true. Enabling this setting does not affect the persistence of any " +
+			"\nexisting ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:\n\n    Ignore all public ACLs on buckets in this account and any objects that they contain.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ignore_public_acls")
+
+	prompts["restrict_public_buckets"] = types.TfPrompt{
+		Label: "Enter restrict_public_buckets(true/false):\n(Optional) Whether Amazon S3 should restrict public bucket policies for buckets " +
+			"\nin this account. Defaults to true. Enabling this setting does not affect previously stored " +
+			"\nbucket policies, except that public and cross-account access within any public bucket policy, " +
+			"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    Only the bucket owner and AWS Services can access buckets with public policies.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "restrict_public_buckets")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_s3_bucket_public_access_block", blockName, resourceBlock)
+}
