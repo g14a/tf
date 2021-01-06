@@ -210,7 +210,7 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 		for _, k := range v.MapKeys() {
 			s := fmt.Sprintf("%s", v.MapIndex(k))
 			switch {
-			case k.String() == "tags" || k.String() == "variables":
+			case k.String() == "tags" || k.String() == "variables" || k.String() == "metadata":
 				temp := fmt.Sprintf("%s = %s", k, "{\n")
 				strBuilder.WriteString(temp)
 				strBuilder.WriteString(repeatingConfig(s))

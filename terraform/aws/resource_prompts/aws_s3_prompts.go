@@ -721,3 +721,218 @@ func AWSS3BucketNotificationPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket_notification", blockName, resourceBlock)
 }
+
+func AWSS3BucketObjectPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The name of the bucket to put the file in. Alternatively, an S3 access point ARN can be specified.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	prompts["key"] = types.TfPrompt{
+		Label: "Enter key:\n(Required) The name of the object once it is in the bucket.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "key")
+
+	prompts["source"] = types.TfPrompt{
+		Label: "Enter source:\n(Optional, conflicts with content and content_base64) " +
+			"\nThe path to a file that will be read and uploaded as raw bytes for the object content.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source")
+
+	prompts["content"] = types.TfPrompt{
+		Label: "Enter content:\n(Optional, conflicts with source and content_base64) Literal string " +
+			"\nvalue to use as the object content, which will be uploaded as UTF-8-encoded text.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content")
+
+	prompts["content_base64"] = types.TfPrompt{
+		Label: "Enter content_base64:\n(Optional, conflicts with source and content) Base64-encoded data that will be decoded and uploaded as raw bytes for the object content. This allows safely uploading non-UTF8 binary data, but is recommended only for small content such as the result of the gzipbase64 function with small text strings. For larger objects, use source to stream the content from a disk file.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content_base64")
+
+	prompts["cache_control"] = types.TfPrompt{
+		Label: "Enter cache_control:\n(Optional) Specifies caching behavior along the request/reply chain. " +
+			"\nCheckout http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9 for further details.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "cache_control")
+
+	prompts["content_disposition"] = types.TfPrompt{
+		Label: "Enter content_disposition:\n(Optional) Specifies presentational information for the object. " +
+			"\nCheckout http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.5.1 for further information.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content_disposition")
+
+	prompts["content_encoding"] = types.TfPrompt{
+		Label: "Enter content_encoding:\n(Optional) Specifies what content encodings have been applied " +
+			"\nto the object and thus what decoding mechanisms must be applied to obtain the " +
+			"\nmedia-type referenced by the Content-Type header field. " +
+			"\nCheckout http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11 for further information.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content_encoding")
+
+	prompts["content_language"] = types.TfPrompt{
+		Label: "Enter content_language:\n(Optional) The language the content is in e.g. en-US or en-GB.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content_language")
+
+	prompts["content_type"] = types.TfPrompt{
+		Label: "Enter content_type:\n(Optional) A standard MIME type describing the format of the object data, e.g. application/octet-stream. " +
+			"\nAll Valid MIME Types are valid for this input.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "content_type")
+
+	prompts["website_redirect"] = types.TfPrompt{
+		Label: "Enter website_redirect:\n(Optional) Specifies a target URL for website redirect." +
+			"\nCheckout http://docs.aws.amazon.com/AmazonS3/latest/dev/how-to-page-redirect.html",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "website_redirect")
+
+	prompts["etag"] = types.TfPrompt{
+		Label: "Enter etag:\n(Optional) Used to trigger updates. The only meaningful value is " +
+			"\n${filemd5(\"path/to/file\")} (Terraform 0.11.12 or later) or ${md5(file(\"path/to/file\"))} (Terraform 0.11.11 or earlier). " +
+			"\nThis attribute is not compatible with KMS encryption, kms_key_id or server_side_encryption = \"aws:kms\"",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "etag")
+
+	prompts["kms_key_id"] = types.TfPrompt{
+		Label: "Enter kms_key_id:\n(Optional) Amazon Resource Name (ARN) of the KMS Key to use for object encryption. " +
+			"\nIf the S3 Bucket has server-side encryption enabled, that value will automatically be used. " +
+			"\nIf referencing the aws_kms_key resource, use the arn attribute. If referencing the " +
+			"\naws_kms_alias data source or resource, use the target_key_arn attribute. " +
+			"\nTerraform will only perform drift detection if a configuration value is provided.\n",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "kms_key_id")
+
+	prompts["metadata"] = types.TfPrompt{
+		Label: "Enter metadata: e.g.k1=v1,k2=v2\n(Optional) A map of keys/values to provision metadata (will be automatically prefixed by x-amz-meta-).",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "metadata")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the object.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["force_destroy"] = types.TfPrompt{
+		Label: "Enter force_destroy(true/false):\n(Optional) Allow the object to be deleted by removing any legal hold on any object version. " +
+			"\nDefault is false. This value should be set to true only if the bucket has S3 object lock enabled.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "force_destroy")
+
+	prompts["object_lock_retain_until_date"] = types.TfPrompt{
+		Label: "Enter object_lock_retain_until_date:\n(Optional) The date and time, in RFC3339 format, when this object's object lock will expire." +
+			"\nCheckout https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-retention-periods",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "object_lock_retain_until_date")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["acl"] = types.TfSelect{
+		Label: "Enter acl:\n(Optional) The canned ACL to apply. Defaults to private.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"private","public-read","public-read-write","aws-exec-read","authenticated-read","bucket-owner-read","bucket-owner-full-control"},
+		},
+	}
+	selectOrder = append(selectOrder, "acl")
+
+	selects["storage_class"] = types.TfSelect{
+		Label: "Enter storage_class:\n(Optional) Specifies the desired Storage Class for the object. Can be either \"STANDARD\", \"REDUCED_REDUNDANCY\", \"ONEZONE_IA\", \"INTELLIGENT_TIERING\", \"GLACIER\", \"DEEP_ARCHIVE\", or \"STANDARD_IA\". Defaults to \"STANDARD",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"STANDARD","REDUCED_REDUNDANCY","ONEZONE_IA","INTELLIGENT_TIERING","GLACIER","DEEP_ARCHIVE","STANDARD_IA"},
+		},
+	}
+	selectOrder = append(selectOrder, "storage_class")
+
+	selects["object_lock_legal_hold_status"] = types.TfSelect{
+		Label: "Enter object_lock_legal_hold_status:\n(Optional) The legal hold status that you want to apply to the specified object. Valid values are ON and OFF." +
+			"\nCheckout https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-legal-holds",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"ON","OFF"},
+		},
+	}
+	selectOrder = append(selectOrder, "object_lock_legal_hold_status")
+
+	selects["object_lock_mode"] = types.TfSelect{
+		Label: "Enter object_lock_mode:\n(Optional) The object lock retention mode that you want to apply to this object.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"ON","OFF"},
+		},
+	}
+	selectOrder = append(selectOrder, "object_lock_mode")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_s3_bucket_object", blockName, resourceBlock)
+}
