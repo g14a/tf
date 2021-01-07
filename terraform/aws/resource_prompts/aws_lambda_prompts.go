@@ -104,7 +104,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "untrusted_artifact_on_deployment")
 	selectOrder = append(selectOrder, "policies")
 
-	resourceBlock["policies"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, policiesSelect)
+	resourceBlock["policies"] = builder.PSOrder(nil, nestedSelectOrder, nil, policiesSelect)
 
 	allowedPublishersPrompt := map[string]types.TfPrompt{}
 
@@ -120,7 +120,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "signing_profile_version_arns")
 	selectOrder = append(selectOrder, "allowed_publishers")
 
-	resourceBlock["allowed_publishers"] = builder.NestedPSOrder(nestedPromptOrder, nil, allowedPublishersPrompt, nil)
+	resourceBlock["allowed_publishers"] = builder.PSOrder(nestedPromptOrder, nil, allowedPublishersPrompt, nil)
 
 	builder.ResourceBuilder("aws_lambda_code_signing_config", blockName, resourceBlock)
 }
@@ -470,7 +470,7 @@ func AWSLambdaFunctionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "subnet_ids")
 	selectOrder = append(selectOrder, "vpc_config")
 
-	resourceBlock["vpc_config"] = builder.NestedPSOrder(nestedPromptOrder, nil, vpcConfigPrompt, nil)
+	resourceBlock["vpc_config"] = builder.PSOrder(nestedPromptOrder, nil, vpcConfigPrompt, nil)
 
 	fileSystemConfigPrompt := map[string]types.TfPrompt{}
 
@@ -491,7 +491,7 @@ func AWSLambdaFunctionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "local_mount_path")
 	selectOrder = append(selectOrder, "file_system_config")
 
-	resourceBlock["file_system_config"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, fileSystemConfigPrompt, nil)
+	resourceBlock["file_system_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, fileSystemConfigPrompt, nil)
 
 	timeoutPrompt := map[string]types.TfPrompt{}
 	timeoutPrompt["create"] = types.TfPrompt{
@@ -503,7 +503,7 @@ func AWSLambdaFunctionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "create")
 	selectOrder = append(selectOrder, "timeout")
 
-	resourceBlock["timeout"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, fileSystemConfigPrompt, nil)
+	resourceBlock["timeout"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, fileSystemConfigPrompt, nil)
 
 	tracingConfigPrompt := map[string]types.TfPrompt{}
 	tracingConfigPrompt["mode"] = types.TfPrompt{
@@ -518,7 +518,7 @@ func AWSLambdaFunctionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "mode")
 	selectOrder = append(selectOrder, "tracing_config")
 
-	resourceBlock["tracing_config"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, tracingConfigPrompt, nil)
+	resourceBlock["tracing_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, tracingConfigPrompt, nil)
 
 	deadLetterConfigPrompt := map[string]types.TfPrompt{}
 
@@ -531,7 +531,7 @@ func AWSLambdaFunctionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "target_arn")
 	selectOrder = append(selectOrder, "dead_letter_config")
 
-	resourceBlock["dead_letter_config"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
+	resourceBlock["dead_letter_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
 
 	builder.ResourceBuilder("aws_lambda_function", blockName, resourceBlock)
 }
@@ -674,7 +674,7 @@ func AWSLambdaLayerVersionPrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "ignore_changes")
 	selectOrder = append(selectOrder, "lifecycle")
 
-	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
+	resourceBlock["lifecycle"] = builder.PSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_lambda_layer_version", blockName, resourceBlock)
 }

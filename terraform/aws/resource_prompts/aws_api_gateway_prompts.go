@@ -277,7 +277,7 @@ func AWSAPIGatewayClientCertificatePrompt() {
 	nestedOrder = append(nestedOrder, "Name")
 	selectOrder = append(selectOrder, "tags")
 
-	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder, nil, tagsPrompt, nil)
+	resourceBlock["tags"] = builder.PSOrder(nestedOrder, nil, tagsPrompt, nil)
 
 	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, resourceBlock)
 }
@@ -389,7 +389,7 @@ func AWSAPIGatewayDeploymentPrompt() {
 	nestedOrder = append(nestedOrder, "ignore_changes")
 	selectOrder = append(selectOrder, "lifecycle")
 
-	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
+	resourceBlock["lifecycle"] = builder.PSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, resourceBlock)
 }
@@ -479,7 +479,7 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "type")
 	selectOrder = append(selectOrder, "location")
 
-	resourceBlock["location"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
+	resourceBlock["location"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
 
 	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, resourceBlock)
 }
@@ -667,7 +667,7 @@ func AWSAPIGatewayDomainNamePrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "types")
 	selectOrder = append(selectOrder, "endpoint_configuration")
 
-	resourceBlock["endpoint_configuration"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
+	resourceBlock["endpoint_configuration"] = builder.PSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
 	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, resourceBlock)
 }
 
@@ -725,7 +725,7 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "application/json")
 	selectOrder = append(selectOrder, "response_templates")
 
-	resourceBlock["response_templates"] = builder.NestedPSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
+	resourceBlock["response_templates"] = builder.PSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
 
 	builder.ResourceBuilder("aws_api_gateway_account", blockName, resourceBlock)
 }

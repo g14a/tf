@@ -144,7 +144,7 @@ func AWSACMCertificatePrompt() {
 	nestedOrder = append(nestedOrder, "ignore_changes")
 	selectOrder = append(selectOrder, "lifecycle")
 
-	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedOrder, nil, lifecyclePrompt, nil)
+	resourceBlock["lifecycle"] = builder.PSOrder(nestedOrder, nil, lifecyclePrompt, nil)
 
 	color.Green("\nEnter tags:\n")
 
@@ -158,7 +158,7 @@ func AWSACMCertificatePrompt() {
 	nestedOrder = append(nestedOrder, "Environment")
 	selectOrder = append(selectOrder, "tags")
 
-	resourceBlock["tags"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-1:], nil, tagsPrompt, nil)
+	resourceBlock["tags"] = builder.PSOrder(nestedOrder[len(nestedOrder)-1:], nil, tagsPrompt, nil)
 
 	builder.ResourceBuilder("aws_acm_certificate", blockName, resourceBlock)
 }

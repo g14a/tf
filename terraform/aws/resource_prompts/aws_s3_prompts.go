@@ -127,7 +127,7 @@ func AWSS3AccessPointPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "restrict_public_buckets")
 	selectOrder = append(selectOrder, "public_access_block_configuration")
 
-	resourceBlock["public_access_block_configuration"] = builder.NestedPSOrder(nestedPromptOrder, nil, publicAccessBlockConfigurationPrompt, nil)
+	resourceBlock["public_access_block_configuration"] = builder.PSOrder(nestedPromptOrder, nil, publicAccessBlockConfigurationPrompt, nil)
 
 	vpcConfigPrompt := map[string]types.TfPrompt{}
 
@@ -140,7 +140,7 @@ func AWSS3AccessPointPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "vpc_id")
 	selectOrder = append(selectOrder, "vpc_configuration")
 
-	resourceBlock["vpc_configuration"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, vpcConfigPrompt, nil)
+	resourceBlock["vpc_configuration"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, vpcConfigPrompt, nil)
 
 	builder.ResourceBuilder("aws_s3_access_point", blockName, resourceBlock)
 }
@@ -338,7 +338,7 @@ func AWSS3BucketPrompt() {
 	nestedOrder = append(nestedOrder, "max_age_seconds")
 	selectOrder = append(selectOrder, "cors_rule")
 
-	resourceBlock["cors_rule"] = builder.NestedPSOrder(nestedOrder, nil, corsRulePrompt, nil)
+	resourceBlock["cors_rule"] = builder.PSOrder(nestedOrder, nil, corsRulePrompt, nil)
 
 	color.Green("\nEnter website:\nThe website object supports the following:" +
 		"\n1.index_document\n2.error_document\n3.redirect_all_requests_to\n4.routing_rules\n\n")
@@ -383,7 +383,7 @@ func AWSS3BucketPrompt() {
 	nestedOrder = append(nestedOrder, "routing_rules")
 	selectOrder = append(selectOrder, "website")
 
-	resourceBlock["website"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-4:], nil, websitePrompt, nil)
+	resourceBlock["website"] = builder.PSOrder(nestedOrder[len(nestedOrder)-4:], nil, websitePrompt, nil)
 
 	versioningPrompt := map[string]types.TfPrompt{}
 	versioningPrompt["enabled"] = types.TfPrompt{
@@ -406,7 +406,7 @@ func AWSS3BucketPrompt() {
 	nestedOrder = append(nestedOrder, "mfa_delete")
 	selectOrder = append(selectOrder, "versioning")
 
-	resourceBlock["versioning"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], nil, versioningPrompt, nil)
+	resourceBlock["versioning"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, versioningPrompt, nil)
 
 	loggingPrompt := map[string]types.TfPrompt{}
 
@@ -426,7 +426,7 @@ func AWSS3BucketPrompt() {
 	nestedOrder = append(nestedOrder, "target_prefix")
 	selectOrder = append(selectOrder, "logging")
 
-	resourceBlock["logging"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], nil, loggingPrompt, nil)
+	resourceBlock["logging"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, loggingPrompt, nil)
 
 	builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 }
@@ -529,7 +529,7 @@ func AWSS3BucketMetricPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "prefix")
 	selectOrder = append(selectOrder, "filter")
 
-	resourceBlock["filter"] = builder.NestedPSOrder(nestedPromptOrder, nil, filterPrompt, nil)
+	resourceBlock["filter"] = builder.PSOrder(nestedPromptOrder, nil, filterPrompt, nil)
 
 	builder.ResourceBuilder("aws_s3_bucket_metric", blockName, resourceBlock)
 }
@@ -621,7 +621,7 @@ func AWSS3BucketNotificationPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
 
-	resourceBlock["topic"] = builder.NestedPSOrder(nestedPromptOrder, nil, topicPrompt, nil)
+	resourceBlock["topic"] = builder.PSOrder(nestedPromptOrder, nil, topicPrompt, nil)
 
 	color.Green("\nEnter queue:\n(Optional) The notification configuration to SQS Queue (documented below)." +
 		"\nThe queue notification configuration supports the following:" +
@@ -669,7 +669,7 @@ func AWSS3BucketNotificationPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
 
-	resourceBlock["queue"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, queuePrompt, nil)
+	resourceBlock["queue"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, queuePrompt, nil)
 
 	color.Green("\nEnter lambda_function:\n(Optional, Multiple) Used to configure notifications to a Lambda Function" +
 		"\nThe queue notification configuration supports the following:" +
@@ -717,7 +717,7 @@ func AWSS3BucketNotificationPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "filter_suffix")
 
-	resourceBlock["lambda_function"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, lambdaFunctionPrompt, nil)
+	resourceBlock["lambda_function"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, lambdaFunctionPrompt, nil)
 
 	builder.ResourceBuilder("aws_s3_bucket_notification", blockName, resourceBlock)
 }
@@ -988,7 +988,7 @@ func AWSS3BucketOwnershipControlsPrompt() {
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "object_ownership")
 
-	resourceBlock["rule"] = builder.NestedPSOrder(nil, nestedSelectOrder, nil, roleSelect)
+	resourceBlock["rule"] = builder.PSOrder(nil, nestedSelectOrder, nil, roleSelect)
 
 	builder.ResourceBuilder("aws_s3_bucket_ownership_controls", blockName, resourceBlock)
 }

@@ -217,7 +217,7 @@ func ProviderPrompt() {
 	nestedOrder = append(nestedOrder, "role_arn")
 	selectOrder = append(selectOrder, "assume_role")
 
-	providerBlock["assume_role"] = builder.NestedPSOrder(nestedOrder, nil, assumeRolePrompts, nil)
+	providerBlock["assume_role"] = builder.PSOrder(nestedOrder, nil, assumeRolePrompts, nil)
 
 	ignoreTagsPrompts := map[string]types.TfPrompt{}
 
@@ -243,7 +243,7 @@ func ProviderPrompt() {
 	nestedOrder = append(nestedOrder, "key_prefixes")
 	selectOrder = append(selectOrder, "ignore_tags")
 
-	providerBlock["ignore_tags"] = builder.NestedPSOrder(nestedOrder[len(nestedOrder)-2:], nil, ignoreTagsPrompts, nil)
+	providerBlock["ignore_tags"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, ignoreTagsPrompts, nil)
 
 	builder.ProviderBuilder("aws", providerBlock)
 }

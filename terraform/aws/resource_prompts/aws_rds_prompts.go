@@ -290,7 +290,7 @@ func AWSDBEventSubscriptionPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "delete")
 	selectOrder = append(selectOrder, "timeouts")
 
-	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_event_subscription", blockName, resourceBlock)
 }
@@ -478,7 +478,7 @@ func AWSDBOptionGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "vpc_security_group_memberships")
 	selectOrder = append(selectOrder, "option")
 
-	resourceBlock["option"] = builder.NestedPSOrder(nestedPromptOrder, nil, optionPrompt, nil)
+	resourceBlock["option"] = builder.PSOrder(nestedPromptOrder, nil, optionPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_option_group", blockName, resourceBlock)
 
@@ -588,7 +588,7 @@ func AWSDBParameterGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "apply_method")
 	selectOrder = append(selectOrder, "parameter")
 
-	resourceBlock["parameter"] = builder.NestedPSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
+	resourceBlock["parameter"] = builder.PSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_parameter_group", blockName, resourceBlock)
 }
@@ -769,7 +769,7 @@ func AWSDbProxyPrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "iam_auth")
 	selectOrder = append(selectOrder, "auth")
 
-	resourceBlock["auth"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, authPrompt, authSelect)
+	resourceBlock["auth"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, authPrompt, authSelect)
 
 	builder.ResourceBuilder("aws_db_proxy", blockName, resourceBlock)
 }
@@ -861,7 +861,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "session_pinning_filters")
 	selectOrder = append(selectOrder, "connection_pool_config")
 
-	resourceBlock["connection_pool_config"] = builder.NestedPSOrder(nestedPromptOrder, nil, connectionPoolConfigPrompt, nil)
+	resourceBlock["connection_pool_config"] = builder.PSOrder(nestedPromptOrder, nil, connectionPoolConfigPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_proxy_default_target_group", blockName, resourceBlock)
 
@@ -1006,7 +1006,7 @@ func AWSDBSecurityGroupPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "security_group_owner_id")
 	selectOrder = append(selectOrder, "ingress")
 
-	resourceBlock["ingress"] = builder.NestedPSOrder(nestedPromptOrder, nil, ingressPrompt, nil)
+	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressPrompt, nil)
 
 	builder.ResourceBuilder("aws_db_security_group", blockName, resourceBlock)
 

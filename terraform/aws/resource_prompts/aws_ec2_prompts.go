@@ -219,7 +219,7 @@ func AWSAMIPrompt() {
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "volume_type")
 
-	resourceBlock["ebs_block_device"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, ebsBlockDevicePrompt, volumeTypeSelect)
+	resourceBlock["ebs_block_device"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, ebsBlockDevicePrompt, volumeTypeSelect)
 
 	color.Green("\nEnter ephemeral_block_device:\n(Optional) Nested block describing an ephemeral block device that should be attached to created instances." +
 		"\nThe ephemeral_block_device supports the following structure:" +
@@ -243,7 +243,7 @@ func AWSAMIPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "virtual_name")
 
-	resourceBlock["ephemeral_block_device"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, ephemeralBlockDevicePrompt, nil)
+	resourceBlock["ephemeral_block_device"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, ephemeralBlockDevicePrompt, nil)
 
 	color.Green("\nEnter timeouts block:\n" +
 		"The timeout block supports the following arguments:" +
@@ -275,7 +275,7 @@ func AWSAMIPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete")
 
-	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
 
 	builder.ResourceBuilder("aws_ami", blockName, resourceBlock)
 
@@ -452,7 +452,7 @@ func AWSAMIFromInstancePrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete")
 
-	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
 
 	builder.ResourceBuilder("aws_ami_from_instance", blockName, resourceBlock)
 
@@ -611,7 +611,7 @@ func AWSEBSSnapshotPrompt() {
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete")
 
-	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
 
 	builder.ResourceBuilder("aws_ebs_snapshot", blockName, resourceBlock)
 }
@@ -1048,6 +1048,174 @@ func AWSEC2ClientVPNAuthorizationRulePrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
 	builder.ResourceBuilder("aws_ec2_client_vpn_authorization_rule", blockName, resourceBlock)
-
 }
 
+func AWSEC2ClientVPNEndpointPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Name of the repository.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["server_certificate_arn"] = types.TfPrompt{
+		Label: "Enter server_certificate_arn:\n(Required) The ARN of the ACM server certificate.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "server_certificate_arn")
+
+	prompts["client_cidr_block"] = types.TfPrompt{
+		Label: "Enter client_cidr_block:\n(Required) The IPv4 address range, in CIDR notation, from which to assign " +
+			"\nclient IP addresses. The address range cannot overlap with the local CIDR of the " +
+			"\nVPC in which the associated subnet is located, or the routes that you add manually. " +
+			"\nThe address range cannot be changed after the Client VPN endpoint has been created. " +
+			"\nThe CIDR block should be /22 or greater.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "client_cidr_block")
+
+	prompts["dns_servers"] = types.TfPrompt{
+		Label: "Enter dns_servers e.g.[\"s1\",\"s2\"]:\n(Optional) Information about the DNS servers to be used for DNS resolution. " +
+			"\nA Client VPN endpoint can have up to two DNS servers. If no DNS server is specified, the DNS address " +
+			"\nof the VPC that is to be associated with Client VPN endpoint is used as the DNS server.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "dns_servers")
+
+	prompts["split_tunnel"] = types.TfPrompt{
+		Label: "Enter split_tunnel(true/false):\n(Optional) Indicates whether split-tunnel is enabled on VPN endpoint. Default value is false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "split_tunnel")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A mapping of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["transport_protocol"] = types.TfPrompt{
+		Label: "Enter transport_protocol:\n(Optional) The transport protocol to be used by the VPN session. Default value is udp",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transport_protocol")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter authentication_options:\n(Required) Information about the authentication method to be used to authenticate clients." +
+		"\nauthentication_options supports the following arguments:" +
+		"\n1.type\n2.active_directory_id\n3.root_certificate_chain_arn\n4.saml_provider_arn\n")
+
+	authenticationOptionsSelect := map[string]types.TfSelect{}
+	var nestedPromptOrder, nestedSelectOrder []string
+
+	authenticationOptionsPrompt := map[string]types.TfPrompt{}
+
+	authenticationOptionsPrompt["active_directory_id"] = types.TfPrompt{
+		Label: "Enter active_directory_id:\n(Optional) The ID of the Active Directory to be used for authentication if type is directory-service-authentication",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "active_directory_id")
+
+	authenticationOptionsPrompt["root_certificate_chain_arn"] = types.TfPrompt{
+		Label: "Enter root_certificate_chain_arn:\n(Optional) The ARN of the client certificate. The certificate must be signed by a certificate authority (CA) and " +
+			"\nit must be provisioned in AWS Certificate Manager (ACM). Only necessary when type is set to certificate-authentication.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "root_certificate_chain_arn")
+
+	authenticationOptionsPrompt["saml_provider_arn"] = types.TfPrompt{
+		Label: "Enter saml_provider_arn:\n(Optional) The ARN of the IAM SAML identity provider if type is federated-authentication.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "saml_provider_arn")
+
+	authenticationOptionsSelect["type"] = types.TfSelect{
+		Label: "Enter type:\n(Required) The type of client authentication to be used. Specify certificate-authentication to use certificate-based authentication, " +
+			"\ndirectory-service-authentication to use Active Directory authentication, or federated-authentication to use Federated Authentication via SAML 2.0.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"certificate-authentication","directory-service-authentication","federated-authentication"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "type")
+
+	resourceBlock["authentication_options"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, authenticationOptionsPrompt, authenticationOptionsSelect)
+
+	connectionLogOptionsPrompt := map[string]types.TfPrompt{}
+
+	color.Green("\nEnter connection_log_options:\n(Required) Information about the authentication method to be used to authenticate clients." +
+		"\nauthentication_options supports the following arguments:" +
+		"\n1.type\n2.active_directory_id\n3.root_certificate_chain_arn\n4.saml_provider_arn\n")
+
+	connectionLogOptionsPrompt["enabled"] = types.TfPrompt{
+		Label: "Enter enabled:(true/false):\n(Required) Indicates whether connection logging is enabled.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "enabled")
+
+	connectionLogOptionsPrompt["enabled"] = types.TfPrompt{
+		Label: "Enter enabled:(true/false):\n(Required) Indicates whether connection logging is enabled.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "enabled")
+
+	connectionLogOptionsPrompt["cloudwatch_log_group"] = types.TfPrompt{
+		Label: "Enter cloudwatch_log_group:\n(Optional) The name of the CloudWatch Logs log group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cloudwatch_log_group")
+
+	connectionLogOptionsPrompt["cloudwatch_log_stream"] = types.TfPrompt{
+		Label: "Enter cloudwatch_log_stream:\n(Optional) The name of the CloudWatch Logs log stream to which the connection data is published.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cloudwatch_log_stream")
+
+	resourceBlock["connection_log_options"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, connectionLogOptionsPrompt, nil)
+
+	builder.ResourceBuilder("aws_ec2_client_vpn_endpoint", blockName, resourceBlock)
+}

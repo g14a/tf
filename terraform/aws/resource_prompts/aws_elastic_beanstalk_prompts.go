@@ -95,7 +95,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "delete_source_from_s3")
 	selectOrder = append(selectOrder, "appversion_lifecycle")
 
-	resourceBlock["appversion_lifecycle"] = builder.NestedPSOrder(nestedPromptOrder, nil, appVersionLifecyclePrompt, nil)
+	resourceBlock["appversion_lifecycle"] = builder.PSOrder(nestedPromptOrder, nil, appVersionLifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_elastic_beanstalk_application", blockName, resourceBlock)
 
@@ -270,6 +270,6 @@ func AWSElasticBeanstalkConfigurationTemplatePrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "resource")
 	selectOrder = append(selectOrder, "setting")
 
-	resourceBlock["setting"] = builder.NestedPSOrder(nestedPromptOrder, nil, settingPrompt, nil)
+	resourceBlock["setting"] = builder.PSOrder(nestedPromptOrder, nil, settingPrompt, nil)
 	builder.ResourceBuilder("aws_elastic_beanstalk_configuration_template", blockName, resourceBlock)
 }

@@ -201,7 +201,7 @@ func AWSDefaultRouteTablePrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "vpc_peering_connection_id")
 	selectOrder = append(selectOrder, "route")
 
-	resourceBlock["route"] = builder.NestedPSOrder(nestedPromptOrder, nil, routePrompt, nil)
+	resourceBlock["route"] = builder.PSOrder(nestedPromptOrder, nil, routePrompt, nil)
 
 	builder.ResourceBuilder("aws_default_route_table", blockName, resourceBlock)
 }
@@ -364,7 +364,7 @@ func AWSVPCPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "ignore_changes")
 	selectOrder = append(selectOrder, "lifecycle")
 
-	resourceBlock["lifecycle"] = builder.NestedPSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
+	resourceBlock["lifecycle"] = builder.PSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
 }

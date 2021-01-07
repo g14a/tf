@@ -308,7 +308,7 @@ func AWSELBPrompt() {
 	nestedSelectOrder = append(nestedSelectOrder, "lb_protocol")
 	selectOrder = append(selectOrder, "listener")
 
-	resourceBlock["listener"] = builder.NestedPSOrder(nestedPromptOrder, nestedSelectOrder, listenerPrompt, listenerSelect)
+	resourceBlock["listener"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, listenerPrompt, listenerSelect)
 
 	accessLogsPrompt := map[string]types.TfPrompt{}
 	accessLogsPrompt["bucket"] = types.TfPrompt{
@@ -345,7 +345,7 @@ func AWSELBPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "enabled")
 	selectOrder = append(selectOrder, "access_logs")
 
-	resourceBlock["access_logs"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-4:], nil, accessLogsPrompt, nil)
+	resourceBlock["access_logs"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-4:], nil, accessLogsPrompt, nil)
 
 	healthCheckPrompt := map[string]types.TfPrompt{}
 	healthCheckPrompt["healthy_threshold"] = types.TfPrompt{
@@ -393,7 +393,7 @@ func AWSELBPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "interval")
 	selectOrder = append(selectOrder, "health_check")
 
-	resourceBlock["health_check"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, healthCheckPrompt, nil)
+	resourceBlock["health_check"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-5:], nil, healthCheckPrompt, nil)
 
 	builder.ResourceBuilder("aws_elb", blockName, resourceBlock)
 }
