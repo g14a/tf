@@ -280,3 +280,75 @@ func AWSAMIPrompt() {
 	builder.ResourceBuilder("aws_ami", blockName, resourceBlock)
 
 }
+
+func AWSAMICopyPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) A region-unique name for the AMI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["source_ami_id"] = types.TfPrompt{
+		Label: "Enter source_ami_id:\n(Required) The id of the AMI to copy. This id must be valid in the region given by source_ami_region",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_ami_id")
+
+	prompts["source_ami_region"] = types.TfPrompt{
+		Label: "Enter source_ami_region:\n(Required) The region from which the AMI will be copied. " +
+			"\nThis may be the same as the AWS provider region in order to create a copy within the same region.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_ami_region")
+
+	prompts["encrypted"] = types.TfPrompt{
+		Label: "Enter encrypted(true/false):\n(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "encrypted")
+
+	prompts["kms_key_id"] = types.TfPrompt{
+		Label: "Enter kms_key_id:\n(Optional) The full ARN of the KMS Key to use when encrypting the snapshots " +
+			"\nof an image during a copy operation. If not specified, then the default AWS KMS Key will be used",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "kms_key_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ami_copy",blockName, resourceBlock)
+
+}
