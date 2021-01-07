@@ -350,6 +350,12 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSAMIPrompt()
 	case "aws_ami_copy":
 		resource_prompts.AWSAMICopyPrompt()
+	case "aws_ebs_snapshot":
+		resource_prompts.AWSEBSSnapshotPrompt()
+	case "aws_ebs_default_kms_key":
+		resource_prompts.AWSEBSDefaultKMSKeyPrompt()
+	case "aws_ebs_encryption_by_default":
+		resource_prompts.AWSEBSEncryptionByDefaultPrompt()
 	case "aws_ami_from_instance":
 		resource_prompts.AWSAMIFromInstancePrompt()
 	case "aws_ami_launch_permission":

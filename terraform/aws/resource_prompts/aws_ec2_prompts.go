@@ -492,3 +492,127 @@ func AWSAMILaunchPermissionPrompt() {
 
 	builder.ResourceBuilder("aws_ami_launch_permission", blockName, resourceBlock)
 }
+
+func AWSEBSDefaultKMSKeyPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["key_arn"] = types.TfPrompt{
+		Label: "Enter key_arn:\n(Required, ForceNew) The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "key_arn")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ebs_default_kms_key", blockName, resourceBlock)
+}
+
+func AWSEBSEncryptionByDefaultPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["enabled"] = types.TfPrompt{
+		Label: "Enter enabled(true/false):\n(Required, ForceNew) The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "enabled")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ebs_encryption_by_default", blockName, resourceBlock)
+}
+
+func AWSEBSSnapshotPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["volume_id"] = types.TfPrompt{
+		Label: "Enter volume_id(true/false):\n(Required) The Volume ID of which to make a snapshot.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "volume_id")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A description of what the snapshot is.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the snapshot",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Green("\nEnter timeouts block:\n" +
+		"The timeout block supports the following arguments:" +
+		"\n1.create\n2.delete\n")
+
+	timeoutsPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	timeoutsPrompt["create"] = types.TfPrompt{
+		Label: "Enter create: e.g. 40m\n(Defaults to 40 mins) Used when creating the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "create")
+
+	timeoutsPrompt["delete"] = types.TfPrompt{
+		Label: "Enter delete: e.g. 40m\n(Defaults to 90 mins) Used when deregistering the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "delete")
+
+	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
+
+	builder.ResourceBuilder("aws_ebs_snapshot", blockName, resourceBlock)
+}
+
