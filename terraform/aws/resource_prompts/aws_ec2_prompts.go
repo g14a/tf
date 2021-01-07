@@ -1262,3 +1262,54 @@ func AWSEC2ClientVPNNetworkAssociationPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_client_vpn_network_association", blockName, resourceBlock)
 }
+
+func AWSEC2ClientVPNRoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["client_vpn_endpoint_id"] = types.TfPrompt{
+		Label: "Enter client_vpn_endpoint_id:\n(Required) The ID of the Client VPN endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "client_vpn_endpoint_id")
+
+	prompts["destination_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_cidr_block:\n(Required) The IPv4 address range, in CIDR notation, of the route destination.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_cidr_block")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A brief description of the authorization rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["target_vpc_subnet_id"] = types.TfPrompt{
+		Label: "Enter target_vpc_subnet_id:\n(Required) The ID of the Subnet to route the traffic through. It must already be attached to the Client VPN.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "target_vpc_subnet_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_client_vpn_route", blockName, resourceBlock)
+}
