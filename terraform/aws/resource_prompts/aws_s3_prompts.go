@@ -1059,3 +1059,4 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket_public_access_block", blockName, resourceBlock)
 }
+
