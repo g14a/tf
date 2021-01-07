@@ -1219,3 +1219,46 @@ func AWSEC2ClientVPNEndpointPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_client_vpn_endpoint", blockName, resourceBlock)
 }
+
+func AWSEC2ClientVPNNetworkAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["client_vpn_endpoint_id"] = types.TfPrompt{
+		Label: "Enter client_vpn_endpoint_id:\n(Required) The ID of the Client VPN endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "client_vpn_endpoint_id")
+
+	prompts["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Required) The ID of the subnet to associate with the Client VPN endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_id")
+
+	prompts["security_groups"] = types.TfPrompt{
+		Label: "Enter security_groups e.g.[\"g1\",\"g2\"]:\n(Required) The ID of the subnet to associate with the Client VPN endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "security_groups")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_client_vpn_network_association", blockName, resourceBlock)
+}
