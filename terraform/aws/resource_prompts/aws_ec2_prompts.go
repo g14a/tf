@@ -252,7 +252,7 @@ func AWSAMIPrompt() {
 	timeoutsPrompt := map[string]types.TfPrompt{}
 
 	timeoutsPrompt["create"] = types.TfPrompt{
-		Label: "Enter create: e.g. 40m\n(Default 40m) How long to wait for an RDS event notification subscription to be ready.",
+		Label: "Enter create: e.g. 40m\n(Defaults to 40 mins) Used when creating the AMI",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -260,7 +260,7 @@ func AWSAMIPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "create")
 
 	timeoutsPrompt["update"] = types.TfPrompt{
-		Label: "Enter update: e.g. 40m\n(Default 40m) How long to wait for an RDS event notification subscription to be updated.",
+		Label: "Enter update: e.g. 40m\n(Defaults to 40 mins) Used when updating the AMI",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -268,7 +268,7 @@ func AWSAMIPrompt() {
 	nestedPromptOrder = append(nestedPromptOrder, "update")
 
 	timeoutsPrompt["delete"] = types.TfPrompt{
-		Label: "Enter delete: e.g. 40m\n(Default 40m) How long to wait for an RDS event notification subscription to be deleted.",
+		Label: "Enter delete: e.g. 40m\n(Defaults to 90 mins) Used when deregistering the AMI",
 		Prompt: promptui.Prompt{
 			Label: "",
 		},
@@ -350,5 +350,110 @@ func AWSAMICopyPrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
 	builder.ResourceBuilder("aws_ami_copy",blockName, resourceBlock)
+
+}
+
+func AWSAMIFromInstancePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) A region-unique name for the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["source_instance_id"] = types.TfPrompt{
+		Label: "Enter source_instance_id:\n(Required) The id of the instance to use as the basis of the AMI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_instance_id")
+
+	prompts["snapshot_without_reboot"] = types.TfPrompt{
+		Label: "Enter snapshot_without_reboot(true/false):\n(Optional) Boolean that overrides the behavior of stopping the instance before snapshotting. " +
+			"\nThis is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise " +
+			"\nguarantees that no filesystem writes will be underway at the time of snapshot.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "snapshot_without_reboot")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like timeouts etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_ami_from_instance", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter timeouts block:\n" +
+		"The timeout block supports the following arguments:" +
+		"\n1.create\n2.delete\n3.update")
+
+	timeoutsPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	timeoutsPrompt["create"] = types.TfPrompt{
+		Label: "Enter create: e.g. 40m\n(Defaults to 40 mins) Used when creating the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "create")
+
+	timeoutsPrompt["update"] = types.TfPrompt{
+		Label: "Enter update: e.g. 40m\n(Defaults to 40 mins) Used when updating the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "update")
+
+	timeoutsPrompt["delete"] = types.TfPrompt{
+		Label: "Enter delete: e.g. 40m\n(Defaults to 90 mins) Used when deregistering the AMI",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "delete")
+
+	resourceBlock["timeouts"] = builder.NestedPSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
+
+	builder.ResourceBuilder("aws_ami_from_instance", blockName, resourceBlock)
 
 }

@@ -350,6 +350,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSAMIPrompt()
 	case "aws_ami_copy":
 		resource_prompts.AWSAMICopyPrompt()
+	case "aws_ami_from_instance":
+		resource_prompts.AWSAMIFromInstancePrompt()
 	case "aws_elb":
 		resource_prompts.AWSELBPrompt()
 	case "aws_db_instance":
