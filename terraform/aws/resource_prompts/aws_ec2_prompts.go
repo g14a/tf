@@ -951,6 +951,103 @@ func AWSEC2CapacityReservationPrompt() {
 	builder.ResourceBuilder("aws_ec2_capacity_reservation", blockName, resourceBlock)
 }
 
-func AWSEC2CarrierGateway()  {
+func AWSEC2CarrierGatewayPrompt()  {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) The ID of the VPC to associate with the carrier gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_carrier_gateway", blockName, resourceBlock)
 
 }
+
+func AWSEC2ClientVPNAuthorizationRulePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["client_vpn_endpoint_id"] = types.TfPrompt{
+		Label: "Enter client_vpn_endpoint_id:\n(Required) The ID of the Client VPN endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "client_vpn_endpoint_id")
+
+	prompts["target_network_cidr"] = types.TfPrompt{
+		Label: "Enter target_network_cidr:\n(Required) The IPv4 address range, in CIDR notation, of the network to which the authorization rule applies.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "target_network_cidr")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A brief description of the authorization rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["access_group_id"] = types.TfSelect{
+		Label: "Enter access_group_id:\n(Optional) The ID of the group to which the authorization rule grants access.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"access_group_id","authorize_all_groups"},
+		},
+	}
+	selectOrder = append(selectOrder, "access_group_id")
+
+	selects["authorize_all_groups"] = types.TfSelect{
+		Label: "Enter authorize_all_groups:\n(Optional) Indicates whether the authorization rule grants access to all clients.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"access_group_id","authorize_all_groups"},
+		},
+	}
+	selectOrder = append(selectOrder, "authorize_all_groups")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_ec2_client_vpn_authorization_rule", blockName, resourceBlock)
+
+}
+

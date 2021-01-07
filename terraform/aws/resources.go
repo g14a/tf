@@ -380,6 +380,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2AvailabilityZoneGroupPrompt()
 	case "aws_ec2_capacity_reservation":
 		resource_prompts.AWSEC2CapacityReservationPrompt()
+	case "aws_ec2_carrier_gateway":
+		resource_prompts.AWSEC2CarrierGatewayPrompt()
+	case "aws_ec2_client_vpn_authorization_rule":
+		resource_prompts.AWSEC2ClientVPNAuthorizationRulePrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":
