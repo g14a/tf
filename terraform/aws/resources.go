@@ -352,6 +352,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSAMICopyPrompt()
 	case "aws_ebs_snapshot":
 		resource_prompts.AWSEBSSnapshotPrompt()
+	case "aws_ebs_snapshot_copy":
+		resource_prompts.AWSEBSSnapshotCopyPrompt()
 	case "aws_ebs_default_kms_key":
 		resource_prompts.AWSEBSDefaultKMSKeyPrompt()
 	case "aws_ebs_encryption_by_default":
@@ -372,6 +374,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSDBInstanceRoleAssociationPrompt()
 	case "aws_db_option_group":
 		resource_prompts.AWSDBOptionGroupPrompt()
+	case "aws_ebs_volume":
+		resource_prompts.AWSEBSVolumePrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":
