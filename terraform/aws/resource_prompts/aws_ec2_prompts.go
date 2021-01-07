@@ -792,5 +792,165 @@ func AWSEBSVolumePrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
 
 	builder.ResourceBuilder("aws_ebs_volume", blockName, resourceBlock)
+}
+
+func AWSEC2AvailabilityZoneGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["group_name"] = types.TfPrompt{
+		Label: "Enter group_name:\n:(Required) Name of the Availability Zone Group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "group_name")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["opt_in_status"] = types.TfSelect{
+		Label: "Enter opt_in_status:\n(Required) Indicates whether to enable or disable Availability Zone Group. Valid values: opted-in or not-opted-in",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"opted-in","not-opted-in"},
+		},
+	}
+	selectOrder = append(selectOrder, "opt_in_status")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_ec2_availability_zone_group", blockName, resourceBlock)
+}
+
+func AWSEC2CapacityReservationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["availability_zone"] = types.TfPrompt{
+		Label: "Enter availability_zone:\n(Required) The Availability Zone in which to create the Capacity Reservation.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "availability_zone")
+
+	prompts["ebs_optimized"] = types.TfPrompt{
+		Label: "Enter ebs_optimized(true/false):\n(Optional) Indicates whether the Capacity Reservation supports EBS-optimized instances.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ebs_optimized")
+
+	prompts["end_date"] = types.TfPrompt{
+		Label: "Enter end_date:\n(Optional) The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, " +
+			"\nthe reserved capacity is released and you can no longer launch instances into it.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "end_date")
+
+	prompts["ephemeral_storage"] = types.TfPrompt{
+		Label: "Enter ephemeral_storage(true/false):\n(Optional) Indicates whether the Capacity Reservation supports instances with temporary, block-level storage",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ephemeral_storage")
+
+	prompts["instance_count"] = types.TfPrompt{
+		Label: "Enter instance_count:\n(Required) The number of instances for which to reserve capacity.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "instance_count")
+
+	prompts["instance_type"] = types.TfPrompt{
+		Label: "Enter instance_type:\n(Required) The instance type for which to reserve capacity.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_type")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+
+	selects := map[string]types.TfSelect{}
+
+	selects["end_date_type"] = types.TfSelect{
+		Label: "Enter end_date_type:\n(Optional) Indicates the way in which the Capacity Reservation ends.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"unlimited","limited"},
+		},
+	}
+	selectOrder = append(selectOrder, "end_date_type")
+
+	selects["instance_match_criteria"] = types.TfSelect{
+		Label: "Enter instance_match_criteria:\n(Optional) Indicates the type of instance launches that the Capacity Reservation accepts.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"open","targeted"},
+		},
+	}
+	selectOrder = append(selectOrder, "instance_match_criteria")
+
+	selects["instance_platform"] = types.TfSelect{
+		Label: "Enter instance_platform:\n(Required) The type of operating system for which to reserve capacity.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"Linux/Unix","Red Hat Enterprise Linux","SUSE Linux", "Windows","Windows with SQL Server","Windows with SQL Server Enterprise","Windows with SQL Server Standard","Windows with SQL Server Web"},
+		},
+	}
+	selectOrder = append(selectOrder, "instance_platform")
+
+	selects["tenancy"] = types.TfSelect{
+		Label: "Enter tenancy:\n(Required) The type of operating system for which to reserve capacity.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"default","dedicated"},
+		},
+	}
+	selectOrder = append(selectOrder, "tenancy")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_ec2_capacity_reservation", blockName, resourceBlock)
+}
+
+func AWSEC2CarrierGateway()  {
 
 }

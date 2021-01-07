@@ -376,6 +376,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSDBOptionGroupPrompt()
 	case "aws_ebs_volume":
 		resource_prompts.AWSEBSVolumePrompt()
+	case "aws_ec2_availability_zone_group":
+		resource_prompts.AWSEC2AvailabilityZoneGroupPrompt()
+	case "aws_ec2_capacity_reservation":
+		resource_prompts.AWSEC2CapacityReservationPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":
