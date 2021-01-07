@@ -457,3 +457,38 @@ func AWSAMIFromInstancePrompt() {
 	builder.ResourceBuilder("aws_ami_from_instance", blockName, resourceBlock)
 
 }
+
+func AWSAMILaunchPermissionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["image_id"] = types.TfPrompt{
+		Label: "Enter image_id:\n(Required) A region-unique name for the AMI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "image_id")
+
+	prompts["account_id"] = types.TfPrompt{
+		Label: "Enter account_id:\n(required) An AWS Account ID to add launch permissions.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "account_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ami_launch_permission", blockName, resourceBlock)
+}
