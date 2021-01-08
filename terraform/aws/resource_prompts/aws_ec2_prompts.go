@@ -2020,3 +2020,142 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 	builder.ResourceBuilder("aws_ec2_traffic_mirror_session", blockName, resourceBlock)
 
 }
+
+func AWSEC2TrafficMirrorTargetPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	color.Yellow("\nEither network_interface_id or network_load_balancer_arn should be " +
+		"\nspecified and both should not be specified together\n")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional, Forces new) A description of the traffic mirror session.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Optional, Forces new) The network interface ID that is associated with the target.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface_id")
+
+	prompts["network_load_balancer_arn"] = types.TfPrompt{
+		Label: "Enter network_load_balancer_arn:\n(Optional, Forces new) The Amazon Resource Name (ARN) of the Network Load Balancer that is associated with the target.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_load_balancer_arn")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_traffic_mirror_target", blockName, resourceBlock)
+}
+
+func AWSEC2TransitGatewayPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["amazon_side_asn"] = types.TfPrompt{
+		Label: "Enter amazon_side_asn:\n(Optional) Private Autonomous System Number (ASN) for the Amazon side of a BGP session. " +
+			"\nThe range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs. Default value: 64512",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "amazon_side_asn")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of the EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["auto_accept_shared_attachments"] = types.TfSelect{
+		Label: "Enter auto_accept_shared_attachments:\n(Optional) Whether resource attachment requests are automatically accepted. Defaults to \"disable\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"disable","enable"},
+		},
+	}
+	selectOrder = append(selectOrder, "auto_accept_shared_attachments")
+
+	selects["default_route_table_association"] = types.TfSelect{
+		Label: "Enter default_route_table_association:\n(Optional) Whether resource attachments automatically propagate routes to the default propagation route table. Defaults to \"enable\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"disable","enable"},
+		},
+	}
+	selectOrder = append(selectOrder, "default_route_table_association")
+
+	selects["dns_support"] = types.TfSelect{
+		Label: "Enter dns_support:\n(Optional) Whether DNS support is enabled. Defaults to \"enable\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"disable","enable"},
+		},
+	}
+	selectOrder = append(selectOrder, "dns_support")
+
+	selects["vpn_ecmp_support"] = types.TfSelect{
+		Label: "Enter vpn_ecmp_support:\n(Optional) Whether VPN Equal Cost Multipath Protocol support is enabled. Defaults to \"enable\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"disable","enable"},
+		},
+	}
+	selectOrder = append(selectOrder, "vpn_ecmp_support")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway", blockName, resourceBlock)
+}

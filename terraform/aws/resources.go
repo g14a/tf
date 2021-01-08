@@ -404,6 +404,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2TrafficMirrorFilterRulePrompt()
 	case "aws_ec2_traffic_mirror_session":
 		resource_prompts.AWSEC2TrafficMirrorSessionPrompt()
+	case "aws_ec2_traffic_mirror_target":
+		resource_prompts.AWSEC2TrafficMirrorTargetPrompt()
+	case "aws_ec2_transit_gateway":
+		resource_prompts.AWSEC2TransitGatewayPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":
