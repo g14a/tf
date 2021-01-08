@@ -410,6 +410,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2TransitGatewayPrompt()
 	case "aws_ec2_transit_gateway_peering_attachment":
 		resource_prompts.AWSEC2TransitGatewayPeeringAttachmentPrompt()
+	case "aws_ec2_transit_gateway_peering_attachment_accepter":
+		resource_prompts.AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt()
+	case "aws_ec2_transit_gateway_route":
+		resource_prompts.AWSEC2TransitGatewayRoutePrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":

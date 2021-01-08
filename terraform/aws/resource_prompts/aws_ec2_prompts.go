@@ -2220,3 +2220,91 @@ func AWSEC2TransitGatewayPeeringAttachmentPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_transit_gateway_peering_attachment", blockName, resourceBlock)
 }
+
+func AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["transit_gateway_attachment_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_attachment_id:\n(Required) The ID of the EC2 Transit Gateway Peering Attachment to manage.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_attachment_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_peering_attachment_accepter", blockName, resourceBlock)
+}
+
+func AWSEC2TransitGatewayRoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["destination_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_cidr_block:\n(Required) IPv4 or IPv6 RFC1924 CIDR used for destination matches. Routing decisions are based on the most specific match.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_cidr_block")
+
+	prompts["transit_gateway_attachment_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_attachment_id:\n(Optional) Identifier of EC2 Transit Gateway Attachment (required if blackhole is set to false).",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_attachment_id")
+
+	prompts["blackhole"] = types.TfPrompt{
+		Label: "Enter blackhole(true/false):\n(Optional) Indicates whether to drop traffic that matches this route (default to false).",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "blackhole")
+
+	prompts["transit_gateway_route_table_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_route_table_id:\n(Required) Identifier of EC2 Transit Gateway Route Table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_route_table_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_route", blockName, resourceBlock)
+}
