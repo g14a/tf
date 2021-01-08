@@ -3047,3 +3047,40 @@ func AWSSnapshotCreateVolumePermissionPrompt() {
 	builder.ResourceBuilder("aws_snapshot_create_volume_permission", blockName, resourceBlock)
 
 }
+
+func AWSSpotDatafeedSubscriptionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["bucket"] = types.TfPrompt{
+		Label: "Enter bucket:\n(Required) The Amazon S3 bucket in which to store the Spot instance data feed.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "bucket")
+
+	prompts["prefix"] = types.TfPrompt{
+		Label: "Enter prefix:\n(Optional) Path of folder inside bucket to place spot pricing data.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "prefix")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_spot_datafeed_subscription", blockName, resourceBlock)
+
+}

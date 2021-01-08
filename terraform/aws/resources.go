@@ -436,6 +436,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSPlacementGroupPrompt()
 	case "aws_snapshot_create_volume_permission":
 		resource_prompts.AWSSnapshotCreateVolumePermissionPrompt()
+	case "aws_spot_datafeed_subscription":
+		resource_prompts.AWSSpotDatafeedSubscriptionPrompt()
 	case "aws_db_proxy":
 		resource_prompts.AWSDbProxyPrompt()
 	case "aws_db_proxy_default_target_group":
