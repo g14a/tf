@@ -426,6 +426,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2TransitGatewayVPCAttachmentAccepterPrompt()
 	case "aws_eip":
 		resource_prompts.AWSEIPPrompt()
+	case "aws_eip_association":
+		resource_prompts.AWSEIPAssociationPrompt()
 	case "aws_db_proxy":
 		resource_prompts.AWSDbProxyPrompt()
 	case "aws_db_proxy_default_target_group":

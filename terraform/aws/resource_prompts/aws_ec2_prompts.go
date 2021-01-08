@@ -2667,3 +2667,81 @@ func AWSEIPPrompt() {
 
 	builder.ResourceBuilder("aws_eip", blockName, resourceBlock)
 }
+
+func AWSEIPAssociationPrompt() {
+
+	color.Yellow("\nDo not use this resource to associate an EIP to aws_lb or aws_nat_gateway " +
+		"\nresources. Instead use the allocation_id available in those resources to allow AWS " +
+		"\nto manage the association, otherwise you will see \"AuthFailure\" errors.\n")
+
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["allocation_id"] = types.TfPrompt{
+		Label: "Enter allocation_id:\n(Optional) The allocation ID. This is required for EC2-VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "allocation_id")
+
+	prompts["allow_reassociation"] = types.TfPrompt{
+		Label: "Enter allow_reassociation(true/false):\n(Optional, Boolean) Whether to allow an Elastic IP to be re-associated. Defaults to true in VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "allow_reassociation")
+
+	prompts["instance_id"] = types.TfPrompt{
+		Label: "Enter instance_id:\n(Optional) The ID of the instance. This is required for EC2-Classic. For EC2-VPC, you can specify " +
+			"\neither the instance ID or the network interface ID, but not both. The operation fails if you specify an " +
+			"\ninstance ID unless exactly one network interface is attached.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_id")
+
+	prompts["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Optional) The ID of the network interface. If the instance has more than one network interface, you must specify a network interface ID.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface_id")
+
+	prompts["private_ip_address"] = types.TfPrompt{
+		Label: "Enter private_ip_address:\n(Optional) The primary or secondary private IP address to associate with " +
+			"\nthe Elastic IP address. If no private IP address is specified, the Elastic IP " +
+			"\naddress is associated with the primary private IP address.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "private_ip_address")
+
+	prompts["public_ip"] = types.TfPrompt{
+		Label: "Enter public_ip:\n(Optional) The Elastic IP address. This is required for EC2-Classic.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "public_ip")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_eip_association", blockName, resourceBlock)
+}
