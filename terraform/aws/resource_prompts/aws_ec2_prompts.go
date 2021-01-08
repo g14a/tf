@@ -2574,7 +2574,11 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 }
 
 func AWSEIPPrompt() {
+	color.Yellow("\n EIP may require IGW to exist prior to association. Use depends_on to set an explicit dependency on the IGW." +
+		"\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip")
+
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
 	blockPrompt := promptui.Prompt{
 		Label: "",
 	}
