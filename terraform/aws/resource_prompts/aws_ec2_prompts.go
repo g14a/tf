@@ -2952,7 +2952,7 @@ func AWSKeyPairPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2961,5 +2961,89 @@ func AWSKeyPairPrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
 	builder.ResourceBuilder("aws_key_pair", blockName, resourceBlock)
+
+}
+
+func AWSPlacementGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of the placement group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["strategy"] = types.TfSelect{
+		Label: "Enter strategy:\n(Required) The placement strategy.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"cluster", "partition", "spread"},
+		},
+	}
+	selectOrder = append(selectOrder, "strategy")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_placement_group", blockName, resourceBlock)
+}
+
+func AWSSnapshotCreateVolumePermissionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["snapshot_id"] = types.TfPrompt{
+		Label: "Enter snapshot_id:\n(required) A snapshot ID",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "snapshot_id")
+
+	prompts["account_id"] = types.TfPrompt{
+		Label: "Enter account_id:\n(required) An AWS Account ID to add create volume permissions",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "account_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_snapshot_create_volume_permission", blockName, resourceBlock)
 
 }

@@ -432,6 +432,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSInstancePrompt()
 	case "aws_key_pair":
 		resource_prompts.AWSKeyPairPrompt()
+	case "aws_placement_group":
+		resource_prompts.AWSPlacementGroupPrompt()
+	case "aws_snapshot_create_volume_permission":
+		resource_prompts.AWSSnapshotCreateVolumePermissionPrompt()
 	case "aws_db_proxy":
 		resource_prompts.AWSDbProxyPrompt()
 	case "aws_db_proxy_default_target_group":
