@@ -42,7 +42,7 @@ func AWSAMIPrompt() {
 	prompts["ena_support"] = types.TfPrompt{
 		Label: "Enter ena_support(true/false):\n(Optional) Specifies whether enhanced networking with ENA is enabled. Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -67,7 +67,7 @@ func AWSAMIPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -79,10 +79,10 @@ func AWSAMIPrompt() {
 
 	vTypePrompt := promptui.Select{
 		Label: "",
-		Items: []string{"paravirtual","hvm"},
+		Items: []string{"paravirtual", "hvm"},
 	}
 
-	_,vType, err := vTypePrompt.Run()
+	_, vType, err := vTypePrompt.Run()
 
 	if vType == "paravirtual" {
 		prompts["image_location"] = types.TfPrompt{
@@ -154,7 +154,7 @@ func AWSAMIPrompt() {
 		Label: "Enter delete_on_termination(true/false):\n(Optional) Boolean controlling whether the EBS volumes created " +
 			"\nto support each created instance will be deleted once that instance is terminated.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -165,7 +165,7 @@ func AWSAMIPrompt() {
 	ebsBlockDevicePrompt["encrypted"] = types.TfPrompt{
 		Label: "Enter encrypted(true/false):\n(Optional) Boolean controlling whether the created EBS volumes will be encrypted. Can't be used with snapshot_id",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -214,7 +214,7 @@ func AWSAMIPrompt() {
 		Label: "(Optional) The type of EBS volume to create. Defaults to \"standard\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"standard","io1","io2","gp2"},
+			Items: []string{"standard", "io1", "io2", "gp2"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "volume_type")
@@ -323,7 +323,7 @@ func AWSAMICopyPrompt() {
 	prompts["encrypted"] = types.TfPrompt{
 		Label: "Enter encrypted(true/false):\n(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -341,7 +341,7 @@ func AWSAMICopyPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -349,7 +349,7 @@ func AWSAMICopyPrompt() {
 
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	builder.ResourceBuilder("aws_ami_copy",blockName, resourceBlock)
+	builder.ResourceBuilder("aws_ami_copy", blockName, resourceBlock)
 
 }
 
@@ -388,7 +388,7 @@ func AWSAMIFromInstancePrompt() {
 			"\nThis is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise " +
 			"\nguarantees that no filesystem writes will be underway at the time of snapshot.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -397,7 +397,7 @@ func AWSAMIFromInstancePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -580,7 +580,7 @@ func AWSEBSSnapshotPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the snapshot",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -641,7 +641,7 @@ func AWSEBSSnapshotCopyPrompt() {
 	prompts["encrypted"] = types.TfPrompt{
 		Label: "Enter encrypted(true/false):\nWhether the snapshot is encrypted.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -718,7 +718,7 @@ func AWSEBSVolumePrompt() {
 		Label: "Enter multi_attach_enabled(true/false):\n(Optional) Specifies whether to enable Amazon EBS Multi-Attach. " +
 			"\nMulti-Attach is supported exclusively on io1 volumes.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -743,7 +743,7 @@ func AWSEBSVolumePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -763,7 +763,7 @@ func AWSEBSVolumePrompt() {
 	prompts["encrypted"] = types.TfPrompt{
 		Label: "Enter encrypted(true/false):\n(Optional) If true, the disk will be encrypted.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -772,7 +772,7 @@ func AWSEBSVolumePrompt() {
 	prompts["size"] = types.TfPrompt{
 		Label: "Enter size(true/false):\n(Optional) The size of the drive in GiBs",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -784,7 +784,7 @@ func AWSEBSVolumePrompt() {
 		Label: "Enter type:\n(Optional) The type of EBS volume. Defaults to gp2",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"standard","gp2","io1","io2","sc1","st1"},
+			Items: []string{"standard", "gp2", "io1", "io2", "sc1", "st1"},
 		},
 	}
 	selectOrder = append(selectOrder, "type")
@@ -822,7 +822,7 @@ func AWSEC2AvailabilityZoneGroupPrompt() {
 		Label: "Enter opt_in_status:\n(Required) Indicates whether to enable or disable Availability Zone Group. Valid values: opted-in or not-opted-in",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"opted-in","not-opted-in"},
+			Items: []string{"opted-in", "not-opted-in"},
 		},
 	}
 	selectOrder = append(selectOrder, "opt_in_status")
@@ -857,7 +857,7 @@ func AWSEC2CapacityReservationPrompt() {
 	prompts["ebs_optimized"] = types.TfPrompt{
 		Label: "Enter ebs_optimized(true/false):\n(Optional) Indicates whether the Capacity Reservation supports EBS-optimized instances.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -875,7 +875,7 @@ func AWSEC2CapacityReservationPrompt() {
 	prompts["ephemeral_storage"] = types.TfPrompt{
 		Label: "Enter ephemeral_storage(true/false):\n(Optional) Indicates whether the Capacity Reservation supports instances with temporary, block-level storage",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -884,7 +884,7 @@ func AWSEC2CapacityReservationPrompt() {
 	prompts["instance_count"] = types.TfPrompt{
 		Label: "Enter instance_count:\n(Required) The number of instances for which to reserve capacity.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -901,12 +901,11 @@ func AWSEC2CapacityReservationPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
-
 
 	selects := map[string]types.TfSelect{}
 
@@ -914,7 +913,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter end_date_type:\n(Optional) Indicates the way in which the Capacity Reservation ends.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"unlimited","limited"},
+			Items: []string{"unlimited", "limited"},
 		},
 	}
 	selectOrder = append(selectOrder, "end_date_type")
@@ -923,7 +922,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter instance_match_criteria:\n(Optional) Indicates the type of instance launches that the Capacity Reservation accepts.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"open","targeted"},
+			Items: []string{"open", "targeted"},
 		},
 	}
 	selectOrder = append(selectOrder, "instance_match_criteria")
@@ -932,7 +931,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter instance_platform:\n(Required) The type of operating system for which to reserve capacity.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"Linux/Unix","Red Hat Enterprise Linux","SUSE Linux", "Windows","Windows with SQL Server","Windows with SQL Server Enterprise","Windows with SQL Server Standard","Windows with SQL Server Web"},
+			Items: []string{"Linux/Unix", "Red Hat Enterprise Linux", "SUSE Linux", "Windows", "Windows with SQL Server", "Windows with SQL Server Enterprise", "Windows with SQL Server Standard", "Windows with SQL Server Web"},
 		},
 	}
 	selectOrder = append(selectOrder, "instance_platform")
@@ -941,7 +940,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter tenancy:\n(Required) The type of operating system for which to reserve capacity.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"default","dedicated"},
+			Items: []string{"default", "dedicated"},
 		},
 	}
 	selectOrder = append(selectOrder, "tenancy")
@@ -951,7 +950,7 @@ func AWSEC2CapacityReservationPrompt() {
 	builder.ResourceBuilder("aws_ec2_capacity_reservation", blockName, resourceBlock)
 }
 
-func AWSEC2CarrierGatewayPrompt()  {
+func AWSEC2CarrierGatewayPrompt() {
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -1031,7 +1030,7 @@ func AWSEC2ClientVPNAuthorizationRulePrompt() {
 		Label: "Enter access_group_id:\n(Optional) The ID of the group to which the authorization rule grants access.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"access_group_id","authorize_all_groups"},
+			Items: []string{"access_group_id", "authorize_all_groups"},
 		},
 	}
 	selectOrder = append(selectOrder, "access_group_id")
@@ -1040,7 +1039,7 @@ func AWSEC2ClientVPNAuthorizationRulePrompt() {
 		Label: "Enter authorize_all_groups:\n(Optional) Indicates whether the authorization rule grants access to all clients.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"access_group_id","authorize_all_groups"},
+			Items: []string{"access_group_id", "authorize_all_groups"},
 		},
 	}
 	selectOrder = append(selectOrder, "authorize_all_groups")
@@ -1105,7 +1104,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 	prompts["split_tunnel"] = types.TfPrompt{
 		Label: "Enter split_tunnel(true/false):\n(Optional) Indicates whether split-tunnel is enabled on VPN endpoint. Default value is false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1114,7 +1113,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A mapping of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1169,7 +1168,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 			"\ndirectory-service-authentication to use Active Directory authentication, or federated-authentication to use Federated Authentication via SAML 2.0.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"certificate-authentication","directory-service-authentication","federated-authentication"},
+			Items: []string{"certificate-authentication", "directory-service-authentication", "federated-authentication"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "type")
@@ -1185,7 +1184,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 	connectionLogOptionsPrompt["enabled"] = types.TfPrompt{
 		Label: "Enter enabled:(true/false):\n(Required) Indicates whether connection logging is enabled.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1331,7 +1330,7 @@ func AWSEC2FleetPrompt() {
 	prompts["terminate_instances"] = types.TfPrompt{
 		Label: "Enter terminate_instances(true/false):\n(Optional) Whether to terminate instances for an EC2 Fleet if it is deleted successfully. Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1340,7 +1339,7 @@ func AWSEC2FleetPrompt() {
 	prompts["terminate_instances_with_expiration"] = types.TfPrompt{
 		Label: "Enter terminate_instances_with_expiration(true/false):\n(Optional) Whether running instances should be terminated when the EC2 Fleet expires. Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1349,7 +1348,7 @@ func AWSEC2FleetPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Map of Fleet tags. To tag instances at launch, specify the tags in the Launch Template.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1358,7 +1357,7 @@ func AWSEC2FleetPrompt() {
 	prompts["replace_unhealthy_instances"] = types.TfPrompt{
 		Label: "Enter replace_unhealthy_instances(true/false): (Optional) Whether EC2 Fleet should replace unhealthy instances. Defaults to false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1370,7 +1369,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter type:\n(Optional) The type of request. Indicates whether the EC2 Fleet only requests the target capacity, or also attempts to maintain it. Defaults to \"maintain\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"maintain","request"},
+			Items: []string{"maintain", "request"},
 		},
 	}
 	selectOrder = append(selectOrder, "type")
@@ -1380,7 +1379,7 @@ func AWSEC2FleetPrompt() {
 			"\ntarget capacity of the EC2 Fleet is decreased below the current size of the EC2. Defaults to \"termination\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"no-termination","termination"},
+			Items: []string{"no-termination", "termination"},
 		},
 	}
 	selectOrder = append(selectOrder, "excess_capacity_termination_policy")
@@ -1400,7 +1399,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter allocation_strategy:\n(Optional) How to allocate the target capacity across the Spot pools.Defaults to \"lowestPrice\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"diversified","lowestPrice"},
+			Items: []string{"diversified", "lowestPrice"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "allocation_strategy")
@@ -1409,7 +1408,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter instance_interruption_behavior:\n(Optional) Behavior when a Spot Instance is interrupted. Defaults to \"terminate\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"hibernate","stop","terminate"},
+			Items: []string{"hibernate", "stop", "terminate"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "instance_interruption_behavior")
@@ -1417,7 +1416,7 @@ func AWSEC2FleetPrompt() {
 	spotOptionsPrompt["instance_pools_to_use_count"] = types.TfPrompt{
 		Label: "Enter instance_pools_to_use_count:\n(Optional) Number of Spot pools across which to allocate your target Spot capacity. Valid only when Spot allocation_strategy is set to lowestPrice. Default: 1",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1456,7 +1455,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter allocation_strategy:\n(Optional) The order of the launch template overrides to use in fulfilling On-Demand capacity. Defaults to \"lowestPrice\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"lowestPrice","prioritized"},
+			Items: []string{"lowestPrice", "prioritized"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "allocation_strategy")
@@ -1470,7 +1469,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter default_target_capacity_type:\n(Required) Default target capacity type.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"on-demand","spot"},
+			Items: []string{"on-demand", "spot"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "default_target_capacity_type")
@@ -1478,7 +1477,7 @@ func AWSEC2FleetPrompt() {
 	targetCapacitySpecificationPrompt["total_target_capacity"] = types.TfPrompt{
 		Label: "Enter total_target_capacity:\n(Required) The number of units to request, filled using default_target_capacity_type.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1487,7 +1486,7 @@ func AWSEC2FleetPrompt() {
 	targetCapacitySpecificationPrompt["on_demand_target_capacity"] = types.TfPrompt{
 		Label: "Enter on_demand_target_capacity:\n(Optional) The number of On-Demand units to request.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1496,7 +1495,7 @@ func AWSEC2FleetPrompt() {
 	targetCapacitySpecificationPrompt["spot_target_capacity"] = types.TfPrompt{
 		Label: "Enter spot_target_capacity:\n(Optional) The number of Spot units to request.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1565,7 +1564,7 @@ func AWSEC2FleetPrompt() {
 			"\nthe higher the priority. If no number is set, the launch template override has the lowest priority. " +
 			"\nValid values are whole numbers starting at 0.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1582,7 +1581,7 @@ func AWSEC2FleetPrompt() {
 	overridePrompt["weighted_capacity"] = types.TfPrompt{
 		Label: "Enter weighted_capacity:\n(Optional) Number of units provided by the specified instance type.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1592,7 +1591,7 @@ func AWSEC2FleetPrompt() {
 
 	launchTemplateConfig := map[string]interface{}{
 		"launch_template_specification": launchTemplateSpecificationBlock,
-		"override": overrideBlock,
+		"override":                      overrideBlock,
 	}
 
 	resourceBlock["launch_template_config"] = launchTemplateConfig
@@ -1676,7 +1675,7 @@ func AWSEC2LocalGatewayRouteTableVPCAssociationPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1828,7 +1827,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter protocol:\nOptional) The protocol number, for example 17 (UDP), to assign to the Traffic Mirror rule." +
 			"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1838,7 +1837,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter rule_number:\n(Required) The number of the Traffic Mirror rule. This number must be unique for each Traffic " +
 			"\nMirror rule in a given direction. The rules are processed in ascending order by rule number.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1858,7 +1857,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter rule_action:\n(Required) The action to take (accept | reject) on the filtered traffic.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"accept","reject"},
+			Items: []string{"accept", "reject"},
 		},
 	}
 	selectOrder = append(selectOrder, "rule_action")
@@ -1867,7 +1866,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter traffic_direction:\n(Required) The direction of traffic to be captured.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"ingress","egress"},
+			Items: []string{"ingress", "egress"},
 		},
 	}
 	selectOrder = append(selectOrder, "traffic_direction")
@@ -1884,7 +1883,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 	destinationPortRangePrompt["from_port"] = types.TfPrompt{
 		Label: "Enter from_port:\n(Optional) Starting port of the range",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1893,7 +1892,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 	destinationPortRangePrompt["to_port"] = types.TfPrompt{
 		Label: "Enter to_port:\n(Optional) Ending port of the range",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1910,7 +1909,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 	sourcePortRangePrompt["from_port"] = types.TfPrompt{
 		Label: "Enter from_port:\n(Optional) Starting port of the range",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1918,7 +1917,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 	sourcePortRangePrompt["to_port"] = types.TfPrompt{
 		Label: "Enter to_port:\n(Optional) Ending port of the range",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1981,7 +1980,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 	prompts["packet_length"] = types.TfPrompt{
 		Label: "Enter packet_length:\n(Required) ID of the traffic mirror target to be used",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1991,7 +1990,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 		Label: "Enter session_number:\n(Required) - The session number determines the order in which sessions are evaluated when an " +
 			"\ninterface is used by multiple sessions. The first session with a matching filter is the one that mirrors the packets.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -2009,7 +2008,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2065,7 +2064,7 @@ func AWSEC2TrafficMirrorTargetPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2094,7 +2093,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter amazon_side_asn:\n(Optional) Private Autonomous System Number (ASN) for the Amazon side of a BGP session. " +
 			"\nThe range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs. Default value: 64512",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -2111,7 +2110,7 @@ func AWSEC2TransitGatewayPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2123,7 +2122,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter auto_accept_shared_attachments:\n(Optional) Whether resource attachment requests are automatically accepted. Defaults to \"disable\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"disable","enable"},
+			Items: []string{"disable", "enable"},
 		},
 	}
 	selectOrder = append(selectOrder, "auto_accept_shared_attachments")
@@ -2132,7 +2131,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter default_route_table_association:\n(Optional) Whether resource attachments automatically propagate routes to the default propagation route table. Defaults to \"enable\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"disable","enable"},
+			Items: []string{"disable", "enable"},
 		},
 	}
 	selectOrder = append(selectOrder, "default_route_table_association")
@@ -2141,7 +2140,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter dns_support:\n(Optional) Whether DNS support is enabled. Defaults to \"enable\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"disable","enable"},
+			Items: []string{"disable", "enable"},
 		},
 	}
 	selectOrder = append(selectOrder, "dns_support")
@@ -2150,7 +2149,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter vpn_ecmp_support:\n(Optional) Whether VPN Equal Cost Multipath Protocol support is enabled. Defaults to \"enable\"",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"disable","enable"},
+			Items: []string{"disable", "enable"},
 		},
 	}
 	selectOrder = append(selectOrder, "vpn_ecmp_support")
@@ -2210,7 +2209,7 @@ func AWSEC2TransitGatewayPeeringAttachmentPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2246,7 +2245,7 @@ func AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2290,7 +2289,7 @@ func AWSEC2TransitGatewayRoutePrompt() {
 	prompts["blackhole"] = types.TfPrompt{
 		Label: "Enter blackhole(true/false):\n(Optional) Indicates whether to drop traffic that matches this route (default to false).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2334,7 +2333,7 @@ func AWSEC2TransitGatewayRouteTablePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Route Table.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2460,7 +2459,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nIf enabled, a traffic flow between a source and destination uses the same " +
 			"\nAvailability Zone for the VPC attachment for the lifetime of that flow.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2469,7 +2468,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 	prompts["dns_support"] = types.TfPrompt{
 		Label: "Enter dns_support(true/false):\n(Optional) Whether DNS support is enabled. Defaults to \"enable\"",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2478,7 +2477,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 	prompts["ipv6_support"] = types.TfPrompt{
 		Label: "Enter ipv6_support(true/false):\n(Optional) Whether IPv6 support is enabled. Defaults to \"disable\"",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2489,7 +2488,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nEC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with " +
 			"\nResource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2500,7 +2499,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nEC2 Transit Gateway propagation default route table. This cannot be configured " +
 			"\nor perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2544,7 +2543,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 	prompts["transit_gateway_default_route_table_association"] = types.TfPrompt{
 		Label: "Enter transit_gateway_default_route_table_association:\n(Optional) Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2553,7 +2552,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 	prompts["transit_gateway_default_route_table_propagation"] = types.TfPrompt{
 		Label: "Enter transit_gateway_default_route_table_propagation:\n(Optional) Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2562,7 +2561,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway VPC Attachment.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2598,7 +2597,7 @@ func AWSEIPPrompt() {
 	prompts["vpc"] = types.TfPrompt{
 		Label: "Enter vpc(true/false):\n(Optional) Boolean if the EIP is in a VPC or not.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2632,7 +2631,7 @@ func AWSEIPPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource. Tags can only be applied to EIPs in a VPC.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2699,7 +2698,7 @@ func AWSEIPAssociationPrompt() {
 	prompts["allow_reassociation"] = types.TfPrompt{
 		Label: "Enter allow_reassociation(true/false):\n(Optional, Boolean) Whether to allow an Elastic IP to be re-associated. Defaults to true in VPC.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2744,4 +2743,223 @@ func AWSEIPAssociationPrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
 	builder.ResourceBuilder("aws_eip_association", blockName, resourceBlock)
+}
+
+func AWSInstancePrompt() {
+	prompts := map[string]types.TfPrompt{}
+
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var promptOrder []string
+	prompts["ami"] = types.TfPrompt{
+		Label: "Enter ami(Required):\nThe AMI to use for the instance",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ami")
+
+	prompts["instance_type"] = types.TfPrompt{
+		Label: "Enter instance_type(Required) e.g. t2.micro\nThe type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_type")
+
+	prompts["cpu_core_count"] = types.TfPrompt{
+		Label: "Enter cpu_core_count(number):\n(Optional)Sets the number of CPU cores for an instance. " +
+			"This option is only supported on creation of instance type that support CPU Options - " +
+			"specifying this option for unsupported instance types will return an error from the EC2 API. Checkout " +
+			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#cpu-options-supported-instances-values for more info.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "cpu_core_count")
+
+	prompts["cpu_threads_per_core"] = types.TfPrompt{
+		Label: "Enter cpu_threads_per_core(number):\n(Optional) - has no effect unless cpu_core_count is also set) " +
+			"If set to to 1, hyperthreading is disabled on the launched instance. " +
+			"Defaults to 2 if not set. See Optimizing CPU Options for more information.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "cpu_threads_per_core")
+
+	prompts["ebs_optimized"] = types.TfPrompt{
+		Label: "Enter EBS-optimized(true/false):\n(Optional) If true, the launched EC2 instance will be EBS-optimized. " +
+			"\nNote that if this is not set on an instance type that is optimized by default then this will show " +
+			"\nas disabled but if the instance type is optimized by default then there is no " +
+			"\nneed to set this and there is no effect to disabling it. " +
+			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ebs_optimized")
+
+	prompts["monitoring"] = types.TfPrompt{
+		Label: "Select true/false for monitoring:\n(Optional) " +
+			"If true, the launched EC2 instance will have detailed monitoring enabled",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "monitoring")
+
+	prompts["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Optional) The VPC Subnet ID to launch in.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.StringValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_id")
+
+	prompts["private_ip"] = types.TfPrompt{
+		Label: "Enter private_ip:\n(Optional) Private IP address to associate with the instance in a VPC.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.StringValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "private_ip")
+
+	prompts["iam_instance_profile"] = types.TfPrompt{
+		Label: "Enter iam_instance_profile:\n(Optional) The IAM Instance Profile to launch the " +
+			"instance with. Specified as the name of the Instance Profile. " +
+			"Ensure your credentials have the correct permission to assign " +
+			"the instance profile according to the EC2 documentation, notably iam:PassRole",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.StringValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "iam_instance_profile")
+
+	prompts["security_groups"] = types.TfPrompt{
+		Label: "A list of security group names (EC2-Classic) or IDs (default VPC) to associate with\ne.g.[\"a\",\"b\",\"c\"]",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "security_groups")
+
+	prompts["vpc_security_group_ids"] = types.TfPrompt{
+		Label: "A list of security group IDs to associate with(Only VPC) e.g. [\"a\",\"b\",\"c\"]",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_security_group_ids")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["associate_public_ip_address"] = types.TfPrompt{
+		Label: "Enter associate_public_ip_address(true/false):\n(Optional)Associate a public ip address with an instance in a VPC.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "associate_public_ip_address")
+
+	prompts["hibernation"] = types.TfPrompt{
+		Label: "Enter hibernation(true/false).\n(Optional)If true, the launched EC2 instance will support hibernation.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "hibernation")
+
+	selects := map[string]types.TfSelect{}
+	var selectOrder []string
+
+	selects["placement_group"] = types.TfSelect{
+		Label: "Enter placement_group:\nThe Placement Group to start the instance in",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"cluster", "partition", "spread"},
+		},
+	}
+	selectOrder = append(selectOrder, "placement_group")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_instance", blockName, resourceBlock)
+}
+
+func AWSKeyPairPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["key_name"] = types.TfPrompt{
+		Label: "Enter key_name:\n(Optional) The name for the key pair.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "key_name")
+
+	prompts["key_name_prefix"] = types.TfPrompt{
+		Label: "Enter key_name_prefix:\n(Optional) Creates a unique name beginning with the specified prefix. Conflicts with key_name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "key_name_prefix")
+
+	prompts["public_key"] = types.TfPrompt{
+		Label: "Enter public_key:\n(Required) The public key material.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "public_key")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_key_pair", blockName, resourceBlock)
+
 }

@@ -320,8 +320,6 @@ func ResourcePrompt(resource string, boilerplate bool) {
 	}
 
 	switch resource {
-	case "aws_instance":
-		resource_prompts.AWSInstancePrompt()
 	case "aws_vpc":
 		resource_prompts.AWSVPCPrompt()
 	case "aws_customer_gateway":
@@ -428,14 +426,18 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEIPPrompt()
 	case "aws_eip_association":
 		resource_prompts.AWSEIPAssociationPrompt()
+	case "aws_ec2_transit_gateway_vpc_attachment":
+		resource_prompts.AWSEC2TransitGatewayVPCAttachmentPrompt()
+	case "aws_instance":
+		resource_prompts.AWSInstancePrompt()
+	case "aws_key_pair":
+		resource_prompts.AWSKeyPairPrompt()
 	case "aws_db_proxy":
 		resource_prompts.AWSDbProxyPrompt()
 	case "aws_db_proxy_default_target_group":
 		resource_prompts.AWSDBProxyDefaultTargetGroupPrompt()
 	case "aws_db_proxy_target":
 		resource_prompts.AWSDBProxyTargetPrompt()
-	case "aws_ec2_transit_gateway_vpc_attachment":
-		resource_prompts.AWSEC2TransitGatewayVPCAttachmentPrompt()
 	case "aws_db_security_group":
 		resource_prompts.AWSDBSecurityGroupPrompt()
 	case "aws_db_snapshot":

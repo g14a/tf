@@ -858,7 +858,7 @@ func AWSS3BucketObjectPrompt() {
 	prompts["metadata"] = types.TfPrompt{
 		Label: "Enter metadata: e.g.k1=v1,k2=v2\n(Optional) A map of keys/values to provision metadata (will be automatically prefixed by x-amz-meta-).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -867,7 +867,7 @@ func AWSS3BucketObjectPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the object.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -877,7 +877,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter force_destroy(true/false):\n(Optional) Allow the object to be deleted by removing any legal hold on any object version. " +
 			"\nDefault is false. This value should be set to true only if the bucket has S3 object lock enabled.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -887,7 +887,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter object_lock_retain_until_date:\n(Optional) The date and time, in RFC3339 format, when this object's object lock will expire." +
 			"\nCheckout https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-retention-periods",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -899,7 +899,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter acl:\n(Optional) The canned ACL to apply. Defaults to private.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"private","public-read","public-read-write","aws-exec-read","authenticated-read","bucket-owner-read","bucket-owner-full-control"},
+			Items: []string{"private", "public-read", "public-read-write", "aws-exec-read", "authenticated-read", "bucket-owner-read", "bucket-owner-full-control"},
 		},
 	}
 	selectOrder = append(selectOrder, "acl")
@@ -908,7 +908,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter storage_class:\n(Optional) Specifies the desired Storage Class for the object. Can be either \"STANDARD\", \"REDUCED_REDUNDANCY\", \"ONEZONE_IA\", \"INTELLIGENT_TIERING\", \"GLACIER\", \"DEEP_ARCHIVE\", or \"STANDARD_IA\". Defaults to \"STANDARD",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"STANDARD","REDUCED_REDUNDANCY","ONEZONE_IA","INTELLIGENT_TIERING","GLACIER","DEEP_ARCHIVE","STANDARD_IA"},
+			Items: []string{"STANDARD", "REDUCED_REDUNDANCY", "ONEZONE_IA", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE", "STANDARD_IA"},
 		},
 	}
 	selectOrder = append(selectOrder, "storage_class")
@@ -918,7 +918,7 @@ func AWSS3BucketObjectPrompt() {
 			"\nCheckout https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-legal-holds",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"ON","OFF"},
+			Items: []string{"ON", "OFF"},
 		},
 	}
 	selectOrder = append(selectOrder, "object_lock_legal_hold_status")
@@ -927,7 +927,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter object_lock_mode:\n(Optional) The object lock retention mode that you want to apply to this object.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"ON","OFF"},
+			Items: []string{"ON", "OFF"},
 		},
 	}
 	selectOrder = append(selectOrder, "object_lock_mode")
@@ -983,7 +983,7 @@ func AWSS3BucketOwnershipControlsPrompt() {
 		Label: "Enter object_ownership:\n(Optional) Object ownership.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"BucketOwnerPreferred","ObjectWriter"},
+			Items: []string{"BucketOwnerPreferred", "ObjectWriter"},
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "object_ownership")
@@ -1059,4 +1059,3 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 
 	builder.ResourceBuilder("aws_s3_bucket_public_access_block", blockName, resourceBlock)
 }
-
