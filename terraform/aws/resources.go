@@ -416,6 +416,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2TransitGatewayRoutePrompt()
 	case "aws_ec2_transit_gateway_route_table":
 		resource_prompts.AWSEC2TransitGatewayRouteTablePrompt()
+	case "aws_ec2_transit_gateway_route_table_association":
+		resource_prompts.AWSEC2TransitGatewayRouteTableAssociationPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":

@@ -2345,3 +2345,39 @@ func AWSEC2TransitGatewayRouteTablePrompt() {
 	builder.ResourceBuilder("aws_ec2_transit_gateway_route_table", blockName, resourceBlock)
 
 }
+
+func AWSEC2TransitGatewayRouteTableAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["transit_gateway_attachment_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_attachment_id:\n(Required) Identifier of EC2 Transit Gateway Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_attachment_id")
+
+	prompts["transit_gateway_route_table_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_route_table_id:\n(Required) Identifier of EC2 Transit Gateway Route Table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_route_table_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_route_table_association", blockName, resourceBlock)
+
+}
