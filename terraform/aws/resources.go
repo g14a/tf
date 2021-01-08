@@ -428,6 +428,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSDBProxyDefaultTargetGroupPrompt()
 	case "aws_db_proxy_target":
 		resource_prompts.AWSDBProxyTargetPrompt()
+	case "aws_ec2_transit_gateway_vpc_attachment":
+		resource_prompts.AWSEC2TransitGatewayVPCAttachmentPrompt()
 	case "aws_db_security_group":
 		resource_prompts.AWSDBSecurityGroupPrompt()
 	case "aws_db_snapshot":

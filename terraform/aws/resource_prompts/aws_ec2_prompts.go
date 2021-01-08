@@ -2417,3 +2417,104 @@ func AWSEC2TransitGatewayRouteTablePropagationPrompt() {
 	builder.ResourceBuilder("aws_ec2_transit_gateway_route_table_propagation", blockName, resourceBlock)
 }
 
+func AWSEC2TransitGatewayVPCAttachmentPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["subnet_ids"] = types.TfPrompt{
+		Label: "Enter subnet_ids:\n(Required) Identifiers of EC2 Subnets.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_ids")
+
+	prompts["transit_gateway_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_id:\n(Required) Identifier of EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_id")
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) Identifier of EC2 VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["appliance_mode_support"] = types.TfPrompt{
+		Label: "Enter appliance_mode_support(true/false):\n(Optional) Whether Appliance Mode support is enabled. " +
+			"\nIf enabled, a traffic flow between a source and destination uses the same " +
+			"\nAvailability Zone for the VPC attachment for the lifetime of that flow.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "appliance_mode_support")
+
+	prompts["dns_support"] = types.TfPrompt{
+		Label: "Enter dns_support(true/false):\n(Optional) Whether DNS support is enabled. Defaults to \"enable\"",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "dns_support")
+
+	prompts["ipv6_support"] = types.TfPrompt{
+		Label: "Enter ipv6_support(true/false):\n(Optional) Whether IPv6 support is enabled. Defaults to \"disable\"",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_support")
+
+	prompts["transit_gateway_default_route_table_association"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_association(true/false):\n(Optional) Boolean whether the VPC Attachment should be associated with the " +
+			"\nEC2 Transit Gateway association default route table. This cannot be configured or perform drift detection with " +
+			"\nResource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_association")
+
+	prompts["transit_gateway_default_route_table_propagation"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_propagation(true/false):\n(Optional) Boolean whether the VPC Attachment should propagate routes with the " +
+			"\nEC2 Transit Gateway propagation default route table. This cannot be configured " +
+			"\nor perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_propagation")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway VPC Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_vpc_attachment", blockName, resourceBlock)
+}
