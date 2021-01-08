@@ -1927,3 +1927,96 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 
 	builder.ResourceBuilder("aws_ec2_traffic_mirror_filter_rule", blockName, resourceBlock)
 }
+
+func AWSEC2TrafficMirrorSessionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	color.Yellow("\nCheckout https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-considerations.html" +
+		"\nto know more about limits and consideration for traffic mirroring\n")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A description of the traffic mirror session.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Required, Forces new) ID of the source network interface. Not all network " +
+			"\ninterfaces are eligible as mirror sources. On EC2 instances only nitro based instances support mirroring.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface_id")
+
+	prompts["traffic_mirror_filter_id"] = types.TfPrompt{
+		Label: "Enter traffic_mirror_filter_id:\n(Required) ID of the traffic mirror filter to be used",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "traffic_mirror_filter_id")
+
+	prompts["traffic_mirror_target_id"] = types.TfPrompt{
+		Label: "Enter traffic_mirror_target_id:\n(Required) ID of the traffic mirror target to be used",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "traffic_mirror_target_id")
+
+	prompts["packet_length"] = types.TfPrompt{
+		Label: "Enter packet_length:\n(Required) ID of the traffic mirror target to be used",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "packet_length")
+
+	prompts["session_number"] = types.TfPrompt{
+		Label: "Enter session_number:\n(Required) - The session number determines the order in which sessions are evaluated when an " +
+			"\ninterface is used by multiple sessions. The first session with a matching filter is the one that mirrors the packets.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "session_number")
+
+	prompts["virtual_network_id"] = types.TfPrompt{
+		Label: "Enter virtual_network_id:\n(Optional) - The VXLAN ID for the Traffic Mirror session. For more information about " +
+			"\nthe VXLAN protocol, see RFC 7348. If you do not specify a VirtualNetworkId, an account-wide unique id is chosen at random.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "virtual_network_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_traffic_mirror_session", blockName, resourceBlock)
+
+}
