@@ -2159,3 +2159,64 @@ func AWSEC2TransitGatewayPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_transit_gateway", blockName, resourceBlock)
 }
+
+func AWSEC2TransitGatewayPeeringAttachmentPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["peer_account_id"] = types.TfPrompt{
+		Label: "Enter peer_account_id:\n(Optional) Account ID of EC2 Transit Gateway to peer with. " +
+			"\nDefaults to the account ID the AWS provider is currently connected to.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "peer_account_id")
+
+	prompts["peer_region"] = types.TfPrompt{
+		Label: "Enter peer_region:\n(Required) Region of EC2 Transit Gateway to peer with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "peer_region")
+
+	prompts["peer_transit_gateway_id"] = types.TfPrompt{
+		Label: "Enter peer_transit_gateway_id:\n(Required) Identifier of EC2 Transit Gateway to peer with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "peer_transit_gateway_id")
+
+	prompts["transit_gateway_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_id:\n(Required) Identifier of EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_peering_attachment", blockName, resourceBlock)
+}
