@@ -422,6 +422,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2TransitGatewayRouteTablePropagationPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
+	case "aws_ec2_transit_gateway_vpc_attachment_accepter":
+		resource_prompts.AWSEC2TransitGatewayVPCAttachmentAccepterPrompt()
+	case "aws_eip":
+		resource_prompts.AWSEIPPrompt()
 	case "aws_db_proxy":
 		resource_prompts.AWSDbProxyPrompt()
 	case "aws_db_proxy_default_target_group":

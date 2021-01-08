@@ -2518,3 +2518,148 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_transit_gateway_vpc_attachment", blockName, resourceBlock)
 }
+
+func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["transit_gateway_attachment_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_attachment_id:\n(Required) The ID of the EC2 Transit Gateway Attachment to manage.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_attachment_id")
+
+	prompts["transit_gateway_default_route_table_association"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_association:\n(Optional) Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_association")
+
+	prompts["transit_gateway_default_route_table_propagation"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_propagation:\n(Optional) Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_propagation")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway VPC Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_vpc_attachment_accepter", blockName, resourceBlock)
+}
+
+func AWSEIPPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	color.Yellow("\nYou can specify either the instance ID or the network_interface ID, but not both. " +
+		"\nIncluding both will not return an error from the AWS API, but will have undefined behavior." +
+		"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AssociateAddress.html\n")
+
+	prompts["vpc"] = types.TfPrompt{
+		Label: "Enter vpc(true/false):\n(Optional) Boolean if the EIP is in a VPC or not.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "vpc")
+
+	prompts["instance"] = types.TfPrompt{
+		Label: "Enter instance:\n(Optional) EC2 instance ID.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance")
+
+	prompts["network_interface"] = types.TfPrompt{
+		Label: "Enter network_interface:\n(Optional) Network interface ID to associate with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface")
+
+	prompts["associate_with_private_ip"] = types.TfPrompt{
+		Label: "Enter associate_with_private_ip:\n(Optional) A user specified primary or secondary private IP address to associate with the " +
+			"\nElastic IP address. If no private IP address is specified, the Elastic IP address is associated with the primary private IP address.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "associate_with_private_ip")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource. Tags can only be applied to EIPs in a VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["public_ipv4_pool"] = types.TfPrompt{
+		Label: "Enter public_ipv4_pool:\n(Optional) EC2 IPv4 address pool identifier or amazon. This option is only available for VPC EIPs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "public_ipv4_pool")
+
+	prompts["customer_owned_ipv4_pool"] = types.TfPrompt{
+		Label: "Enter customer_owned_ipv4_pool:\nThe ID of a customer-owned address pool." +
+			"\nCheckout https://docs.aws.amazon.com/outposts/latest/userguide/outposts-networking-components.html#ip-addressing",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "customer_owned_ipv4_pool")
+
+	prompts["network_border_group"] = types.TfPrompt{
+		Label: "Enter network_border_group:\nThe location from which the IP address is advertised. Use this parameter to limit the address to this location.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_border_group")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_eip", blockName, resourceBlock)
+}
