@@ -2518,3 +2518,57 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_transit_gateway_vpc_attachment", blockName, resourceBlock)
 }
+
+func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["transit_gateway_attachment_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_attachment_id:\n(Required) The ID of the EC2 Transit Gateway Attachment to manage.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_attachment_id")
+
+	prompts["transit_gateway_default_route_table_association"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_association:\n(Optional) Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_association")
+
+	prompts["transit_gateway_default_route_table_propagation"] = types.TfPrompt{
+		Label: "Enter transit_gateway_default_route_table_propagation:\n(Optional) Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_default_route_table_propagation")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway VPC Attachment.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_transit_gateway_vpc_attachment_accepter", blockName, resourceBlock)
+}
