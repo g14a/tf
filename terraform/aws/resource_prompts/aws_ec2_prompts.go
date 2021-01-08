@@ -1785,3 +1785,145 @@ func AWSEC2TrafficMirrorFilterPrompt() {
 	builder.ResourceBuilder("aws_ec2_traffic_mirror_filter", blockName, resourceBlock)
 
 }
+
+func AWSEC2TrafficMirrorFilterRulePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A description of the traffic mirror filter rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["traffic_mirror_filter_id"] = types.TfPrompt{
+		Label: "Enter traffic_mirror_filter_id:\n(Required) ID of the traffic mirror filter to which this rule should be added",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "traffic_mirror_filter_id")
+
+	prompts["destination_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_cidr_block:\n(Required) The destination CIDR block to assign to the Traffic Mirror rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_cidr_block")
+
+	prompts["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\nOptional) The protocol number, for example 17 (UDP), to assign to the Traffic Mirror rule." +
+			"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "protocol")
+
+	prompts["rule_number"] = types.TfPrompt{
+		Label: "Enter rule_number:\n(Required) The number of the Traffic Mirror rule. This number must be unique for each Traffic " +
+			"\nMirror rule in a given direction. The rules are processed in ascending order by rule number.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "rule_number")
+
+	prompts["source_cidr_block"] = types.TfPrompt{
+		Label: "Enter source_cidr_block:\n(Required) The source CIDR block to assign to the Traffic Mirror rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_cidr_block")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["rule_action"] = types.TfSelect{
+		Label: "Enter rule_action:\n(Required) The action to take (accept | reject) on the filtered traffic.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"accept","reject"},
+		},
+	}
+	selectOrder = append(selectOrder, "rule_action")
+
+	selects["traffic_direction"] = types.TfSelect{
+		Label: "Enter traffic_direction:\n(Required) The direction of traffic to be captured.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"ingress","egress"},
+		},
+	}
+	selectOrder = append(selectOrder, "traffic_direction")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	color.Green("\nEnter destination_port_range:\n(Optional) The destination port range. Supported only when the protocol is set to TCP(6) or UDP(17)" +
+		"\ndestination_port_range supports the following arguments:" +
+		"\n1.from_port\n2.to_port\n")
+
+	destinationPortRangePrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	destinationPortRangePrompt["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Optional) Starting port of the range",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "from_port")
+
+	destinationPortRangePrompt["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Optional) Ending port of the range",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "to_port")
+
+	resourceBlock["destination_port_range"] = builder.PSOrder(nestedPromptOrder, nil, destinationPortRangePrompt, nil)
+
+	color.Green("\nEnter source_port_range:\n(Optional) The destination port range. Supported only when the protocol is set to TCP(6) or UDP(17)" +
+		"\nsource_port_range supports the following arguments:" +
+		"\n1.from_port\n2.to_port\n")
+
+	sourcePortRangePrompt := map[string]types.TfPrompt{}
+
+	sourcePortRangePrompt["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Optional) Starting port of the range",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+
+	sourcePortRangePrompt["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Optional) Ending port of the range",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+
+	resourceBlock["source_port_range"] = builder.PSOrder(nestedPromptOrder, nil, sourcePortRangePrompt, nil)
+
+	builder.ResourceBuilder("aws_ec2_traffic_mirror_filter_rule", blockName, resourceBlock)
+}
