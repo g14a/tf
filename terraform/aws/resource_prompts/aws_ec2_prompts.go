@@ -1599,3 +1599,46 @@ func AWSEC2FleetPrompt() {
 
 	builder.ResourceBuilder("aws_ec2_fleet", blockName, resourceBlock)
 }
+
+func AWSEC2LocalGatewayRoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["destination_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_cidr_block:\n(Required) IPv4 CIDR range used for destination matches. Routing decisions are based on the most specific match.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_cidr_block")
+
+	prompts["local_gateway_route_table_id"] = types.TfPrompt{
+		Label: "Enter local_gateway_route_table_id:\n(Required) Identifier of EC2 Local Gateway Route Table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "local_gateway_route_table_id")
+
+	prompts["local_gateway_virtual_interface_group_id"] = types.TfPrompt{
+		Label: "Enter local_gateway_virtual_interface_group_id:\n(Required) Identifier of EC2 Local Gateway Virtual Interface Group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "local_gateway_virtual_interface_group_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_local_gateway_route", blockName, resourceBlock)
+}
