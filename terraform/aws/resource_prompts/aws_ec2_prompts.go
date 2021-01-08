@@ -1313,3 +1313,289 @@ func AWSEC2ClientVPNRoutePrompt() {
 
 	builder.ResourceBuilder("aws_ec2_client_vpn_route", blockName, resourceBlock)
 }
+
+func AWSEC2FleetPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["terminate_instances"] = types.TfPrompt{
+		Label: "Enter terminate_instances(true/false):\n(Optional) Whether to terminate instances for an EC2 Fleet if it is deleted successfully. Defaults to false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "terminate_instances")
+
+	prompts["terminate_instances_with_expiration"] = types.TfPrompt{
+		Label: "Enter terminate_instances_with_expiration(true/false):\n(Optional) Whether running instances should be terminated when the EC2 Fleet expires. Defaults to false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "terminate_instances_with_expiration")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Map of Fleet tags. To tag instances at launch, specify the tags in the Launch Template.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["replace_unhealthy_instances"] = types.TfPrompt{
+		Label: "Enter replace_unhealthy_instances(true/false): (Optional) Whether EC2 Fleet should replace unhealthy instances. Defaults to false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "replace_unhealthy_instances")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["type"] = types.TfSelect{
+		Label: "Enter type:\n(Optional) The type of request. Indicates whether the EC2 Fleet only requests the target capacity, or also attempts to maintain it. Defaults to \"maintain\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"maintain","request"},
+		},
+	}
+	selectOrder = append(selectOrder, "type")
+
+	selects["excess_capacity_termination_policy"] = types.TfSelect{
+		Label: "Enter excess_capacity_termination_policy:\n(Optional) Whether running instances should be terminated if the total " +
+			"\ntarget capacity of the EC2 Fleet is decreased below the current size of the EC2. Defaults to \"termination\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"no-termination","termination"},
+		},
+	}
+	selectOrder = append(selectOrder, "excess_capacity_termination_policy")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	spotOptionsPrompt := map[string]types.TfPrompt{}
+	spotOptionsSelect := map[string]types.TfSelect{}
+
+	var nestedPromptOrder, nestedSelectOrder []string
+
+	color.Green("\nEnter spot_options:\n(Optional) Nested argument containing Spot configurations." +
+		"\nspot_options support the following arguments:" +
+		"\n1.allocation_strategy\n2.instance_interruption_behavior\n3.instance_pools_to_use_count\n4.maintenance_strategies\n")
+
+	spotOptionsSelect["allocation_strategy"] = types.TfSelect{
+		Label: "Enter allocation_strategy:\n(Optional) How to allocate the target capacity across the Spot pools.Defaults to \"lowestPrice\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"diversified","lowestPrice"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "allocation_strategy")
+
+	spotOptionsSelect["instance_interruption_behavior"] = types.TfSelect{
+		Label: "Enter instance_interruption_behavior:\n(Optional) Behavior when a Spot Instance is interrupted. Defaults to \"terminate\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"hibernate","stop","terminate"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "instance_interruption_behavior")
+
+	spotOptionsPrompt["instance_pools_to_use_count"] = types.TfPrompt{
+		Label: "Enter instance_pools_to_use_count:\n(Optional) Number of Spot pools across which to allocate your target Spot capacity. Valid only when Spot allocation_strategy is set to lowestPrice. Default: 1",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "instance_pools_to_use_count")
+
+	spotOptionsBlock := builder.PSOrder(nestedPromptOrder, nestedSelectOrder, spotOptionsPrompt, spotOptionsSelect)
+
+	replacementStrategySelect := map[string]types.TfSelect{}
+
+	replacementStrategySelect["replacement_strategy"] = types.TfSelect{
+		Label: "Enter replacement_strategy:\n(Optional) The replacement strategy to use. Only available for fleets of type set to maintain. Valid values: launch",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"launch"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "replacement_strategy")
+
+	color.Yellow("\nCheckout about maintenance_strategies at https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_fleet#maintenance_strategies\n")
+
+	replacementStategyBlock := builder.PSOrder(nil, nestedSelectOrder[len(nestedSelectOrder)-1:], nil, replacementStrategySelect)
+
+	capacityRebalanceBlock := map[string]interface{}{
+		"capacity_rebalance": replacementStategyBlock,
+	}
+
+	spotOptionsBlock["maintenance_strategies"] = capacityRebalanceBlock
+	resourceBlock["spot_options"] = spotOptionsBlock
+
+	color.Green("\nEnter on_demand_options:\n(Optional) Nested argument containing On-Demand configurations." +
+		"\non_demand_options currently support allocation_strategy:\n")
+
+	onDemandOptionSelect := map[string]types.TfSelect{}
+
+	onDemandOptionSelect["allocation_strategy"] = types.TfSelect{
+		Label: "Enter allocation_strategy:\n(Optional) The order of the launch template overrides to use in fulfilling On-Demand capacity. Defaults to \"lowestPrice\"",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"lowestPrice","prioritized"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "allocation_strategy")
+
+	resourceBlock["on_demand_options"] = builder.PSOrder(nil, nestedSelectOrder[len(nestedSelectOrder)-1:], nil, onDemandOptionSelect)
+
+	targetCapacitySpecificationPrompt := map[string]types.TfPrompt{}
+	targetCapacitySpecificationSelect := map[string]types.TfSelect{}
+
+	targetCapacitySpecificationSelect["default_target_capacity_type"] = types.TfSelect{
+		Label: "Enter default_target_capacity_type:\n(Required) Default target capacity type.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"on-demand","spot"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "default_target_capacity_type")
+
+	targetCapacitySpecificationPrompt["total_target_capacity"] = types.TfPrompt{
+		Label: "Enter total_target_capacity:\n(Required) The number of units to request, filled using default_target_capacity_type.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "total_target_capacity")
+
+	targetCapacitySpecificationPrompt["on_demand_target_capacity"] = types.TfPrompt{
+		Label: "Enter on_demand_target_capacity:\n(Optional) The number of On-Demand units to request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "on_demand_target_capacity")
+
+	targetCapacitySpecificationPrompt["spot_target_capacity"] = types.TfPrompt{
+		Label: "Enter spot_target_capacity:\n(Optional) The number of Spot units to request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "spot_target_capacity")
+
+	resourceBlock["target_capacity_specification"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nestedSelectOrder[len(nestedSelectOrder)-1:], targetCapacitySpecificationPrompt, targetCapacitySpecificationSelect)
+
+	launchTemplateSpecificationPrompt := map[string]types.TfPrompt{}
+
+	launchTemplateSpecificationPrompt["version"] = types.TfPrompt{
+		Label: "Enter version:\n(Required) Version number of the launch template.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "version")
+
+	launchTemplateSpecificationPrompt["launch_template_id"] = types.TfPrompt{
+		Label: "Enter launch_template_id:\n(Optional) ID of the launch template.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "launch_template_id")
+
+	launchTemplateSpecificationPrompt["launch_template_name"] = types.TfPrompt{
+		Label: "Enter launch_template_name:\n(Optional) Name of the launch template.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "launch_template_name")
+
+	launchTemplateSpecificationBlock := builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, launchTemplateSpecificationPrompt, nil)
+
+	overridePrompt := map[string]types.TfPrompt{}
+
+	overridePrompt["availability_zone"] = types.TfPrompt{
+		Label: "Enter availability_zone:\n(Optional) Availability Zone in which to launch the instances.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "availability_zone")
+
+	overridePrompt["instance_type"] = types.TfPrompt{
+		Label: "Enter instance_type:\n(Optional) Instance type.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "instance_type")
+
+	overridePrompt["max_price"] = types.TfPrompt{
+		Label: "Enter max_price:\n(Optional) Maximum price per unit hour that you are willing to pay for a Spot Instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "max_price")
+
+	overridePrompt["priority"] = types.TfPrompt{
+		Label: "Enter priority:\n(Optional) Priority for the launch template override. If on_demand_options allocation_strategy " +
+			"\nis set to prioritized, EC2 Fleet uses priority to determine which launch template override to use " +
+			"\nfirst in fulfilling On-Demand capacity. The highest priority is launched first. The lower the number, " +
+			"\nthe higher the priority. If no number is set, the launch template override has the lowest priority. " +
+			"\nValid values are whole numbers starting at 0.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "priority")
+
+	overridePrompt["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Optional) ID of the subnet in which to launch the instances.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "subnet_id")
+
+	overridePrompt["weighted_capacity"] = types.TfPrompt{
+		Label: "Enter weighted_capacity:\n(Optional) Number of units provided by the specified instance type.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "weighted_capacity")
+
+	overrideBlock := builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-6:], nil, overridePrompt, nil)
+
+	launchTemplateConfig := map[string]interface{}{
+		"launch_template_specification": launchTemplateSpecificationBlock,
+		"override": overrideBlock,
+	}
+
+	resourceBlock["launch_template_config"] = launchTemplateConfig
+
+	builder.ResourceBuilder("aws_ec2_fleet", blockName, resourceBlock)
+}

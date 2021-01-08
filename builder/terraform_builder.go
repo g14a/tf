@@ -36,13 +36,13 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 }
 
 func ResourceBuilder(resource, blockName string, resourceBlock map[string]interface{}) {
-	var providerInfo strings.Builder
+	var resourceBuilder strings.Builder
 
 	if resource != "" {
-		providerInfo.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
-		providerInfo = recursiveBuilder(&providerInfo, reflect.ValueOf(resourceBlock))
+		resourceBuilder.WriteString("\nresource \"" + resource + "\" \"" + blockName + "\" {\n")
+		resourceBuilder = recursiveBuilder(&resourceBuilder, reflect.ValueOf(resourceBlock))
 
-		_, err := file.TerraformFile.WriteString(providerInfo.String())
+		_, err := file.TerraformFile.WriteString(resourceBuilder.String())
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -152,9 +152,9 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 				strBuilder.WriteString(repeatingConfig(s))
 			case strings.HasPrefix(s, "map"):
 				strBuilder.WriteString(fmt.Sprintf("%s %s", k, "{\n"))
-			case strings.Contains(s, "int"):
+			case strings.Contains(s, "(int"):
 				strBuilder.WriteString(fmt.Sprintf("%s = %d\n", k, v.MapIndex(k)))
-			case strings.Contains(s, "bool"):
+			case strings.Contains(s, "(bool"):
 				strBuilder.WriteString(fmt.Sprintf("%s = %t\n", k, v.MapIndex(k)))
 			case strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]"):
 				strBuilder.WriteString(fmt.Sprintf("%s = %s\n", k, v.MapIndex(k)))

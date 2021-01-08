@@ -386,6 +386,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2ClientVPNAuthorizationRulePrompt()
 	case "aws_ec2_client_vpn_route":
 		resource_prompts.AWSEC2ClientVPNRoutePrompt()
+	case "aws_ec2_fleet":
+		resource_prompts.AWSEC2FleetPrompt()
 	case "aws_ec2_client_vpn_endpoint":
 		resource_prompts.AWSEC2ClientVPNEndpointPrompt()
 	case "aws_ec2_client_vpn_network_association":
