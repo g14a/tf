@@ -1642,3 +1642,146 @@ func AWSEC2LocalGatewayRoutePrompt() {
 
 	builder.ResourceBuilder("aws_ec2_local_gateway_route", blockName, resourceBlock)
 }
+
+func AWSEC2LocalGatewayRouteTableVPCAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["local_gateway_route_table_id"] = types.TfPrompt{
+		Label: "Enter local_gateway_route_table_id:\n(Required) Identifier of EC2 Local Gateway Route Table",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "local_gateway_route_table_id")
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) Identifier of EC2 VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_local_gateway_route_table_vpc_association", blockName, resourceBlock)
+
+}
+
+func AWSEC2TagPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	color.Yellow("This tagging resource should not be combined with the Terraform resource " +
+		"\nfor managing the parent resource. For example, using aws_vpc and aws_ec2_tag to manage " +
+		"\ntags of the same VPC will cause a perpetual difference where the aws_vpc resource will try " +
+		"\nto remove the tag being added by the aws_ec2_tag resource.")
+
+	prompts["resource_id"] = types.TfPrompt{
+		Label: "Enter resource_id:\n(Required) The ID of the EC2 resource to manage the tag for.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "resource_id")
+
+	prompts["key"] = types.TfPrompt{
+		Label: "Enter key:\n(Required) The tag name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "key")
+
+	prompts["value"] = types.TfPrompt{
+		Label: "Enter value:\n(Required) The value of the tag",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "value")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_ec2_tag", blockName, resourceBlock)
+}
+
+func AWSEC2TrafficMirrorFilterPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	color.Yellow("Checkout https://docs.aws.amazon.com/vpc/latest/mirroring/traffic-mirroring-considerations.html" +
+		"\nfor traffic mirroring")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional, Forces new resource) A description of the filter.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) Key-value map of resource tags.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["network_services"] = types.TfSelect{
+		Label: "Enter network_services:\n(Optional) List of amazon network services that should be mirrored. Valid values: amazon-dns",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"amazon-dns"},
+		},
+	}
+	selectOrder = append(selectOrder, "network_services")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_ec2_traffic_mirror_filter", blockName, resourceBlock)
+
+}

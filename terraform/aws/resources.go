@@ -386,6 +386,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2ClientVPNAuthorizationRulePrompt()
 	case "aws_ec2_client_vpn_route":
 		resource_prompts.AWSEC2ClientVPNRoutePrompt()
+	case "aws_ec2_local_gateway_route_table_vpc_association":
+		resource_prompts.AWSEC2LocalGatewayRouteTableVPCAssociationPrompt()
+	case "aws_ec2_tag":
+		resource_prompts.AWSEC2TagPrompt()
 	case "aws_ec2_fleet":
 		resource_prompts.AWSEC2FleetPrompt()
 	case "aws_ec2_local_gateway_route":
@@ -394,6 +398,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resource_prompts.AWSEC2ClientVPNEndpointPrompt()
 	case "aws_ec2_client_vpn_network_association":
 		resource_prompts.AWSEC2ClientVPNNetworkAssociationPrompt()
+	case "aws_ec2_traffic_mirror_filter":
+		resource_prompts.AWSEC2TrafficMirrorFilterPrompt()
 	case "aws_db_parameter_group":
 		resource_prompts.AWSDBParameterGroupPrompt()
 	case "aws_db_proxy":
