@@ -3084,3 +3084,410 @@ func AWSSpotDatafeedSubscriptionPrompt() {
 	builder.ResourceBuilder("aws_spot_datafeed_subscription", blockName, resourceBlock)
 
 }
+
+func AWSSpotFleetRequestPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["iam_fleet_role"] = types.TfPrompt{
+		Label: "Enter iam_fleet_role:\n(Required) Grants the Spot fleet permission to terminate Spot instances " +
+			"\non your behalf when you cancel its Spot fleet request using CancelSpotFleetRequests " +
+			"\nor when the Spot fleet request expires, if you set terminateInstancesWithExpiration.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "iam_fleet_role")
+
+	prompts["replace_unhealthy_instances"] = types.TfPrompt{
+		Label: "Enter replace_unhealthy_instances(true/false):\n(Optional) Indicates whether Spot fleet should replace unhealthy instances. Defaults to \"false\"",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "replace_unhealthy_instances")
+
+	prompts["spot_price"] = types.TfPrompt{
+		Label: "Enter spot_price:\n(Optional; Default: On-demand price) The maximum bid price per unit hour.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "spot_price")
+
+	prompts["target_capacity"] = types.TfPrompt{
+		Label: "Enter target_capacity:\nThe number of units to request. You can choose to set the target capacity " +
+			"\nin terms of instances or a performance characteristic that is important to your " +
+			"\napplication workload, such as vCPUs, memory, or I/O.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "target_capacity")
+
+	prompts["instance_pools_to_use_count"] = types.TfPrompt{
+		Label: "Enter instance_pools_to_use_count:\n(Optional; Default: 1) The number of Spot pools across which to allocate your target " +
+			"\nSpot capacity. Valid only when allocation_strategy is set to lowestPrice. " +
+			"\nSpot Fleet selects the cheapest Spot pools and evenly allocates your target " +
+			"\nSpot capacity across the number of Spot pools that you specify.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "instance_pools_to_use_count")
+
+	prompts["excess_capacity_termination_policy"] = types.TfPrompt{
+		Label: "Enter excess_capacity_termination_policy:\nIndicates whether running Spot instances should be terminated if the target capacity of the Spot fleet request is decreased below the current size of the Spot fleet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "excess_capacity_termination_policy")
+
+	prompts["instance_interruption_behaviour"] = types.TfPrompt{
+		Label: "Enter instance_interruption_behaviour:\n(Optional) Indicates whether a Spot instance stops or terminates when it is interrupted. Default is terminate",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_interruption_behaviour")
+
+	prompts["fleet_type"] = types.TfPrompt{
+		Label: "Enter fleet_type:\n(Optional) The type of fleet request. Indicates whether the Spot Fleet only requests the " +
+			"\ntarget capacity or also attempts to maintain it. Default is maintain",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "fleet_type")
+
+	prompts["valid_from"] = types.TfPrompt{
+		Label: "Enter valid_from:\n(Optional) The start date and time of the request, in UTC RFC3339 format" +
+			"\n(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "valid_from")
+
+	prompts["valid_until"] = types.TfPrompt{
+		Label: "Enter valid_until:\n(Optional) The end date and time of the request, in UTC RFC3339 format" +
+			"\n(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed or enabled to fulfill the request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "valid_until")
+
+	prompts["load_balancers"] = types.TfPrompt{
+		Label: "Enter load_balancers e.g. [\"b1\",\"b2\"]:\n(Optional) A list of elastic load balancer names to add to the Spot fleet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "load_balancers")
+
+	prompts["target_group_arns"] = types.TfPrompt{
+		Label: "Enter target_group_arns e.g. [\"a1\",\"a2\"]:\n(Optional) A list of aws_alb_target_group ARNs, for use with Application Load Balancing.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "target_group_arns")
+
+	prompts["wait_for_fulfillment"] = types.TfPrompt{
+		Label: "Enter wait_for_fulfillment:\n(Optional; Default: false) If set, Terraform will wait for the Spot Request to be fulfilled, and will throw an error if the timeout of 10m is reached",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "wait_for_fulfillment")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like launch_specification/root_block_device etc [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_ami", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter launch_template_config:\n(Optional) Launch template configuration block" +
+		"\nThe launch_template_config block supports the following:" +
+		"\n1.launch_template_specification\n2.overrides")
+	color.Yellow("\nConflicts with launch_specification. At least one of launch_specification or launch_template_config is required.")
+
+	color.Green("\nEnter launch_template_specification:\n(Required) Launch template specification." +
+		"\nThe launch_template_specification supports the following arguments:" +
+		"\n1.id\n2.name\n3.version\n")
+
+	launchTemplateSpecificationPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder, nestedSelectOrder []string
+
+	launchTemplateSpecificationPrompt["id"] = types.TfPrompt{
+		Label: "Enter id:\nThe ID of the launch template. Conflicts with name.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "id")
+
+	launchTemplateSpecificationPrompt["name"] = types.TfPrompt{
+		Label: "Enter name:\nThe name of the launch template. Conflicts with id",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "name")
+
+	launchTemplateSpecificationPrompt["version"] = types.TfPrompt{
+		Label: "Enter version:\n(Optional) Template version. Unlike the autoscaling equivalent, does not support $Latest or $Default, so use the launch_template resource's attribute, e.g. \"${aws_launch_template.foo.latest_version}\". It will use the default version if omitted.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "version")
+
+	launchTemplateSpecificationBlock := builder.PSOrder(nestedPromptOrder, nil, launchTemplateSpecificationPrompt, nil)
+
+	overridesPrompt := map[string]types.TfPrompt{}
+
+	color.Green("\nEnter overrides:\n(Optional) One or more override configurations" +
+		"\nThe overrides block supports the following:\n" +
+		"\n1.availability_zone\n2.instance_type\n3.priority\n4.spot_price\n5.subnet_id\n6.weighted_capacity\n")
+
+	overridesPrompt["availability_zone"] = types.TfPrompt{
+		Label: "Enter availability_zone:\n(Optional) The availability zone in which to place the request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "availability_zone")
+
+	overridesPrompt["instance_type"] = types.TfPrompt{
+		Label: "Enter instance_type:\n(Optional) The type of instance to request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "instance_type")
+
+	overridesPrompt["spot_price"] = types.TfPrompt{
+		Label: "Enter spot_price:\n(Optional) The maximum spot bid for this override request.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "spot_price")
+
+	overridesPrompt["priority"] = types.TfPrompt{
+		Label: "Enter priority:\n(Optional) The priority for the launch template override. The lower the number, " +
+			"\nthe higher the priority. If no number is set, the launch template override has the lowest priority.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "priority")
+
+	overridesPrompt["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Optional) The subnet in which to launch the requested instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "subnet_id")
+
+	overridesPrompt["weighted_capacity"] = types.TfPrompt{
+		Label: "Enter weighted_capacity:\n(Optional) The capacity added to the fleet by a fulfilled request.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "weighted_capacity")
+
+	overrideBlock := builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-6:], nil, overridesPrompt, nil)
+
+	launchTemplateConfigBlock := map[string]interface{}{
+		"launch_template_specification": launchTemplateSpecificationBlock,
+		"overrides":                     overrideBlock,
+	}
+
+	resourceBlock["launch_template_config"] = launchTemplateConfigBlock
+
+	replacementStrategySelect := map[string]types.TfSelect{}
+
+	replacementStrategySelect["replacement_strategy"] = types.TfSelect{
+		Label: "Enter replacement_strategy:\n(Optional) The replacement strategy to use. Only available for fleets of type set to maintain. Valid values: launch",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"launch"},
+		},
+	}
+	nestedSelectOrder = append(nestedSelectOrder, "replacement_strategy")
+
+	replacementStategyBlock := builder.PSOrder(nil, nestedSelectOrder, nil, replacementStrategySelect)
+
+	spotOptionsBlock := map[string]interface{}{
+		"capacity_rebalance": replacementStategyBlock,
+	}
+
+	resourceBlock["spot_maintenance_strategies"] = spotOptionsBlock
+
+	builder.ResourceBuilder("aws_spot_fleet_request", blockName, resourceBlock)
+}
+
+func AWSSpotInstanceRequestPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["ami"] = types.TfPrompt{
+		Label: "Enter ami(Required):\nThe AMI to use for the instance",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ami")
+
+	prompts["instance_type"] = types.TfPrompt{
+		Label: "Enter instance_type(Required) e.g. t2.micro\nThe type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_type")
+
+	prompts["spot_price"] = types.TfPrompt{
+		Label: "Enter spot_price:\n(Optional; Default: On-demand price) The maximum price to request on the spot market.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "spot_price")
+
+	prompts["wait_for_fulfillment"] = types.TfPrompt{
+		Label: "Enter wait_for_fulfillment(true/false):\n(Optional; Default: false) If set, Terraform will wait for the Spot Request to be fulfilled, and will throw an error if the timeout of 10m is reached.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "wait_for_fulfillment")
+
+	prompts["launch_group"] = types.TfPrompt{
+		Label: "Enter launch_group:\n(Optional) A launch group is a group of spot instances that launch together and terminate together. If left empty instances are launched and terminated individually.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "launch_group")
+
+	prompts["block_duration_minutes"] = types.TfPrompt{
+		Label: "Enter block_duration_minutes:\n(Optional) The required duration for the Spot instances, in minutes. This value must be a " +
+			"\nmultiple of 60 (60, 120, 180, 240, 300, or 360). The duration period starts as soon " +
+			"\nas your Spot instance receives its instance ID. At the end of the duration period, " +
+			"\nAmazon EC2 marks the Spot instance for termination and provides a Spot instance " +
+			"\ntermination notice, which gives the instance a two-minute warning before it terminates. " +
+			"\nNote that you can't specify an Availability Zone group or a launch group if you specify a duration.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BlockDurationValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "block_duration_minutes")
+
+	prompts["instance_interruption_behaviour"] = types.TfPrompt{
+		Label: "Enter instance_interruption_behaviour:\n(Optional) Indicates whether a Spot instance stops or terminates " +
+			"\nwhen it is interrupted. Default is terminate as this is the current AWS behaviour.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_interruption_behaviour")
+
+	prompts["valid_from"] = types.TfPrompt{
+		Label: "Enter valid_from:\n(Optional) The start date and time of the request, in UTC RFC3339 format" +
+			"\n(for example, YYYY-MM-DDTHH:MM:SSZ). The default is to start fulfilling the request immediately.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "valid_from")
+
+	prompts["valid_until"] = types.TfPrompt{
+		Label: "Enter valid_until:\n(Optional) The end date and time of the request, in UTC RFC3339 format" +
+			"\n(for example, YYYY-MM-DDTHH:MM:SSZ). At this point, no new Spot instance requests are placed " +
+			"\nor enabled to fulfill the request. The default end date is 7 days from the current date.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "valid_until")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the Spot Instance Request. These tags are not automatically applied to the launched Instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["spot_type"] = types.TfSelect{
+		Label: "Enter spot_type:\n(Optional; Default: persistent) If set to one-time, after the instance is terminated, the spot request will be closed.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"persistent", "one-time"},
+		},
+	}
+	selectOrder = append(selectOrder, "spot_type")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_spot_instance_request", blockName, resourceBlock)
+}
