@@ -47,6 +47,28 @@ func ResourceBP(resource string) {
 		resource_bps.AWSEC2ClientVPNEndpointBP()
 	case "aws_ec2_client_vpn_authorization_rule":
 		resource_bps.AWSEC2ClientVPNAuthorizationRuleBP()
+	case "aws_ec2_client_vpn_network_association":
+		resource_bps.AWSEC2ClientVPNNetworkAssociationBP()
+	case "aws_ec2_client_vpn_route":
+		resource_bps.AWSEC2ClientVPNRouteBP()
+	case "aws_ec2_fleet":
+		resource_bps.AWSEC2FleetBP()
+	case "aws_ec2_local_gateway_route":
+		resource_bps.AWSEC2LocalGatewayRouteBP()
+	case "aws_ec2_local_gateway_route_table_vpc_association":
+		resource_bps.AWSEC2LocalGatewayRouteTableVPCAssociationBP()
+	case "aws_ec2_tag":
+		resource_bps.AWSEC2TagBP()
+	case "aws_ec2_traffic_mirror_filter":
+		resource_bps.AWSEC2TrafficMirrorFilterBP()
+	case "aws_ec2_traffic_mirror_filter_rule":
+		resource_bps.AWSEC2TrafficMirrorFilterRuleBP()
+	case "aws_ec2_traffic_mirror_session":
+		resource_bps.AWSEC2TrafficMirrorSessionBP()
+	case "aws_ec2_transit_gateway":
+		resource_bps.AWSEC2TransitGatewayBP()
+	case "aws_ec2_traffic_mirror_target":
+		resource_bps.AWSEC2TrafficMirrorTargetBP()
 	case "aws_db_parameter_option":
 		resource_bps.AWSDBParameterOptionBP()
 	case "aws_db_proxy":
