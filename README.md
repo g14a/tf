@@ -4,6 +4,7 @@ Tf is a command line tool to easily generate your Terraform configuration with a
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/g14a/tf)](https://goreportcard.com/report/github.com/g14a/tf)
 [![Go Workflow Status](https://github.com/g14a/tf/workflows/Go/badge.svg)](https://github.com/g14a/tf/workflows/Go/badge.svg)
+![CodeQL](https://github.com/g14a/tf/workflows/CodeQL/badge.svg)
 
 ### Inspiration
 Boredom in Covid-19
@@ -13,11 +14,11 @@ Boredom in Covid-19
 * Or clone the master branch and run ```go install``` in the root directory.
 
 ### Features
-* Provider and resource support
-* In place documentation of fields
-* One level nested configuration
+* Provider and resource support.
+* Boilerplate configuration without having to go to the official docs.  
+* In place documentation of fields.
+* Currently supports AWS EC2, S3, RDS, ELB, Lambda, VPC
 * Less development overhead(I guess :blush:)
-* Currently supports AWS S3, RDS, ELB, Lambda, VPC
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
 
@@ -30,5 +31,4 @@ Please report issues if you find this tool useful and I will try to make time to
 
 ### Roadmap
 * Google and Azure
-* Two level nested configuration
 * Repeatable configuration
