@@ -41,6 +41,12 @@ func ResourceBP(resource string) {
 		resource_bps.AWSEC2AvailabilityZoneGroupBP()
 	case "aws_ec2_capacity_reservation":
 		resource_bps.AWSEC2CapacityReservationBP()
+	case "aws_ec2_carrier_gateway":
+		resource_bps.AWSEC2CarrierGatewayPrompt()
+	case "aws_ec2_client_vpn_endpoint":
+		resource_bps.AWSEC2ClientVPNEndpointBP()
+	case "aws_ec2_client_vpn_authorization_rule":
+		resource_bps.AWSEC2ClientVPNAuthorizationRuleBP()
 	case "aws_db_parameter_option":
 		resource_bps.AWSDBParameterOptionBP()
 	case "aws_db_proxy":

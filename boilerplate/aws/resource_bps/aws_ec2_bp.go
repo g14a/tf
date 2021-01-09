@@ -64,3 +64,17 @@ func AWSEC2CapacityReservationBP()  {
 	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_capacity_reservation\n\n")
 }
 
+func AWSEC2CarrierGatewayPrompt() {
+	color.Green("\nresource \"aws_ec2_carrier_gateway\" \"example\" {\n  vpc_id = aws_vpc.example.id\n\n  tags = {\n    Name = \"example-carrier-gateway\"\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_carrier_gateway\n\n")
+}
+
+func AWSEC2ClientVPNAuthorizationRuleBP()  {
+	color.Green("\nresource \"aws_ec2_client_vpn_authorization_rule\" \"example\" {\n  client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.example.id\n  target_network_cidr    = aws_subnet.example.cidr_block\n  authorize_all_groups   = true\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_client_vpn_authorization_rule\n\n")
+}
+
+func AWSEC2ClientVPNEndpointBP() {
+	color.Green("\nresource \"aws_ec2_client_vpn_endpoint\" \"example\" {\n  description            = \"terraform-clientvpn-example\"\n  server_certificate_arn = aws_acm_certificate.cert.arn\n  client_cidr_block      = \"10.0.0.0/16\"\n\n  authentication_options {\n    type                       = \"certificate-authentication\"\n    root_certificate_chain_arn = aws_acm_certificate.root_cert.arn\n  }\n\n  connection_log_options {\n    enabled               = true\n    cloudwatch_log_group  = aws_cloudwatch_log_group.lg.name\n    cloudwatch_log_stream = aws_cloudwatch_log_stream.ls.name\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_client_vpn_endpoint\n\n")
+}
