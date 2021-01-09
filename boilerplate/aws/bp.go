@@ -8,7 +8,23 @@ func ResourceBP(resource string) {
 
 	switch resource {
 	case "aws_instance":
-		resource_bps.AWSEC2BP()
+		resource_bps.AWSEC2InstanceBP()
+	case "aws_ami":
+		resource_bps.AWSAMIBP()
+	case "aws_ami_copy":
+		resource_bps.AWSAMICopyBP()
+	case "aws_ami_from_instance":
+		resource_bps.AWSAMIFromInstanceBP()
+	case "aws_ami_launch_permission":
+		resource_bps.AWSAMIFromLaunchPermissionBP()
+	case "aws_ebs_default_kms_key":
+		resource_bps.AWSEBSDefaultKMSKeyBP()
+	case "aws_ebs_encryption_by_default":
+		resource_bps.AWSEBSEncryptionByDefaultBP()
+	case "aws_ebs_snapshot":
+		resource_bps.AWSEBSSnapshotBP()
+	case "aws_ebs_snapshot_copy":
+		resource_bps.AWSEBSSnapshotCopyBP()
 	case "aws_db_instance":
 		resource_bps.AWSDBInstanceBP()
 	case "aws_db_cluster_snapshot":
@@ -19,6 +35,12 @@ func ResourceBP(resource string) {
 		resource_bps.AWSDBInstanceRoleAssociationBP()
 	case "aws_db_option_group":
 		resource_bps.AWSDBOptionGroupBP()
+	case "aws_ebs_volume":
+		resource_bps.AWSEBSVolumeBP()
+	case "aws_ec2_availability_zone_group":
+		resource_bps.AWSEC2AvailabilityZoneGroupBP()
+	case "aws_ec2_capacity_reservation":
+		resource_bps.AWSEC2CapacityReservationBP()
 	case "aws_db_parameter_option":
 		resource_bps.AWSDBParameterOptionBP()
 	case "aws_db_proxy":
