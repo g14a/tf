@@ -288,7 +288,6 @@ func AWSDBEventSubscriptionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete")
-	selectOrder = append(selectOrder, "timeouts")
 
 	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
 
@@ -357,7 +356,7 @@ func AWSDBOptionGroupPrompt() {
 
 	prompts := map[string]types.TfPrompt{}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["name"] = types.TfPrompt{
 		Label: "Enter name:\n(Optional, Forces new resource) The name of the option group. " +
@@ -476,7 +475,6 @@ func AWSDBOptionGroupPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "vpc_security_group_memberships")
-	selectOrder = append(selectOrder, "option")
 
 	resourceBlock["option"] = builder.PSOrder(nestedPromptOrder, nil, optionPrompt, nil)
 
@@ -498,7 +496,7 @@ func AWSDBParameterGroupPrompt() {
 
 	prompts := map[string]types.TfPrompt{}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["name"] = types.TfPrompt{
 		Label: "Enter name:\n(Optional, Forces new resource) The name of the DB parameter group. If omitted, " +
@@ -586,7 +584,6 @@ func AWSDBParameterGroupPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "apply_method")
-	selectOrder = append(selectOrder, "parameter")
 
 	resourceBlock["parameter"] = builder.PSOrder(nestedPromptOrder, nil, parameterPrompt, nil)
 
@@ -767,7 +764,6 @@ func AWSDbProxyPrompt() {
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "iam_auth")
-	selectOrder = append(selectOrder, "auth")
 
 	resourceBlock["auth"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, authPrompt, authSelect)
 
@@ -788,7 +784,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 
 	prompts := map[string]types.TfPrompt{}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["db_proxy_name"] = types.TfPrompt{
 		Label: "Enter db_proxy_name:\n(Required) Name of the RDS DB Proxy.",
@@ -859,7 +855,6 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "session_pinning_filters")
-	selectOrder = append(selectOrder, "connection_pool_config")
 
 	resourceBlock["connection_pool_config"] = builder.PSOrder(nestedPromptOrder, nil, connectionPoolConfigPrompt, nil)
 
@@ -937,7 +932,7 @@ func AWSDBSecurityGroupPrompt() {
 
 	prompts := map[string]types.TfPrompt{}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["name"] = types.TfPrompt{
 		Label: "Enter name:\n(Required) The name of the DB security group.",
@@ -1004,7 +999,6 @@ func AWSDBSecurityGroupPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "security_group_owner_id")
-	selectOrder = append(selectOrder, "ingress")
 
 	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressPrompt, nil)
 

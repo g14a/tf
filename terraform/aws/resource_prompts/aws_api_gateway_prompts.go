@@ -252,7 +252,7 @@ func AWSAPIGatewayClientCertificatePrompt() {
 	}
 
 	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder, nestedOrder []string
+	var promptOrder, nestedOrder []string
 
 	prompts["description"] = types.TfPrompt{
 		Label: "Enter description:\n(Optional) The description of the client certificate.",
@@ -275,7 +275,6 @@ func AWSAPIGatewayClientCertificatePrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "Name")
-	selectOrder = append(selectOrder, "tags")
 
 	resourceBlock["tags"] = builder.PSOrder(nestedOrder, nil, tagsPrompt, nil)
 
@@ -387,7 +386,6 @@ func AWSAPIGatewayDeploymentPrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "ignore_changes")
-	selectOrder = append(selectOrder, "lifecycle")
 
 	resourceBlock["lifecycle"] = builder.PSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
 
@@ -406,7 +404,7 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 	}
 
 	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder, nestedPromptOrder, nestedSelectOrder []string
+	var promptOrder, nestedPromptOrder, nestedSelectOrder []string
 
 	prompts["properties"] = types.TfPrompt{
 		Label: "Enter properties:\n(Required) A content map of API-specific key-value pairs describing \n" +
@@ -477,7 +475,6 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "type")
-	selectOrder = append(selectOrder, "location")
 
 	resourceBlock["location"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
 
@@ -665,7 +662,6 @@ func AWSAPIGatewayDomainNamePrompt() {
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "types")
-	selectOrder = append(selectOrder, "endpoint_configuration")
 
 	resourceBlock["endpoint_configuration"] = builder.PSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
 	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, resourceBlock)
@@ -683,7 +679,7 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 	}
 
 	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["rest_api_id"] = types.TfPrompt{
 		Label: "Enter rest_api_id:\n(Required) The string identifier of the associated REST API.",
@@ -723,7 +719,6 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "application/json")
-	selectOrder = append(selectOrder, "response_templates")
 
 	resourceBlock["response_templates"] = builder.PSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
 

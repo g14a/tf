@@ -21,7 +21,7 @@ func AWSS3AccessPointPrompt() {
 	}
 
 	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["bucket"] = types.TfPrompt{
 		Label: "Enter bucket:\n(Required) The name of an AWS Partition S3 Bucket or the Amazon Resource Name (ARN) " +
@@ -125,7 +125,6 @@ func AWSS3AccessPointPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "restrict_public_buckets")
-	selectOrder = append(selectOrder, "public_access_block_configuration")
 
 	resourceBlock["public_access_block_configuration"] = builder.PSOrder(nestedPromptOrder, nil, publicAccessBlockConfigurationPrompt, nil)
 
@@ -138,7 +137,6 @@ func AWSS3AccessPointPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "vpc_id")
-	selectOrder = append(selectOrder, "vpc_configuration")
 
 	resourceBlock["vpc_configuration"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, vpcConfigPrompt, nil)
 
@@ -336,7 +334,6 @@ func AWSS3BucketPrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "max_age_seconds")
-	selectOrder = append(selectOrder, "cors_rule")
 
 	resourceBlock["cors_rule"] = builder.PSOrder(nestedOrder, nil, corsRulePrompt, nil)
 
@@ -381,7 +378,6 @@ func AWSS3BucketPrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "routing_rules")
-	selectOrder = append(selectOrder, "website")
 
 	resourceBlock["website"] = builder.PSOrder(nestedOrder[len(nestedOrder)-4:], nil, websitePrompt, nil)
 
@@ -404,7 +400,6 @@ func AWSS3BucketPrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "mfa_delete")
-	selectOrder = append(selectOrder, "versioning")
 
 	resourceBlock["versioning"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, versioningPrompt, nil)
 
@@ -424,7 +419,6 @@ func AWSS3BucketPrompt() {
 		},
 	}
 	nestedOrder = append(nestedOrder, "target_prefix")
-	selectOrder = append(selectOrder, "logging")
 
 	resourceBlock["logging"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, loggingPrompt, nil)
 
@@ -478,7 +472,7 @@ func AWSS3BucketMetricPrompt() {
 	}
 
 	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["bucket"] = types.TfPrompt{
 		Label: "Enter bucket:\n(Required) The name of the bucket to put metric configuration.",
@@ -527,7 +521,6 @@ func AWSS3BucketMetricPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "prefix")
-	selectOrder = append(selectOrder, "filter")
 
 	resourceBlock["filter"] = builder.PSOrder(nestedPromptOrder, nil, filterPrompt, nil)
 

@@ -22,7 +22,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["name"] = types.TfPrompt{
 		Label: "Enter name:\n(Required) The name of the application, must be unique within your account",
@@ -93,7 +93,6 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete_source_from_s3")
-	selectOrder = append(selectOrder, "appversion_lifecycle")
 
 	resourceBlock["appversion_lifecycle"] = builder.PSOrder(nestedPromptOrder, nil, appVersionLifecyclePrompt, nil)
 
@@ -194,7 +193,7 @@ func AWSElasticBeanstalkConfigurationTemplatePrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["name"] = types.TfPrompt{
 		Label: "Enter name:\n(Required) A unique name for this Template.",
@@ -268,7 +267,6 @@ func AWSElasticBeanstalkConfigurationTemplatePrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "resource")
-	selectOrder = append(selectOrder, "setting")
 
 	resourceBlock["setting"] = builder.PSOrder(nestedPromptOrder, nil, settingPrompt, nil)
 	builder.ResourceBuilder("aws_elastic_beanstalk_configuration_template", blockName, resourceBlock)

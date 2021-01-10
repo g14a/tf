@@ -72,7 +72,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder, nestedPromptOrder, nestedSelectOrder []string
+	var promptOrder, nestedPromptOrder, nestedSelectOrder []string
 
 	prompts["description"] = types.TfPrompt{
 		Label: "Enter description:\n(Optional) Descriptive name for this code signing configuration.",
@@ -102,7 +102,6 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "untrusted_artifact_on_deployment")
-	selectOrder = append(selectOrder, "policies")
 
 	resourceBlock["policies"] = builder.PSOrder(nil, nestedSelectOrder, nil, policiesSelect)
 
@@ -118,7 +117,6 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "signing_profile_version_arns")
-	selectOrder = append(selectOrder, "allowed_publishers")
 
 	resourceBlock["allowed_publishers"] = builder.PSOrder(nestedPromptOrder, nil, allowedPublishersPrompt, nil)
 
@@ -468,7 +466,6 @@ func AWSLambdaFunctionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "subnet_ids")
-	selectOrder = append(selectOrder, "vpc_config")
 
 	resourceBlock["vpc_config"] = builder.PSOrder(nestedPromptOrder, nil, vpcConfigPrompt, nil)
 
@@ -489,7 +486,6 @@ func AWSLambdaFunctionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "local_mount_path")
-	selectOrder = append(selectOrder, "file_system_config")
 
 	resourceBlock["file_system_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, fileSystemConfigPrompt, nil)
 
@@ -501,7 +497,6 @@ func AWSLambdaFunctionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "create")
-	selectOrder = append(selectOrder, "timeout")
 
 	resourceBlock["timeout"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, fileSystemConfigPrompt, nil)
 
@@ -516,7 +511,6 @@ func AWSLambdaFunctionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "mode")
-	selectOrder = append(selectOrder, "tracing_config")
 
 	resourceBlock["tracing_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, tracingConfigPrompt, nil)
 
@@ -529,7 +523,6 @@ func AWSLambdaFunctionPrompt() {
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "target_arn")
-	selectOrder = append(selectOrder, "dead_letter_config")
 
 	resourceBlock["dead_letter_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
 
@@ -549,7 +542,7 @@ func AWSLambdaLayerVersionPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder []string
+	var promptOrder []string
 
 	prompts["layer_name"] = types.TfPrompt{
 		Label: "Enter layer_name:\n(Required) A unique name for your Lambda Layer",
@@ -672,7 +665,6 @@ func AWSLambdaLayerVersionPrompt() {
 		},
 	}
 	nestedSelectOrder = append(nestedSelectOrder, "ignore_changes")
-	selectOrder = append(selectOrder, "lifecycle")
 
 	resourceBlock["lifecycle"] = builder.PSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
 
