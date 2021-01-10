@@ -143,6 +143,10 @@ func ResourceBP(resource string) {
 		resourcebps.AWSS3BucketPolicyBP()
 	case "aws_s3_bucket_public_access_block":
 		resourcebps.AWSS3BucketPolicyAccessBlockBP()
+	case "aws_lambda_event_source_mapping":
+		resourcebps.AWSLambdaEventSourceMappingBP()
+	case "aws_lambda_alias":
+		resourcebps.AWSLambdaAliasBP()
 	case "aws_vpc":
 		resourcebps.AWSVPCBP()
 	case "aws_sns_platform_application":

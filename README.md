@@ -17,7 +17,7 @@ Boredom in Covid-19
 * Provider and resource support.
 * Boilerplate configuration without having to go to the official docs.  
 * In place documentation of fields.
-* Currently supports AWS EC2, S3, RDS, ELB, Lambda, VPC
+* Currently supports AWS EC2, S3, RDS, ELB, Lambda
 * Less development overhead(I guess :blush:)
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
