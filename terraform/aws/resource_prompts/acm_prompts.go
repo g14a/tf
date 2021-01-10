@@ -211,3 +211,40 @@ func AWSACMPCACertificatePrompt() {
 	builder.ResourceBuilder("aws_acmpca_certificate_authority", blockName, resourceBlock)
 
 }
+
+func AWSACMCertificationValidationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["certificate_arn"] = types.TfPrompt{
+		Label: "Enter certificate_arn:\n(Required) The ARN of the certificate that is being validated.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "certificate_arn")
+
+	prompts["validation_record_fqdns"] = types.TfPrompt{
+		Label: "Enter validation_record_fqdns:\n(Optional) List of FQDNs that implement the validation. Only valid for DNS validation method " +
+			"\nACM certificates. If this is set, the resource can implement additional sanity checks and has an explicit dependency on the " +
+			"\nresource that is implementing the validation",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "validation_record_fqdns")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_acm_certificate_validation", blockName, resourceBlock)
+}

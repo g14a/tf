@@ -287,7 +287,7 @@ func resources() []string {
 		"aws_lambda_provisioned_concurrency_config",
 		"aws_spot_datafeed_subscription",
 		"aws_spot_fleet_request",
-		"aws_spot_instance_request",	
+		"aws_spot_instance_request",
 	}
 }
 
