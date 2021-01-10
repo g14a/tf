@@ -12,6 +12,7 @@ import (
 	"tf/types"
 )
 
+// ProviderBuilder builds the provider configuration
 func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	var providerInfo strings.Builder
 
@@ -35,6 +36,7 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	}
 }
 
+// ResourceBuilder builds the resource configuration
 func ResourceBuilder(resource, blockName string, resourceBlock map[string]interface{}) {
 	var resourceBuilder strings.Builder
 
@@ -57,6 +59,8 @@ func ResourceBuilder(resource, blockName string, resourceBlock map[string]interf
 	}
 }
 
+// PSOrder collects values from the prompts and selects
+// given themselves and the order.
 func PSOrder(promptOrder, selectOrder []string,
 	prompts map[string]types.TfPrompt,
 	selects map[string]types.TfSelect) map[string]interface{} {
@@ -121,7 +125,6 @@ func PSOrder(promptOrder, selectOrder []string,
 	return resourceBlock
 }
 
-// tags deal with input such as "k1=v1,k2=v2" and populate it into the tags field of the config
 func repeatingConfig(input string) string {
 	if input != "" {
 		rc := strings.Split(input, ",")

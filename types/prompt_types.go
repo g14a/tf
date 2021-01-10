@@ -5,20 +5,19 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
+// TfPrompt is a custom prompt
 type TfPrompt struct {
 	Label  string
 	Prompt promptui.Prompt
 }
 
+// TfSelect is a custom select
 type TfSelect struct {
 	Label  string
 	Select promptui.Select
 }
 
-type TFCli interface {
-	Run() (string, error)
-}
-
+// Run runs the custom TfPrompt
 func (p TfPrompt) Run() (string, error) {
 	color.Green("\n"+p.Label+"\n\n", "text")
 
@@ -27,6 +26,7 @@ func (p TfPrompt) Run() (string, error) {
 	return value, err
 }
 
+// Run runs the custom TfSelect
 func (s TfSelect) Run() (string, error) {
 	color.Green("\n"+s.Label+"\n\n", "text")
 

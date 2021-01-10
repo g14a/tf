@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// IntValidator validates whether input is an integer
 func IntValidator(input string) error {
 	if input != "" {
 		_, err := strconv.ParseFloat(input, 64)
@@ -18,6 +19,7 @@ func IntValidator(input string) error {
 	return nil
 }
 
+// StringValidator validates whether input is actually a string
 func StringValidator(input string) error {
 	if input == "" {
 		_, err := strconv.ParseFloat(input, 64)
@@ -30,6 +32,7 @@ func StringValidator(input string) error {
 	return nil
 }
 
+// RCValidator validates whether input is of the form k1=v1,k2=v2
 func RCValidator(input string) error {
 	if input != "" {
 		if !strings.Contains(input, "=") {
@@ -39,6 +42,7 @@ func RCValidator(input string) error {
 	return nil
 }
 
+// BoolValidator validates whether input is true/false
 func BoolValidator(input string) error {
 	if input != "" {
 		if input == "true" || input == "false" {
@@ -50,6 +54,7 @@ func BoolValidator(input string) error {
 	return nil
 }
 
+// BlockDurationValidator validates whether input is a multiple of 60
 func BlockDurationValidator(input string) error {
 	if input != "" {
 		f, err := strconv.ParseInt(input, 10, 64)

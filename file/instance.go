@@ -11,6 +11,7 @@ import (
 
 var TerraformFile os.File
 
+// TFFileInstance creates a file instance of the provided file name
 func TFFileInstance(name string) {
 	fileName := ""
 
@@ -28,6 +29,8 @@ func TFFileInstance(name string) {
 	TerraformFile = *f
 }
 
+// Prompt runs the prompt in which the user
+// enter the wanted terraform file name
 func Prompt() {
 
 	color.Green("\nEnter terraform file name to save your configuration in this directory\n", "text")
