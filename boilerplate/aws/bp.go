@@ -57,6 +57,42 @@ func ResourceBP(resource string) {
 		resource_bps.AWSEC2LocalGatewayRouteBP()
 	case "aws_ec2_local_gateway_route_table_vpc_association":
 		resource_bps.AWSEC2LocalGatewayRouteTableVPCAssociationBP()
+	case "aws_ec2_transit_gateway_peering_attachment_accepter":
+		resource_bps.AWSEC2TransitGatewayPeeringAttachmentAccepterBP()
+	case "aws_ec2_transit_gateway_route":
+		resource_bps.AWSEC2TransitGatewayRouteBP()
+	case "aws_ec2_transit_gateway_route_table":
+		resource_bps.AWSEC2TransitGatewayRouteTableBP()
+	case "aws_ec2_transit_gateway_route_table_association":
+		resource_bps.AWSEC2TransitGatewayRouteTableAssociationBP()
+	case "aws_ec2_transit_gateway_route_table_propagation":
+		resource_bps.AWSEC2TransitGatewayRouteTablePropagationBP()
+	case "aws_ec2_transit_gateway_vpc_attachment":
+		resource_bps.AWSEC2TransitGatewayVPCAttachmentBP()
+	case "aws_ec2_transit_gateway_vpc_attachment_accepter":
+		resource_bps.AWSEC2TransitGatewayVPCAttachmentAccepterBP()
+	case "aws_eip":
+		resource_bps.AWSEIPBP()
+	case "aws_eip_association":
+		resource_bps.AWSEIPAssociationBP()
+	case "aws_key_pair":
+		resource_bps.AWSKeyPairBP()
+	case "aws_launch_configuration":
+		resource_bps.AWSLaunchConfigurationBP()
+	case "aws_launch_template":
+		resource_bps.AWSLaunchTemplateBP()
+	case "aws_placement_group":
+		resource_bps.AWSPlacementGroupBP()
+	case "aws_snapshot_create_volume_permission":
+		resource_bps.AWSSnapshotCreateVolumePermissionBP()
+	case "aws_spot_datafeed_subscription":
+		resource_bps.AWSSpotDatafeedSubscriptionBP()
+	case "aws_spot_fleet_request":
+		resource_bps.AWSSpotFleetRequestBP()
+	case "aws_spot_instance_request":
+		resource_bps.AWSSpotInstanceRequestBP()
+	case "aws_volume_attachment":
+		resource_bps.AWSVolumeAttachmentBP()
 	case "aws_ec2_tag":
 		resource_bps.AWSEC2TagBP()
 	case "aws_ec2_traffic_mirror_filter":
@@ -65,6 +101,8 @@ func ResourceBP(resource string) {
 		resource_bps.AWSEC2TrafficMirrorFilterRuleBP()
 	case "aws_ec2_traffic_mirror_session":
 		resource_bps.AWSEC2TrafficMirrorSessionBP()
+	case "aws_ec2_transit_gateway_peering_attachment":
+		resource_bps.AWSEC2TransitGatewayPeeringAttachmentBP()
 	case "aws_ec2_transit_gateway":
 		resource_bps.AWSEC2TransitGatewayBP()
 	case "aws_ec2_traffic_mirror_target":

@@ -131,5 +131,100 @@ func AWSEC2TrafficMirrorTargetBP() {
 
 func AWSEC2TransitGatewayBP()  {
 	color.Green("\nresource \"aws_ec2_transit_gateway\" \"example\" {\n  description = \"example\"\n}")
-	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway\n\n")
+}
+
+func AWSEC2TransitGatewayPeeringAttachmentBP() {
+	color.Green("\nprovider \"aws\" {\n  alias  = \"local\"\n  region = \"us-east-1\"\n}\n\nprovider \"aws\" {\n  alias  = \"peer\"\n  region = \"us-west-2\"\n}\n\ndata \"aws_region\" \"peer\" {\n  provider = aws.peer\n}\n\nresource \"aws_ec2_transit_gateway\" \"local\" {\n  provider = aws.local\n\n  tags = {\n    Name = \"Local TGW\"\n  }\n}\n\nresource \"aws_ec2_transit_gateway\" \"peer\" {\n  provider = aws.peer\n\n  tags = {\n    Name = \"Peer TGW\"\n  }\n}\n\nresource \"aws_ec2_transit_gateway_peering_attachment\" \"example\" {\n  peer_account_id         = aws_ec2_transit_gateway.peer.owner_id\n  peer_region             = data.aws_region.peer.name\n  peer_transit_gateway_id = aws_ec2_transit_gateway.peer.id\n  transit_gateway_id      = aws_ec2_transit_gateway.local.id\n\n  tags = {\n    Name = \"TGW Peering Requestor\"\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_peering_attachment\n\n")
+}
+
+func AWSEC2TransitGatewayPeeringAttachmentAccepterBP() {
+	color.Green("\nresource \"aws_ec2_transit_gateway_peering_attachment_accepter\" \"example\" {\n  transit_gateway_attachment_id = aws_ec2_transit_gateway_peering_attachment.example.id\n\n  tags = {\n    Name = \"Example cross-account attachment\"\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_peering_attachment_accepter\n\n")
+}
+
+func AWSEC2TransitGatewayRouteBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_route\" \"example\" {\n  destination_cidr_block         = \"0.0.0.0/0\"\n  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.example.id\n  transit_gateway_route_table_id = aws_ec2_transit_gateway.example.association_default_route_table_id\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_route\n\n")
+}
+
+func AWSEC2TransitGatewayRouteTableBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_route_table\" \"example\" {\n  transit_gateway_id = aws_ec2_transit_gateway.example.id\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_route_table\n\n")
+}
+
+func AWSEC2TransitGatewayRouteTableAssociationBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_route_table_association\" \"example\" {\n  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.example.id\n  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.example.id\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_route_table_association\n\n")
+}
+
+func AWSEC2TransitGatewayRouteTablePropagationBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_route_table_propagation\" \"example\" {\n  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.example.id\n  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.example.id\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_route_table_propagation\n\n")
+}
+
+func AWSEC2TransitGatewayVPCAttachmentBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_vpc_attachment\" \"example\" {\n  subnet_ids         = [aws_subnet.example.id]\n  transit_gateway_id = aws_ec2_transit_gateway.example.id\n  vpc_id             = aws_vpc.example.id\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_vpc_attachment\n\n")
+}
+
+func AWSEC2TransitGatewayVPCAttachmentAccepterBP()  {
+	color.Green("\nresource \"aws_ec2_transit_gateway_vpc_attachment_accepter\" \"example\" {\n  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.example.id\n\n  tags = {\n    Name = \"Example cross-account attachment\"\n  }\n}")
+	color.Yellow("\bCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_vpc_attachment_accepter\n\n")
+}
+
+func AWSEIPBP()  {
+	color.Green("\nresource \"aws_eip\" \"lb\" {\n  instance = aws_instance.web.id\n  vpc      = true\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip\n\n")
+}
+
+func AWSEIPAssociationBP()  {
+	color.Green("\nresource \"aws_eip_association\" \"eip_assoc\" {\n  instance_id   = aws_instance.web.id\n  allocation_id = aws_eip.example.id\n}\n\nresource \"aws_instance\" \"web\" {\n  ami               = \"ami-21f78e11\"\n  availability_zone = \"us-west-2a\"\n  instance_type     = \"t2.micro\"\n\n  tags = {\n    Name = \"HelloWorld\"\n  }\n}\n\nresource \"aws_eip\" \"example\" {\n  vpc = true\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip_association\n\n")
+}
+
+func AWSKeyPairBP()  {
+	color.Green("\nresource \"aws_key_pair\" \"deployer\" {\n  key_name   = \"deployer-key\"\n  public_key = \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com\"\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair\n\n")
+}
+
+func AWSLaunchConfigurationBP()  {
+	color.Green("\nresource \"aws_launch_configuration\" \"as_conf\" {\n  name          = \"web_config\"\n  image_id      = data.aws_ami.ubuntu.id\n  instance_type = \"t2.micro\"\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration\n\n")
+}
+
+func AWSLaunchTemplateBP() {
+	color.Green("\nresource \"aws_launch_template\" \"foo\" {\n  name = \"foo\"\n\n  block_device_mappings {\n    device_name = \"/dev/sda1\"\n\n    ebs {\n      volume_size = 20\n    }\n  }\n\n  capacity_reservation_specification {\n    capacity_reservation_preference = \"open\"\n  }\n\n  cpu_options {\n    core_count       = 4\n    threads_per_core = 2\n  }\n\n  credit_specification {\n    cpu_credits = \"standard\"\n  }\n\n  disable_api_termination = true\n\n  ebs_optimized = true\n\n  elastic_gpu_specifications {\n    type = \"test\"\n  }\n\n  elastic_inference_accelerator {\n    type = \"eia1.medium\"\n  }\n\n  iam_instance_profile {\n    name = \"test\"\n  }\n\n  image_id = \"ami-test\"\n\n  instance_initiated_shutdown_behavior = \"terminate\"\n\n  instance_market_options {\n    market_type = \"spot\"\n  }\n\n  instance_type = \"t2.micro\"\n\n  kernel_id = \"test\"\n\n  key_name = \"test\"\n\n  license_specification {\n    license_configuration_arn = \"arn:aws:license-manager:eu-west-1:123456789012:license-configuration:lic-0123456789abcdef0123456789abcdef\"\n  }\n\n  metadata_options {\n    http_endpoint               = \"enabled\"\n    http_tokens                 = \"required\"\n    http_put_response_hop_limit = 1\n  }\n\n  monitoring {\n    enabled = true\n  }\n\n  network_interfaces {\n    associate_public_ip_address = true\n  }\n\n  placement {\n    availability_zone = \"us-west-2a\"\n  }\n\n  ram_disk_id = \"test\"\n\n  vpc_security_group_ids = [\"sg-12345678\"]\n\n  tag_specifications {\n    resource_type = \"instance\"\n\n    tags = {\n      Name = \"test\"\n    }\n  }\n\n  user_data = filebase64(\"${path.module}/example.sh\")\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template\n\n")
+}
+
+func AWSPlacementGroupBP()  {
+	color.Green("\nresource \"aws_placement_group\" \"web\" {\n  name     = \"hunky-dory-pg\"\n  strategy = \"cluster\"\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/placement_group\n\n")
+}
+
+func AWSSnapshotCreateVolumePermissionBP()  {
+	color.Green("\nresource \"aws_snapshot_create_volume_permission\" \"example_perm\" {\n  snapshot_id = aws_ebs_snapshot.example_snapshot.id\n  account_id  = \"12345678\"\n}\n")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/snapshot_create_volume_permission\n\n")
+}
+
+func AWSSpotDatafeedSubscriptionBP()  {
+	color.Green("\nresource \"aws_s3_bucket\" \"default\" {\n  bucket = \"tf-spot-datafeed\"\n}\n\nresource \"aws_spot_datafeed_subscription\" \"default\" {\n  bucket = aws_s3_bucket.default.bucket\n  prefix = \"my_subdirectory\"\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_datafeed_subscription\n\n")
+}
+
+func AWSSpotFleetRequestBP()  {
+	color.Green("\n# Request a Spot fleet\nresource \"aws_spot_fleet_request\" \"cheap_compute\" {\n  iam_fleet_role      = \"arn:aws:iam::12345678:role/spot-fleet\"\n  spot_price          = \"0.03\"\n  allocation_strategy = \"diversified\"\n  target_capacity     = 6\n  valid_until         = \"2019-11-04T20:44:20Z\"\n\n  launch_specification {\n    instance_type            = \"m4.10xlarge\"\n    ami                      = \"ami-1234\"\n    spot_price               = \"2.793\"\n    placement_tenancy        = \"dedicated\"\n    iam_instance_profile_arn = aws_iam_instance_profile.example.arn\n  }\n\n  launch_specification {\n    instance_type            = \"m4.4xlarge\"\n    ami                      = \"ami-5678\"\n    key_name                 = \"my-key\"\n    spot_price               = \"1.117\"\n    iam_instance_profile_arn = aws_iam_instance_profile.example.arn\n    availability_zone        = \"us-west-1a\"\n    subnet_id                = \"subnet-1234\"\n    weighted_capacity        = 35\n\n    root_block_device {\n      volume_size = \"300\"\n      volume_type = \"gp2\"\n    }\n\n    tags = {\n      Name = \"spot-fleet-example\"\n    }\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_fleet_request\n\n")
+}
+
+func AWSSpotInstanceRequestBP()  {
+	color.Green("\nresource \"aws_spot_instance_request\" \"cheap_worker\" {\n  ami           = \"ami-1234\"\n  spot_price    = \"0.03\"\n  instance_type = \"c4.xlarge\"\n\n  tags = {\n    Name = \"CheapWorker\"\n  }\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request\n\n")
+}
+
+func AWSVolumeAttachmentBP()  {
+	color.Green("\nresource \"aws_volume_attachment\" \"ebs_att\" {\n  device_name = \"/dev/sdh\"\n  volume_id   = aws_ebs_volume.example.id\n  instance_id = aws_instance.web.id\n}\n\nresource \"aws_instance\" \"web\" {\n  ami               = \"ami-21f78e11\"\n  availability_zone = \"us-west-2a\"\n  instance_type     = \"t2.micro\"\n\n  tags = {\n    Name = \"HelloWorld\"\n  }\n}\n\nresource \"aws_ebs_volume\" \"example\" {\n  availability_zone = \"us-west-2a\"\n  size              = 1\n}")
+	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment\n\n")
 }
