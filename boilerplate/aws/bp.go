@@ -123,6 +123,26 @@ func ResourceBP(resource string) {
 		resourcebps.AWSDBSubnetGroupBP()
 	case "aws_s3_bucket":
 		resourcebps.AWSS3BucketBP()
+	case "aws_s3_access_point":
+		resourcebps.AWSS3AccessPointBP()
+	case "aws_s3_account_public_access_block":
+		resourcebps.AWSS3AccountPublicAccessBlockBP()
+	case "aws_s3_bucket_analytics_configuration":
+		resourcebps.AWSS3BucketAnalyticsConfigurationBP()
+	case "aws_s3_bucket_inventory":
+		resourcebps.AWSS3BucketInventoryBP()
+	case "aws_s3_bucket_metric":
+		resourcebps.AWSS3BucketMetricBP()
+	case "aws_s3_bucket_notification":
+		resourcebps.AWSS3BucketNotificationBP()
+	case "aws_s3_bucket_object":
+		resourcebps.AWSS3BucketObjectBP()
+	case "aws_s3_bucket_ownership_controls":
+		resourcebps.AWSS3BucketOwnershipControlsBP()
+	case "aws_s3_bucket_policy":
+		resourcebps.AWSS3BucketPolicyBP()
+	case "aws_s3_bucket_public_access_block":
+		resourcebps.AWSS3BucketPolicyAccessBlockBP()
 	case "aws_vpc":
 		resourcebps.AWSVPCBP()
 	case "aws_sns_platform_application":
