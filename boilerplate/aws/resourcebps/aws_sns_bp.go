@@ -1,4 +1,4 @@
-package resource_bps
+package resourcebps
 
 import "github.com/fatih/color"
 

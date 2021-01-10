@@ -1,4 +1,4 @@
-package resource_prompts
+package resourceprompts
 
 func AWSCloudFrontDistribution() {
 
