@@ -1413,3 +1413,150 @@ func AWSNetworkACLRulePrompt() {
 
 	builder.ResourceBuilder("aws_network_acl_rule", blockName, resourceBlock)
 }
+
+func AWSNetworkInterfacePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Required) Subnet ID to create the ENI in.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_id")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) A description for the network interface.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["private_ips"] = types.TfPrompt{
+		Label: "Enter private_ips e.g.[\"ip1\",\"ip2\"]:\n(Optional) List of private IPs to assign to the ENI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "private_ips")
+
+	prompts["private_ips_count"] = types.TfPrompt{
+		Label: "Enter private_ips_count:\n(Optional) Number of secondary private IPs to assign to the ENI. The total number " +
+			"\nof private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "private_ips_count")
+
+	prompts["ipv6_addresses"] = types.TfPrompt{
+		Label: "Enter ipv6_addresses:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
+			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_addresses")
+
+	prompts["ipv6_addresses_count"] = types.TfPrompt{
+		Label: "Enter ipv6_addresses_count:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
+			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_addresses_count")
+
+	prompts["ipv6_addresses_count"] = types.TfPrompt{
+		Label: "Enter ipv6_addresses_count:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
+			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_addresses_count")
+
+	prompts["security_groups"] = types.TfPrompt{
+		Label: "Enter security_groups:\n(Optional) List of security group IDs to assign to the ENI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "security_groups")
+
+	prompts["source_dest_checks"] = types.TfPrompt{
+		Label: "Enter source_dest_checks:\n(Optional) Whether to enable source destination checking for the ENI.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "source_dest_checks")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like attachment [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_network_interface", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter attachment:\n(Optional) Block to define the attachment of the ENI." +
+		"\n1.instance\n2.device_index")
+
+	attachmentPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	attachmentPrompt["instance"] = types.TfPrompt{
+		Label: "Enter instance:\n(Required) ID of the instance to attach to.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "instance")
+
+	attachmentPrompt["device_index"] = types.TfPrompt{
+		Label: "Enter device_index:\n(Required) Integer to define the devices index.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "device_index")
+
+	resourceBlock["attachment"] = builder.PSOrder(nestedPromptOrder, nil, attachmentPrompt, nil)
+
+	builder.ResourceBuilder("aws_network_inteface", blockName, resourceBlock)
+}
