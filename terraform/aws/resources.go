@@ -325,6 +325,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 	switch resource {
 	case "aws_vpc":
 		resourceprompts.AWSVPCPrompt()
+	case "aws_default_network_acl":
+		resourceprompts.AWSDefaultNetworkACLPrompt()
 	case "aws_customer_gateway":
 		resourceprompts.AWSCustomerGatewayPrompt()
 	case "aws_default_route_table":

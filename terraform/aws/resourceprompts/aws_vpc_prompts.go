@@ -60,6 +60,156 @@ func AWSCustomerGatewayPrompt() {
 	builder.ResourceBuilder("aws_customer_gateway", blockName, resourceBlock)
 }
 
+func AWSDefaultNetworkACLPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["default_network_acl_id"] = types.TfPrompt{
+		Label: "Enter default_network_acl_id:\n(Required) The Network ACL ID to manage. This attribute is exported from aws_vpc, or manually found via the AWS Console.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "default_network_acl_id")
+
+	prompts["subnet_ids"] = types.TfPrompt{
+		Label: "Enter subnet_ids e.g.[\"id1\",\"id2\"]:\n(Optional) A list of Subnet IDs to apply the ACL to. See the notes below on managing Subnets in the Default Network ACL",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_ids")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_default_network_acl", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
+		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
+
+	ingressEgressPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	ingressEgressPrompt["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Required) The from port to match.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "from_port")
+
+	ingressEgressPrompt["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Required) The to port to match.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "to_port")
+
+	ingressEgressPrompt["rule_no"] = types.TfPrompt{
+		Label: "Enter rule_no:\n(Required) The to port to match.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "rule_no")
+
+	ingressEgressPrompt["action"] = types.TfPrompt{
+		Label: "Enter action:\n(Required) The action to take.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "action")
+
+	ingressEgressPrompt["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\n(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "protocol")
+
+	ingressEgressPrompt["cidr_block"] = types.TfPrompt{
+		Label: "Enter cidr_block:\n(Optional) The CIDR block to match. This must be a valid network mask.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr_block")
+
+	ingressEgressPrompt["ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 CIDR block.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_block")
+
+	ingressEgressPrompt["icmp_type"] = types.TfPrompt{
+		Label: "Enter icmp_type:\n(Optional) The ICMP type to be used. Default 0.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "icmp_type")
+
+	ingressEgressPrompt["icmp_code"] = types.TfPrompt{
+		Label: "Enter icmp_code:\n(Optional) The ICMP type code to be used. Default 0.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "icmp_code")
+
+	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	color.Green("\nEnter egress:\n(Optional) Specifies an ingress rule." +
+		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
+
+	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	builder.ResourceBuilder("aws_default_network_acl", blockName, resourceBlock)
+}
+
 func AWSDefaultRouteTablePrompt() {
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
