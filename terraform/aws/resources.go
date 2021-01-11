@@ -347,6 +347,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSNatGatewayPrompt()
 	case "aws_network_acl":
 		resourceprompts.AWSNetworkACLPrompt()
+	case "aws_network_acl_rule":
+		resourceprompts.AWSNetworkACLRulePrompt()
 	case "aws_internet_gateway":
 		resourceprompts.AWSInternetGatewayPrompt()
 	case "aws_main_route_table_association":

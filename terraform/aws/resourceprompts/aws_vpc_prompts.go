@@ -544,7 +544,7 @@ func AWSDefaultSecurityGroupPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -577,7 +577,7 @@ func AWSDefaultSecurityGroupPrompt() {
 	ingressEgressPrompt["cidr_blocks"] = types.TfPrompt{
 		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks.",
 		Prompt: promptui.Prompt{
-			Label:    "",
+			Label: "",
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "cidr_blocks")
@@ -585,7 +585,7 @@ func AWSDefaultSecurityGroupPrompt() {
 	ingressEgressPrompt["description"] = types.TfPrompt{
 		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
 		Prompt: promptui.Prompt{
-			Label:    "",
+			Label: "",
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "description")
@@ -618,7 +618,7 @@ func AWSDefaultSecurityGroupPrompt() {
 	ingressEgressPrompt["protocol"] = types.TfPrompt{
 		Label: "Enter protocol:\n(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is not a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. If not icmp, icmpv6, tcp, udp, or \"-1\" use the protocol number",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -694,7 +694,7 @@ func AWSDefaultSubnetPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -722,7 +722,7 @@ func AWSDefaultVPCPrompt() {
 	prompts["enable_dns_support"] = types.TfPrompt{
 		Label: "Enter enable_dns_support:\n(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults to true.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -731,7 +731,7 @@ func AWSDefaultVPCPrompt() {
 	prompts["enable_dns_hostnames"] = types.TfPrompt{
 		Label: "Enter enable_dns_hostnames:\n(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults to false.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -742,7 +742,7 @@ func AWSDefaultVPCPrompt() {
 			"\nregions and accounts that support EC2 Classic. Defaults false." +
 			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -751,7 +751,7 @@ func AWSDefaultVPCPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -762,7 +762,7 @@ func AWSDefaultVPCPrompt() {
 	builder.ResourceBuilder("aws_default_vpc", blockName, resourceBlock)
 }
 
-func AWSDefaultVPCDHCPOptionsPrompt()  {
+func AWSDefaultVPCDHCPOptionsPrompt() {
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -795,7 +795,7 @@ func AWSDefaultVPCDHCPOptionsPrompt()  {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) List of NETBIOS name servers.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -844,7 +844,7 @@ func AWSEC2ManagedPrefixListPrompt() {
 	prompts["max_retries"] = types.TfPrompt{
 		Label: "Enter max_retries:\n(Required, Forces new resource) The maximum number of entries that this prefix list can contain.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -853,7 +853,7 @@ func AWSEC2ManagedPrefixListPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to this resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -926,7 +926,7 @@ func AWSEgressOnlyInternetGatewayPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1004,7 +1004,7 @@ func AWSFlowLogPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1016,7 +1016,7 @@ func AWSFlowLogPrompt() {
 		Label: "Enter traffic_type:\n(Required) The type of traffic to capture.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"ACCEPT","REJECT"},
+			Items: []string{"ACCEPT", "REJECT"},
 		},
 	}
 	selectOrder = append(selectOrder, "traffic_type")
@@ -1025,7 +1025,7 @@ func AWSFlowLogPrompt() {
 		Label: "Enter log_destination_type:\n(Optional) The type of the logging destination.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"cloud-watch-logs","s3"},
+			Items: []string{"cloud-watch-logs", "s3"},
 		},
 	}
 	selectOrder = append(selectOrder, "log_destination_type")
@@ -1060,7 +1060,7 @@ func AWSInternetGatewayPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1139,7 +1139,7 @@ func AWSNatGatewayPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1297,4 +1297,119 @@ func AWSNetworkACLPrompt() {
 	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
 
 	builder.ResourceBuilder("aws_network_acl", blockName, resourceBlock)
+}
+
+func AWSNetworkACLRulePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["network_acl_id"] = types.TfPrompt{
+		Label: "Enter network_acl_id:\n(Required) The ID of the network ACL.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_acl_id")
+
+	prompts["role_number"] = types.TfPrompt{
+		Label: "Enter role_number:\n(Required) The rule number for the entry (for example, 100). ACL entries are processed in ascending order by rule number.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "role_number")
+
+	prompts["egress"] = types.TfPrompt{
+		Label: "Enter egress(true/false):\n(Optional, bool) Indicates whether this is an egress rule (rule is applied to traffic leaving the subnet). Default false",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "egress")
+
+	prompts["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\n(Required) The protocol. A value of -1 means all protocols.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "protocol")
+
+	prompts["cidr_block"] = types.TfPrompt{
+		Label: "Enter cidr_block:\n(Optional) The network range to allow or deny, in CIDR notation (for example 172.16.0.0/24).",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "cidr_block")
+
+	prompts["ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 CIDR block to allow or deny.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_cidr_block")
+
+	prompts["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Optional) The from port to match.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "from_port")
+
+	prompts["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Optional) The to port to match.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "to_port")
+
+	prompts["icmp_type"] = types.TfPrompt{
+		Label: "Enter icmp_type:\n(Optional) ICMP protocol: The ICMP type. Required if specifying ICMP for the protocol. e.g. -1",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "icmp_type")
+
+	prompts["icmp_code"] = types.TfPrompt{
+		Label: "Enter icmp_code:\n(Optional) ICMP protocol: The ICMP code. Required if specifying ICMP for the protocol. e.g. -1",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "icmp_code")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["rule_action"] = types.TfSelect{
+		Label: "Enter rule_action:\n(Required) Indicates whether to allow or deny the traffic that matches the rule.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"allow", "deny"},
+		},
+	}
+	selectOrder = append(selectOrder, "rule_action")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_network_acl_rule", blockName, resourceBlock)
 }
