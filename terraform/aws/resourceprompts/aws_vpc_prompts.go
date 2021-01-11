@@ -851,7 +851,7 @@ func AWSEC2ManagedPrefixListPrompt() {
 	promptOrder = append(promptOrder, "max_retries")
 
 	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) A map of tags to assign to this resource.",
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to this resource.",
 		Prompt: promptui.Prompt{
 			Label: "",
 			Validate: utils.RCValidator,
@@ -899,4 +899,40 @@ func AWSEC2ManagedPrefixListPrompt() {
 	resourceBlock["entry"] = builder.PSOrder(nestedPromptOrder, nil, entryPrompt, nil)
 
 	builder.ResourceBuilder("aws_ec2_managed_prefix_list", blockName, resourceBlock)
+}
+
+func AWSEgressOnlyInternetGatewayPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) The VPC ID to create in.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_egress_only_internet_gateway", blockName, resourceBlock)
 }

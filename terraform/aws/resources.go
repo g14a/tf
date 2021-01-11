@@ -337,6 +337,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSDefaultVPCPrompt()
 	case "aws_ec2_managed_prefix_list":
 		resourceprompts.AWSEC2ManagedPrefixListPrompt()
+	case "aws_egress_only_internet_gateway":
+		resourceprompts.AWSEgressOnlyInternetGatewayPrompt()
 	case "aws_customer_gateway":
 		resourceprompts.AWSCustomerGatewayPrompt()
 	case "aws_default_route_table":
