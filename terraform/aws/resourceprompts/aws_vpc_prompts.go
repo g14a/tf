@@ -761,3 +761,142 @@ func AWSDefaultVPCPrompt() {
 
 	builder.ResourceBuilder("aws_default_vpc", blockName, resourceBlock)
 }
+
+func AWSDefaultVPCDHCPOptionsPrompt()  {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["netbios_name_servers"] = types.TfPrompt{
+		Label: "Enter netbios_name_servers:\n(Optional) List of NETBIOS name servers.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "netbios_name_servers")
+
+	prompts["netbios_node_type"] = types.TfPrompt{
+		Label: "Enter netbios_node_type:\n(Optional) List of NETBIOS name servers.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "netbios_node_type")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) List of NETBIOS name servers.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_default_vpc_dhcp_options", blockName, resourceBlock)
+}
+
+func AWSEC2ManagedPrefixListPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	color.Yellow("\nWhen you reference a Prefix List in a resource, the maximum number of entries " +
+		"\nfor the prefix lists counts as the same number of rules or entries for the resource. " +
+		"\nFor example, if you create a prefix list with a maximum of 20 entries and you reference " +
+		"\nthat prefix list in a security group rule, this counts as 20 rules for the security group.")
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of this resource. The name must not start with com.amazonaws",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["address_family"] = types.TfPrompt{
+		Label: "Enter address_family:\n(Required, Forces new resource) The address family (IPv4 or IPv6) of this prefix list.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "address_family")
+
+	prompts["max_retries"] = types.TfPrompt{
+		Label: "Enter max_retries:\n(Required, Forces new resource) The maximum number of entries that this prefix list can contain.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "max_retries")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to this resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like entry [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_ec2_managed_prefix_list", blockName, resourceBlock)
+		return
+	}
+
+	entryPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	entryPrompt["cidr"] = types.TfPrompt{
+		Label: "Enter cidr:\n(Required) The CIDR block of this entry.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr")
+
+	entryPrompt["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of this entry.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "description")
+
+	resourceBlock["entry"] = builder.PSOrder(nestedPromptOrder, nil, entryPrompt, nil)
+
+	builder.ResourceBuilder("aws_ec2_managed_prefix_list", blockName, resourceBlock)
+}

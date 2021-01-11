@@ -331,6 +331,12 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSDefaultSecurityGroupPrompt()
 	case "aws_default_subnet":
 		resourceprompts.AWSDefaultSubnetPrompt()
+	case "aws_default_vpc_dhcp_options":
+		resourceprompts.AWSDefaultVPCDHCPOptionsPrompt()
+	case "aws_default_vpc":
+		resourceprompts.AWSDefaultVPCPrompt()
+	case "aws_ec2_managed_prefix_list":
+		resourceprompts.AWSEC2ManagedPrefixListPrompt()
 	case "aws_customer_gateway":
 		resourceprompts.AWSCustomerGatewayPrompt()
 	case "aws_default_route_table":
