@@ -341,6 +341,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSEgressOnlyInternetGatewayPrompt()
 	case "aws_customer_gateway":
 		resourceprompts.AWSCustomerGatewayPrompt()
+	case "aws_flow_log":
+		resourceprompts.AWSFlowLogPrompt()
 	case "aws_default_route_table":
 		resourceprompts.AWSDefaultRouteTablePrompt()
 	case "aws_s3_bucket":

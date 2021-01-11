@@ -936,3 +936,101 @@ func AWSEgressOnlyInternetGatewayPrompt() {
 
 	builder.ResourceBuilder("aws_egress_only_internet_gateway", blockName, resourceBlock)
 }
+
+func AWSFlowLogPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	color.Yellow("\nOne of eni_id, subnet_id, or vpc_id must be specified.")
+
+	prompts["eni_id"] = types.TfPrompt{
+		Label: "Enter eni_id:\n(Optional) Elastic Network Interface ID to attach to",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "eni_id")
+
+	prompts["iam_role_arn"] = types.TfPrompt{
+		Label: "Enter iam_role_arn:\n(Optional) The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "iam_role_arn")
+
+	prompts["log_destination"] = types.TfPrompt{
+		Label: "Enter log_destination:\n(Optional) The ARN of the logging destination.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "log_destination")
+
+	prompts["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Optional) Subnet ID to attach to",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_id")
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Optional) VPC ID to attach to",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["log_format"] = types.TfPrompt{
+		Label: "Enter log_format:\n(Optional) The fields to include in the flow log record, in the order in which they should appear.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "log_format")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	selects := map[string]types.TfSelect{}
+
+	selects["traffic_type"] = types.TfSelect{
+		Label: "Enter traffic_type:\n(Required) The type of traffic to capture.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"ACCEPT","REJECT"},
+		},
+	}
+	selectOrder = append(selectOrder, "traffic_type")
+
+	selects["log_destination_type"] = types.TfSelect{
+		Label: "Enter log_destination_type:\n(Optional) The type of the logging destination.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"cloud-watch-logs","s3"},
+		},
+	}
+	selectOrder = append(selectOrder, "log_destination_type")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_flow_log", blockName, resourceBlock)
+}
