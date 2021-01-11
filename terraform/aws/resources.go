@@ -327,6 +327,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPCPrompt()
 	case "aws_default_network_acl":
 		resourceprompts.AWSDefaultNetworkACLPrompt()
+	case "aws_default_security_group":
+		resourceprompts.AWSDefaultSecurityGroupPrompt()
 	case "aws_customer_gateway":
 		resourceprompts.AWSCustomerGatewayPrompt()
 	case "aws_default_route_table":

@@ -202,7 +202,7 @@ func AWSDefaultNetworkACLPrompt() {
 
 	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
 
-	color.Green("\nEnter egress:\n(Optional) Specifies an ingress rule." +
+	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
 		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
 
 	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
@@ -517,4 +517,145 @@ func AWSVPCPrompt() {
 	resourceBlock["lifecycle"] = builder.PSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
 
 	builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
+}
+
+func AWSDefaultSecurityGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Optional, Forces new resource) The VPC ID. Note that changing the vpc_id will not restore any default security group rules that were modified, added, or removed. It will be left in its current state",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_default_security_group", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
+		"\n1.cidr_blocks\n2.description\n3.from_port\n4.ipv6_cidr_blocks\n5.prefix_list_ids\n6.protocol\n7.security_groups\n8.self\n9.to_port\n")
+
+	ingressEgressPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	ingressEgressPrompt["cidr_blocks"] = types.TfPrompt{
+		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr_blocks")
+
+	ingressEgressPrompt["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "description")
+
+	ingressEgressPrompt["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "from_port")
+
+	ingressEgressPrompt["ipv6_cidr_blocks"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_blocks:\n(Optional) List of IPv6 CIDR blocks.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_blocks")
+
+	ingressEgressPrompt["prefix_list_ids"] = types.TfPrompt{
+		Label: "Enter prefix_list_ids:\n(Optional) List of prefix list IDs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "prefix_list_ids")
+
+	ingressEgressPrompt["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\n(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is not a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. If not icmp, icmpv6, tcp, udp, or \"-1\" use the protocol number",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "protocol")
+
+	ingressEgressPrompt["security_groups"] = types.TfPrompt{
+		Label: "Enter security_groups:\n(Optional) List of security group Group Names if using EC2-Classic, or Group IDs if using a VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "security_groups")
+
+	ingressEgressPrompt["self"] = types.TfPrompt{
+		Label: "Enter self:\n(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "self")
+
+	ingressEgressPrompt["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Required) The end range port (or ICMP code if protocol is \"icmp\").",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "to_port")
+
+	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
+		"\n1.cidr_blocks\n2.description\n3.from_port\n4.ipv6_cidr_blocks\n5.prefix_list_ids\n6.protocol\n7.security_groups\n8.self\n9.to_port\n")
+
+	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	builder.ResourceBuilder("aws_default_security_group", blockName, resourceBlock)
 }
