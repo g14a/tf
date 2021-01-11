@@ -659,3 +659,48 @@ func AWSDefaultSecurityGroupPrompt() {
 
 	builder.ResourceBuilder("aws_default_security_group", blockName, resourceBlock)
 }
+
+func AWSDefaultSubnetPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["availability_zone"] = types.TfPrompt{
+		Label: "Enter availability_zone:\n(Optional) The AZ for the subnet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "availability_zone")
+
+	prompts["map_public_ip_on_launch"] = types.TfPrompt{
+		Label: "Enter map_public_ip_on_launch:\n(Optional) Specify true to indicate that instances launched into the subnet " +
+			"\nshould be assigned a public IP address.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "map_public_ip_on_launch")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_default_subnet", blockName, resourceBlock)
+}
