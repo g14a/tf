@@ -1754,3 +1754,159 @@ func AWSRoutePrompt() {
 
 	builder.ResourceBuilder("aws_route", blockName, resourceBlock)
 }
+
+func AWSRouteTablePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) The VPC ID.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	prompts["propagating_vgws"] = types.TfPrompt{
+		Label: "Enter propagating_vgws e.g.[\"g1\",\"g2\"]:\n(Optional) A list of virtual gateways for propagation.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "propagating_vgws")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like route [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_route_table", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter route:\n(Optional) A list of route objects." +
+		"\n1.cidr_block\n2.ipv6_cidr_block\n3.egress_only_gateway_id\n4.gateway_id\n5.instance_id\n6.nat_gateway_id\n7.local_gateway_id\n8.network_interface_id\n9.transit_gateway_id\n10.vpc_endpoint_id\n11.vpc_peering_connection_id\n")
+
+	routePrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	routePrompt["cidr_block"] = types.TfPrompt{
+		Label: "Enter cidr_block:\n(Required) The CIDR block of the route.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr_block")
+
+	routePrompt["ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_block:\n(Optional) The Ipv6 CIDR block of the route.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_block")
+
+	routePrompt["egress_only_gateway_id"] = types.TfPrompt{
+		Label: "Enter egress_only_gateway_id:\n(Optional) Identifier of a VPC Egress Only Internet Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "egress_only_gateway_id")
+
+	routePrompt["gateway_id"] = types.TfPrompt{
+		Label: "Enter gateway_id:\n(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "gateway_id")
+
+	routePrompt["instance_id"] = types.TfPrompt{
+		Label: "Enter instance_id:\n(Optional) Identifier of an EC2 instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "instance_id")
+
+	routePrompt["nat_gateway_id"] = types.TfPrompt{
+		Label: "Enter nat_gateway_id:\n(Optional) Identifier of a VPC NAT gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "nat_gateway_id")
+
+	routePrompt["local_gateway_id"] = types.TfPrompt{
+		Label: "Enter local_gateway_id:\n(Optional) Identifier of a Outpost local gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "local_gateway_id")
+
+	routePrompt["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Optional) Identifier of an EC2 network interface.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "network_interface_id")
+
+	routePrompt["transit_gateway_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_id:\n(Optional) Identifier of an EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "transit_gateway_id")
+
+	routePrompt["vpc_endpoint_id"] = types.TfPrompt{
+		Label: "Enter vpc_endpoint_id:\n(Optional) Identifier of a VPC Endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "vpc_endpoint_id")
+
+	routePrompt["vpc_peering_connection_id"] = types.TfPrompt{
+		Label: "Enter vpc_peering_connection_id:\n(Optional) Identifier of a VPC peering connection.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "vpc_peering_connection_id")
+
+	resourceBlock["route"] = builder.PSOrder(nestedPromptOrder, nil, routePrompt, nil)
+
+	builder.ResourceBuilder("aws_route_table", blockName, resourceBlock)
+}
