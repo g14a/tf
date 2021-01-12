@@ -371,6 +371,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSSecurityGroupPrompt()
 	case "aws_security_group_rule":
 		resourceprompts.AWSSecurityGroupRulePrompt()
+	case "aws_subnet":
+		resourceprompts.AWSSubnetPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":

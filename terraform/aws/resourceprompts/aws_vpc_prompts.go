@@ -2253,3 +2253,97 @@ func AWSSecurityGroupRulePrompt() {
 
 	builder.ResourceBuilder("aws_security_group_rule", blockName, resourceBlock)
 }
+
+func AWSSubnetPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["availability_zone"] = types.TfPrompt{
+		Label: "Enter availability_zone:\n(Optional) The AZ for the subnet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "availability_zone")
+
+	prompts["availability_zone_id"] = types.TfPrompt{
+		Label: "Enter availability_zone_id:\n(Optional) The AZ ID of the subnet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "availability_zone_id")
+
+	prompts["cidr_block"] = types.TfPrompt{
+		Label: "Enter cidr_block:\n(Required) The CIDR block for the subnet.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "cidr_block")
+
+	prompts["ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_cidr_block")
+
+	prompts["map_public_ip_on_launch"] = types.TfPrompt{
+		Label: "Enter map_public_ip_on_launch:\n(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "map_public_ip_on_launch")
+
+	prompts["outpost_arn"] = types.TfPrompt{
+		Label: "Enter outpost_arn:\n(Optional) The Amazon Resource Name (ARN) of the Outpost.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "outpost_arn")
+
+	prompts["assign_ipv6_address_on_creation"] = types.TfPrompt{
+		Label: "Enter assign_ipv6_address_on_creation:\n(Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "assign_ipv6_address_on_creation")
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Required) The VPC ID.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_subnet", blockName, resourceBlock)
+}
