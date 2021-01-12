@@ -1639,3 +1639,118 @@ func AWSNetworkInterfaceSGAttachmentPrompt() {
 
 	builder.ResourceBuilder("aws_network_interface_sg_attachment", blockName, resourceBlock)
 }
+
+func AWSRoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["route_table_id"] = types.TfPrompt{
+		Label: "Enter route_table_id:\n(Required) The ID of the routing table.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "route_table_id")
+
+	prompts["destination_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_cidr_block:\n(Optional) The destination CIDR block.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_cidr_block")
+
+	prompts["destination_ipv6_cidr_block"] = types.TfPrompt{
+		Label: "Enter destination_ipv6_cidr_block:\n(Optional) The destination IPv6 CIDR block.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "destination_ipv6_cidr_block")
+
+	prompts["egress_only_gateway_id"] = types.TfPrompt{
+		Label: "Enter egress_only_gateway_id:\n(Optional) Identifier of a VPC Egress Only Internet Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "egress_only_gateway_id")
+
+	prompts["gateway_id"] = types.TfPrompt{
+		Label: "Enter gateway_id:\n(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "gateway_id")
+
+	prompts["instance_id"] = types.TfPrompt{
+		Label: "Enter instance_id:\n(Optional) Identifier of an EC2 instance.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "instance_id")
+
+	prompts["nat_gateway_id"] = types.TfPrompt{
+		Label: "Enter nat_gateway_id:\n(Optional) Identifier of a VPC NAT gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "nat_gateway_id")
+
+	prompts["local_gateway_id"] = types.TfPrompt{
+		Label: "Enter local_gateway_id:\n(Optional) Identifier of a Outpost local gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "local_gateway_id")
+
+	prompts["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Optional) Identifier of an EC2 network interface.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface_id")
+
+	prompts["transit_gateway_id"] = types.TfPrompt{
+		Label: "Enter transit_gateway_id:\n(Optional) Identifier of an EC2 Transit Gateway.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "transit_gateway_id")
+
+	prompts["vpc_endpoint_id"] = types.TfPrompt{
+		Label: "Enter vpc_endpoint_id:\n(Optional) Identifier of a VPC Endpoint.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_endpoint_id")
+
+	prompts["vpc_peering_connection_id"] = types.TfPrompt{
+		Label: "Enter vpc_peering_connection_id:\n(Optional) Identifier of a VPC peering connection.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_peering_connection_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_route", blockName, resourceBlock)
+}
