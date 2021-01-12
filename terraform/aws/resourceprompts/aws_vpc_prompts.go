@@ -1484,7 +1484,7 @@ func AWSNetworkInterfacePrompt() {
 		Label: "Enter ipv6_addresses_count:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
 			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1501,7 +1501,7 @@ func AWSNetworkInterfacePrompt() {
 	prompts["source_dest_checks"] = types.TfPrompt{
 		Label: "Enter source_dest_checks:\n(Optional) Whether to enable source destination checking for the ENI.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -1510,7 +1510,7 @@ func AWSNetworkInterfacePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1594,7 +1594,7 @@ func AWSNetworkInterfaceAttachmentPrompt() {
 	prompts["device_index"] = types.TfPrompt{
 		Label: "Enter device_index:\n(Required) Network interface index (int).",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.IntValidator,
 		},
 	}
@@ -1780,7 +1780,7 @@ func AWSRouteTablePrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -1909,4 +1909,47 @@ func AWSRouteTablePrompt() {
 	resourceBlock["route"] = builder.PSOrder(nestedPromptOrder, nil, routePrompt, nil)
 
 	builder.ResourceBuilder("aws_route_table", blockName, resourceBlock)
+}
+
+func AWSRouteTableAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["subnet_id"] = types.TfPrompt{
+		Label: "Enter subnet_id:\n(Optional) The subnet ID to create an association. Conflicts with gateway_id",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "subnet_id")
+
+	prompts["gateway_id"] = types.TfPrompt{
+		Label: "Enter gateway_id:\n(Optional) The gateway ID to create an association. Conflicts with subnet_id",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "gateway_id")
+
+	prompts["route_table_id"] = types.TfPrompt{
+		Label: "Enter route_table_id:\n(Required) The ID of the routing table to associate with.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "route_table_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_route_table_association", blockName, resourceBlock)
 }
