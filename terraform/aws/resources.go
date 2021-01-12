@@ -359,6 +359,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSDefaultRouteTablePrompt()
 	case "aws_network_interface_attachment":
 		resourceprompts.AWSNetworkInterfaceAttachmentPrompt()
+	case "aws_network_interface_sg_attachment":
+		resourceprompts.AWSNetworkInterfaceSGAttachmentPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":

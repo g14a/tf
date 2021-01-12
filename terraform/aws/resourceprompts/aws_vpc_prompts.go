@@ -1604,3 +1604,38 @@ func AWSNetworkInterfaceAttachmentPrompt() {
 
 	builder.ResourceBuilder("aws_network_interface_attachment", blockName, resourceBlock)
 }
+
+func AWSNetworkInterfaceSGAttachmentPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["security_group_id"] = types.TfPrompt{
+		Label: "Enter security_group_id:\n(Required) The ID of the security group.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "security_group_id")
+
+	prompts["network_interface_id"] = types.TfPrompt{
+		Label: "Enter network_interface_id:\n(Required) The ID of the network interface to attach to.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "network_interface_id")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	builder.ResourceBuilder("aws_network_interface_sg_attachment", blockName, resourceBlock)
+}
