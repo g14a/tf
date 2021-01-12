@@ -2301,7 +2301,7 @@ func AWSSubnetPrompt() {
 	promptOrder = append(promptOrder, "ipv6_cidr_block")
 
 	prompts["map_public_ip_on_launch"] = types.TfPrompt{
-		Label: "Enter map_public_ip_on_launch:\n(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false.",
+		Label: "Enter map_public_ip_on_launch(true/false):\n(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false.",
 		Prompt: promptui.Prompt{
 			Label: "",
 			Validate: utils.BoolValidator,
@@ -2318,7 +2318,7 @@ func AWSSubnetPrompt() {
 	promptOrder = append(promptOrder, "outpost_arn")
 
 	prompts["assign_ipv6_address_on_creation"] = types.TfPrompt{
-		Label: "Enter assign_ipv6_address_on_creation:\n(Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false",
+		Label: "Enter assign_ipv6_address_on_creation(true/false):\n(Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false",
 		Prompt: promptui.Prompt{
 			Label: "",
 			Validate: utils.BoolValidator,
