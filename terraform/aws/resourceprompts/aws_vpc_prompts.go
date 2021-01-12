@@ -2139,3 +2139,117 @@ func AWSSecurityGroupPrompt() {
 
 	builder.ResourceBuilder("aws_security_group", blockName, resourceBlock)
 }
+
+func AWSSecurityGroupRulePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder, selectOrder []string
+
+	prompts["cidr_blocks"] = types.TfPrompt{
+		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks. Cannot be specified with source_security_group_id",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "cidr_blocks")
+
+	prompts["ipv6_cidr_blocks"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_blocks:\n(Optional) List of IPv6 CIDR blocks.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "ipv6_cidr_blocks")
+
+	prompts["prefix_list_ids"] = types.TfPrompt{
+		Label: "Enter prefix_list_ids:\n(Optional) List of prefix list IDs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "prefix_list_ids")
+
+	prompts["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "from_port")
+
+	prompts["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\n(Required) The protocol. If not icmp, icmpv6, tcp, udp, or all use the protocol number." +
+			"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "protocol")
+
+	prompts["security_group_id"] = types.TfPrompt{
+		Label: "Enter security_group_id:\n(Required) The security group to apply this rule to.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "security_group_id")
+
+	prompts["source_security_group_id"] = types.TfPrompt{
+		Label: "Enter source_security_group_id:\n(Optional) The security group id to allow access to/from, depending on the type. Cannot be specified with cidr_blocks and self",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "source_security_group_id")
+
+	prompts["self"] = types.TfPrompt{
+		Label: "Enter self:\n(Optional) If true, the security group itself will be added as a source to this ingress/egress rule. Cannot be specified with source_security_group_id",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "self")
+
+	prompts["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Required) The end range port (or ICMP code if protocol is \"icmp\").",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "to_port")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	selects := map[string]types.TfSelect{}
+	selects["type"] = types.TfSelect{
+		Label: "Enter type:\n(Required) The type of rule being created.",
+		Select: promptui.Select{
+			Label: "",
+			Items: []string{"ingress","egress"},
+		},
+	}
+	selectOrder = append(selectOrder, "type")
+
+	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	builder.ResourceBuilder("aws_security_group_rule", blockName, resourceBlock)
+}
