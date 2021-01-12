@@ -1953,3 +1953,189 @@ func AWSRouteTableAssociationPrompt() {
 
 	builder.ResourceBuilder("aws_route_table_association", blockName, resourceBlock)
 }
+
+func AWSSecurityGroupPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional, Forces new resource) The name of the security group. If omitted, Terraform will assign a random, unique name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	prompts["name_prefix"] = types.TfPrompt{
+		Label: "Enter name_prefix:\n(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. Conflicts with name",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name_prefix")
+
+	prompts["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional, Forces new resource) The security group description. Defaults to \"Managed by Terraform\". " +
+			"\nCannot be \"\". NOTE: This field maps to the AWS GroupDescription attribute, " +
+			"\nfor which there is no Update API. If you'd like to classify your security groups in a " +
+			"\nway that can be updated, use tags",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "description")
+
+	prompts["revoke_rules_on_delete"] = types.TfPrompt{
+		Label: "Enter revoke_rules_on_delete(true/false):\n(Optional) Instruct Terraform to revoke all of the Security Groups attached ingress " +
+			"\nand egress rules before deleting the rule itself. This is normally not needed, however certain AWS services " +
+			"\nsuch as Elastic Map Reduce may automatically add required rules to security groups used with the service, " +
+			"\nand those rules may contain a cyclic dependency that prevent the security groups from being destroyed " +
+			"\nwithout removing the dependency first. Default false",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "revoke_rules_on_delete")
+
+	prompts["vpc_id"] = types.TfPrompt{
+		Label: "Enter vpc_id:\n(Optional, Forces new resource) The VPC ID.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "vpc_id")
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_security_group", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
+		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
+
+	ingressEgressPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	ingressEgressPrompt["cidr_blocks"] = types.TfPrompt{
+		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "cidr_blocks")
+
+	ingressEgressPrompt["ipv6_cidr_blocks"] = types.TfPrompt{
+		Label: "Enter ipv6_cidr_blocks:\n(Optional) List of IPv6 CIDR blocks.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_blocks")
+
+	ingressEgressPrompt["prefix_list_ids"] = types.TfPrompt{
+		Label: "Enter prefix_list_ids:\n(Optional) List of prefix list IDs.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "prefix_list_ids")
+
+	ingressEgressPrompt["from_port"] = types.TfPrompt{
+		Label: "Enter from_port:\n(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "from_port")
+
+	ingressEgressPrompt["protocol"] = types.TfPrompt{
+		Label: "Enter protocol:\n(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is " +
+			"\nnot a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. The supported values are " +
+			"\ndefined in the \"IpProtocol\" argument on the IpPermission API reference. This argument is normalized to a " +
+			"\nlowercase value to match the AWS API requirement when using with Terraform 0.12.x and above, please make " +
+			"\nsure that the value of the protocol is specified as lowercase when using with older version of Terraform " +
+			"\nto avoid an issue during upgrade.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "protocol")
+
+	ingressEgressPrompt["security_groups"] = types.TfPrompt{
+		Label: "Enter security_groups:\n(Optional) List of security group Group Names if using EC2-Classic, or Group IDs if using a VPC.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "security_groups")
+
+	ingressEgressPrompt["self"] = types.TfPrompt{
+		Label: "Enter self:\n(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.BoolValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "self")
+
+	ingressEgressPrompt["to_port"] = types.TfPrompt{
+		Label: "Enter to_port:\n(Required) The end range port (or ICMP code if protocol is \"icmp\").",
+		Prompt: promptui.Prompt{
+			Label:    "",
+			Validate: utils.IntValidator,
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "to_port")
+
+	ingressEgressPrompt["description"] = types.TfPrompt{
+		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "description")
+
+	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
+		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
+
+	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+
+	builder.ResourceBuilder("aws_security_group", blockName, resourceBlock)
+}

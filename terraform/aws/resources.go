@@ -367,6 +367,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSRouteTablePrompt()
 	case "aws_route_table_association":
 		resourceprompts.AWSRouteTableAssociationPrompt()
+	case "aws_security_group":
+		resourceprompts.AWSSecurityGroupPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
