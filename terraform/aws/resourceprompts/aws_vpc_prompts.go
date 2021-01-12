@@ -1560,3 +1560,150 @@ func AWSNetworkInterfacePrompt() {
 
 	builder.ResourceBuilder("aws_network_inteface", blockName, resourceBlock)
 }
+
+func AWSNetworkInterfacesPrompt()  {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["tags"] = types.TfPrompt{
+		Label: "Enter tags: e.g.k1=v1,k2=v2:\n(Optional) A map of tags, each pair of which must exactly match a pair on the desired network interfaces.",
+		Prompt: promptui.Prompt{
+			Label: "",
+			Validate: utils.RCValidator,
+		},
+	}
+	promptOrder = append(promptOrder, "tags")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like filter [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_network_interfaces", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter filter:\n(Optional) Custom filter block" +
+		"\nThe filter block supports the following arguments:" +
+		"\n1.name\n2.values\n")
+
+	filterPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	filterPrompt["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of the field to filter by, as defined by the underlying AWS API." +
+			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeNetworkInterfaces.html",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "name")
+
+	filterPrompt["values"] = types.TfPrompt{
+		Label: "Enter values:\n(Required) Set of values that are accepted for the given field.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "values")
+
+	resourceBlock["filter"] = builder.PSOrder(nestedPromptOrder, nil, filterPrompt, nil)
+
+	builder.ResourceBuilder("aws_network_interfaces", blockName, resourceBlock)
+}
+
+func AWSPrefixListPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	prompts := map[string]types.TfPrompt{}
+	var promptOrder []string
+
+	prompts["prefix_list_id"] = types.TfPrompt{
+		Label: "Enter prefix_list_id:\n(Optional) The ID of the prefix list to select.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "prefix_list_id")
+
+	prompts["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Optional) The name of the prefix list to select.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	promptOrder = append(promptOrder, "name")
+
+	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+
+	color.Yellow("\nConfigure nested settings like filter [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_prefix_list", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter filter:\n(Optional) Custom filter block" +
+		"\nThe filter block supports the following arguments:" +
+		"\n1.name\n2.values\n")
+
+	filterPrompt := map[string]types.TfPrompt{}
+	var nestedPromptOrder []string
+
+	filterPrompt["name"] = types.TfPrompt{
+		Label: "Enter name:\n(Required) The name of the filter field. Valid values can be found in the EC2 DescribePrefixLists API Reference." +
+			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribePrefixLists.html",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "name")
+
+	filterPrompt["values"] = types.TfPrompt{
+		Label: "Enter values:\n(Required) Set of values that are accepted for the given filter field. Results will be selected if any given value matches.",
+		Prompt: promptui.Prompt{
+			Label: "",
+		},
+	}
+	nestedPromptOrder = append(nestedPromptOrder, "values")
+
+	resourceBlock["filter"] = builder.PSOrder(nestedPromptOrder, nil, filterPrompt, nil)
+
+	builder.ResourceBuilder("aws_prefix_list", blockName, resourceBlock)
+}

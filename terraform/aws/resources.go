@@ -351,12 +351,16 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSNetworkACLRulePrompt()
 	case "aws_network_interface":
 		resourceprompts.AWSNetworkInterfacePrompt()
+	case "aws_prefix_list":
+		resourceprompts.AWSPrefixListPrompt()
 	case "aws_internet_gateway":
 		resourceprompts.AWSInternetGatewayPrompt()
 	case "aws_main_route_table_association":
 		resourceprompts.AWSMainRouteTableAssociationPrompt()
 	case "aws_default_route_table":
 		resourceprompts.AWSDefaultRouteTablePrompt()
+	case "aws_network_interfaces":
+		resourceprompts.AWSNetworkInterfacesPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
