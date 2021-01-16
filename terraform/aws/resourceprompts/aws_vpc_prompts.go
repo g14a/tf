@@ -2605,3 +2605,39 @@ func AWSVPCPeeringConnectionPrompt() {
 
 	builder.ResourceBuilder("aws_vpc_peering_connection", blockName, resourceBlock)
 }
+
+func AWSVPCPeeringConnectionAccepterPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "vpc_peering_connection_id",
+			Ex: "vpc-pci-123",
+			Doc: "(Required) The VPC Peering Connection ID to manage.",
+		},
+		{
+			Field: "auto_accept",
+			Ex: "(true/false)",
+			Doc: "(Optional) Whether or not to accept the peering request. Defaults to false.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "tags",
+			Ex: "k1=v1,k2=v2",
+			Doc: "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpc_peering_connection_accepter", blockName, resourceBlock)
+}
