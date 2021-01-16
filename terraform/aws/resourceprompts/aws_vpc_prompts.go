@@ -2469,3 +2469,34 @@ func AWSVPCEndpointServicePrompt() {
 
 	builder.ResourceBuilder("aws_vpc_endpoint_service", blockName, resourceBlock)
 }
+
+func AWSCallerIdentityPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Type: "prompt",
+			Field: "vpc_endpoint_service_id",
+			Ex: "vpc-epsrv-123",
+			Doc: "(Required) The ID of the VPC endpoint service to allow permission.",
+		},
+		{
+			Type: "prompt",
+			Field: "principal_arn",
+			Ex: "",
+			Doc: "(Required) The ARN of the principal to allow permissions.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_caller_identity", blockName, resourceBlock)
+}

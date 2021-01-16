@@ -385,6 +385,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPCEndpointRouteTableAssociationPrompt()
 	case "aws_vpc_endpoint_service":
 		resourceprompts.AWSVPCEndpointServicePrompt()
+	case "aws_caller_identity":
+		resourceprompts.AWSCallerIdentityPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
