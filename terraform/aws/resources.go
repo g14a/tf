@@ -44,6 +44,7 @@ func resources() []string {
 		"aws_vpc_peering_connection_options",
 		"aws_vpn_connection",
 		"aws_vpn_gateway",
+		"aws_vpn_gateway_attachment",
 		"aws_s3_bucket",
 		"aws_s3_access_point",
 		"aws_s3_account_public_access_block",
@@ -435,6 +436,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPNConnectionRoutePrompt()
 	case "aws_vpn_gateway":
 		resourceprompts.AWSVPNGatewayPrompt()
+	case "aws_vpn_gateway_attachment":
+		resourceprompts.AWSVPNGatewayAttachmentPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
