@@ -1163,22 +1163,22 @@ func AWSNetworkACLPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "vpc_id",
-			Ex: "vpc-123",
-			Doc: "(Required) The ID of the associated VPC.",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the associated VPC.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "subnet_ids",
-			Ex: "[\"id1\",\"id2\"]",
-			Doc: "(Optional) A list of Subnet IDs to apply the ACL to",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc:   "(Optional) A list of Subnet IDs to apply the ACL to",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "tags",
-			Ex: "k1=v1,k2=v2",
-			Doc: "(Optional) A list of Subnet IDs to apply the ACL to",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A list of Subnet IDs to apply the ACL to",
 		},
 	}
 
@@ -1205,62 +1205,62 @@ func AWSNetworkACLPrompt() {
 
 	ingressEgressSchema := []types.Schema{
 		{
-			Type: "prompt",
-			Field: "from_port",
-			Ex: "",
-			Doc: "(Required) The from port to match.",
+			Type:      "prompt",
+			Field:     "from_port",
+			Ex:        "",
+			Doc:       "(Required) The from port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type: "prompt",
-			Field: "to_port",
-			Ex: "",
-			Doc: "(Required) The to port to match.",
+			Type:      "prompt",
+			Field:     "to_port",
+			Ex:        "",
+			Doc:       "(Required) The to port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type: "prompt",
-			Field: "rule_no",
-			Ex: "",
-			Doc: "(Required) The rule number. Used for ordering.",
+			Type:      "prompt",
+			Field:     "rule_no",
+			Ex:        "",
+			Doc:       "(Required) The rule number. Used for ordering.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "action",
-			Ex: "",
-			Doc: "(Required) The action to take.",
+			Ex:    "",
+			Doc:   "(Required) The action to take.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "protocol",
-			Ex: "-1",
-			Doc: "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
+			Ex:    "-1",
+			Doc:   "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "cidr_block",
-			Ex: "172.16.0.0/24",
-			Doc: "(Optional) The CIDR block to match. This must be a valid network mask.",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Optional) The CIDR block to match. This must be a valid network mask.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "ipv6_cidr_block",
-			Ex: "172.16.0.0/24",
-			Doc: "(Optional) The IPv6 CIDR block.",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Optional) The IPv6 CIDR block.",
 		},
 		{
-			Type: "prompt",
-			Field: "icmp_type",
-			Ex: "",
-			Doc: "(Optional) The ICMP type to be used. Default 0.",
+			Type:      "prompt",
+			Field:     "icmp_type",
+			Ex:        "",
+			Doc:       "(Optional) The ICMP type to be used. Default 0.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type: "prompt",
-			Field: "icmp_code",
-			Ex: "",
-			Doc: "(Optional) The ICMP type code to be used. Default 0.",
+			Type:      "prompt",
+			Field:     "icmp_code",
+			Ex:        "",
+			Doc:       "(Optional) The ICMP type code to be used. Default 0.",
 			Validator: utils.IntValidator,
 		},
 	}
@@ -2208,20 +2208,132 @@ func AWSVPCDHCPOptionsAssociationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "vpc_id",
-			Ex: "vpc-123",
-			Doc: "(Required) The ID of the VPC to which we would like to associate a DHCP Options Set.",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the VPC to which we would like to associate a DHCP Options Set.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "dhcp_options_id",
-			Ex: "dhcp-id-123",
-			Doc: "(Required) The ID of the DHCP Options Set to associate to the VPC.",
+			Ex:    "dhcp-id-123",
+			Doc:   "(Required) The ID of the DHCP Options Set to associate to the VPC.",
 		},
 	}
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_vpc_dhcp_options_association", blockName, resourceBlock)
+}
+
+func AWSVPCEndpointPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "service_name",
+			Ex:    "srv-123",
+			Doc:   "(Required) The service name. For AWS services the service name is usually in the form com.amazonaws.<region>.<service> (the SageMaker Notebook service is an exception to this rule, the service name is in the form aws.sagemaker.<region>.notebook",
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_id",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the VPC in which the endpoint will be used.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "auto_accept",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Accept the VPC endpoint (the VPC endpoint and service need to be in the same AWS account).",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "policy",
+			Ex:    "",
+			Doc: "(Optional) A policy to attach to the endpoint that controls access to the service. " +
+				"\nDefaults to full access. All Gateway and some Interface endpoints support " +
+				"\npolicies - see the relevant AWS documentation for more details. For more " +
+				"\ninformation about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide.",
+		},
+		{
+			Type:  "prompt",
+			Field: "private_dns_enabled",
+			Ex:    "(true/false)",
+			Doc: "(Optional) AWS services and AWS Marketplace partner services only) Whether " +
+				"\nor not to associate a private hosted zone with the specified VPC. " +
+				"\nApplicable for endpoints of type Interface. Defaults to false.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "route_table_ids",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc:   "(Optional) One or more route table IDs. Applicable for endpoints of type Gateway",
+		},
+		{
+			Type:  "prompt",
+			Field: "subnet_ids",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc: "(Optional) The ID of one or more subnets in which to create a network interface " +
+				"\nfor the endpoint. Applicable for endpoints of type GatewayLoadBalancer and Interface",
+		},
+		{
+			Type:  "prompt",
+			Field: "security_group_ids",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc: "(Optional) The ID of one or more security groups to associate with the network interface. " +
+				"\nRequired for endpoints of type Interface.",
+		},
+		{
+			Type:  "prompt",
+			Field: "tags",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+		{
+			Type:  "select",
+			Field: "vpd_endpoint_type",
+			Doc:   "(Optional) The VPC endpoint type",
+			Items: []string{"Gateway", "GatewayLoadBalancer", "Interface"},
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	timeoutSchema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating a VPC endpoint",
+		},
+		{
+			Type:  "prompt",
+			Field: "update",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for VPC endpoint modifications",
+		},
+		{
+			Type:  "prompt",
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for destroying VPC endpoints",
+		},
+	}
+
+	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
+	builder.ResourceBuilder("aws_vpc_endpoint", blockName, resourceBlock)
 }
