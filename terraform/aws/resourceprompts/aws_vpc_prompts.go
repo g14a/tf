@@ -2796,3 +2796,44 @@ func AWSVPNConnectionRoutePrompt() {
 
 	builder.ResourceBuilder("aws_vpn_connection_route", blockName, resourceBlock)
 }
+
+func AWSVPNGatewayPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex: "vpc-123",
+			Doc: "(Optional) The VPC ID to create in.",
+		},
+		{
+			Field: "availability_zone",
+			Ex: "az-123",
+			Doc: "(Optional) The Availability Zone for the virtual private gateway.",
+		},
+		{
+			Field: "tags",
+			Ex: "k1=v1,k2=v2",
+			Doc: "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+		{
+			Field: "amazon_side_asn",
+			Ex: "",
+			Doc: "(Optional) The Autonomous System Number (ASN) for the Amazon side of the gateway. " +
+				"\nIf you don't specify an ASN, the virtual private gateway is created with the default ASN.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpn_gateway", blockName, resourceBlock)
+}
