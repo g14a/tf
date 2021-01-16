@@ -1795,7 +1795,7 @@ func AWSSecurityGroupPrompt() {
 			Doc:   "(Optional, Forces new resource) The VPC ID.",
 		},
 		{
-			Field: "tags",
+			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
@@ -2001,12 +2001,12 @@ func AWSSubnetPrompt() {
 			Doc:   "(Required) The CIDR block for the subnet.",
 		},
 		{Field: "ipv6_cidr_block",
-			Ex:    "2001:db8:1234:1a00::/56",
+			Ex: "2001:db8:1234:1a00::/56",
 			Doc: "(Optional) The IPv6 network range for the subnet, in CIDR notation. " +
 				"\nThe subnet size must use a /64 prefix length.",
 		},
 		{Field: "map_public_ip_on_launch",
-			Ex:    "(true/false)",
+			Ex: "(true/false)",
 			Doc: "(Optional) Specify true to indicate that instances launched " +
 				"\ninto the subnet should be assigned a public IP address. Default is false",
 			Validator: utils.BoolValidator,
@@ -2411,4 +2411,64 @@ func AWSVPCEndpointSubnetAssociationPrompt() {
 	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
 
 	builder.ResourceBuilder("aws_vpc_endpoint_subnet_association", blockName, resourceBlock)
+}
+
+func AWSVPCIPV4CIDRBlockAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "cidr_block",
+			Ex: "172.16.0.0/24",
+			Doc: "(Required) The additional IPv4 CIDR block to associate with the VPC.",
+		},
+		{
+			Field: "vpc_id",
+			Ex: "vpc-123",
+			Doc: "(Required) The ID of the VPC to make the association with.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like timeout [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_vpc_ipv4_cidr_block_association", blockName, resourceBlock)
+		return
+	}
+
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating a VPC endpoint",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for destroying VPC endpoints",
+		},
+	}
+
+	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
+	builder.ResourceBuilder("aws_vpc_ipv4_cidr_block_association", blockName, resourceBlock)
 }

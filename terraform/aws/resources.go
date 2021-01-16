@@ -13,6 +13,31 @@ func resources() []string {
 	return []string{
 		"aws_instance",
 		"aws_vpc",
+		"aws_vpc_dhcp_options",
+		"aws_flow_log",
+		"aws_nat_gateway",
+		"aws_network_acl",
+		"aws_network_acl_rule",
+		"aws_network_interface",
+		"aws_internet_gateway",
+		"aws_main_route_table_association",
+		"aws_network_interface_attachment",
+		"aws_network_interface_sg_attachment",
+		"aws_route",
+		"aws_route_table",
+		"aws_route_table_association",
+		"aws_security_group",
+		"aws_security_group_role",
+		"aws_subnet",
+		"aws_security_group_rule",
+		"aws_vpc_dhcp_options_association",
+		"aws_vpc_endpoint",
+		"aws_vpc_endpoint_connection_notification",
+		"aws_vpc_endpoint_route_table_association",
+		"aws_vpc_endpoint_service",
+		"aws_caller_identity",
+		"aws_vpc_endpoint_subnet_association",
+		"aws_vpc_ipv4_cidr_block_association",
 		"aws_s3_bucket",
 		"aws_s3_access_point",
 		"aws_s3_account_public_access_block",
@@ -223,6 +248,7 @@ func resources() []string {
 		"aws_ebs_snapshot_copy",
 		"aws_ebs_volume",
 		"aws_ec2_availability_zone_group",
+		"aws_ec2_managed_prefix_list",
 		"aws_ec2_capacity_reservation",
 		"aws_ec2_client_vpn_authorization_rule",
 		"aws_ec2_client_vpn_endpoint",
@@ -389,6 +415,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSCallerIdentityPrompt()
 	case "aws_vpc_endpoint_subnet_association":
 		resourceprompts.AWSVPCEndpointSubnetAssociationPrompt()
+	case "aws_vpc_ipv4_cidr_block_association":
+		resourceprompts.AWSVPCIPV4CIDRBlockAssociationPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
