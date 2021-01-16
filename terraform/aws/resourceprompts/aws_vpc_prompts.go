@@ -2427,13 +2427,13 @@ func AWSVPCIPV4CIDRBlockAssociationPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "cidr_block",
-			Ex: "172.16.0.0/24",
-			Doc: "(Required) The additional IPv4 CIDR block to associate with the VPC.",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Required) The additional IPv4 CIDR block to associate with the VPC.",
 		},
 		{
 			Field: "vpc_id",
-			Ex: "vpc-123",
-			Doc: "(Required) The ID of the VPC to make the association with.",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the VPC to make the association with.",
 		},
 	}
 
@@ -2471,4 +2471,137 @@ func AWSVPCIPV4CIDRBlockAssociationPrompt() {
 	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
 
 	builder.ResourceBuilder("aws_vpc_ipv4_cidr_block_association", blockName, resourceBlock)
+}
+
+func AWSVPCPeeringConnectionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "peer_owner_id",
+			Ex:    "peer-owner-123",
+			Doc:   "(Optional) The AWS account ID of the owner of the peer VPC. Defaults to the account ID the AWS provider is currently connected to.",
+		},
+		{
+			Field: "peer_vpc_id",
+			Ex:    "peer-vpc-123",
+			Doc:   "(Required) The ID of the VPC with which you are creating the VPC Peering Connection.",
+		},
+		{
+			Field: "vpc_id",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the requester VPC.",
+		},
+		{
+			Field:     "auto_accept",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Accept the peering (both VPCs need to be in the same AWS account).",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "peer_region",
+			Ex:    "",
+			Doc: "(Optional) The region of the accepter VPC of the [VPC Peering Connection]. " +
+				"\nauto_accept must be false, and use the aws_vpc_peering_connection_accepter " +
+				"\nto manage the accepter side.",
+		},
+		{
+			Field: "tags",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A map of tags to assign to the resource.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like accepter/requester/timeout [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_vpc_peering_connection", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter accepter:\n(Optional) - An optional configuration block that allows for [VPC Peering Connection] " +
+		"\n(https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) options to be set for the " +
+		"\nVPC that accepts the peering connection (a maximum of one)." +
+		"\n\nThe accepter block supports the following arguments:" +
+		"\n1.allow_remote_vpc_dns_resolution\n2.allow_classic_link_to_remote_vpc\n3.allow_vpc_to_remote_classic_link")
+
+	accepterRequesterSchema := []types.Schema{
+		{
+			Field: "allow_remote_vpc_dns_resolution",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local VPC to resolve public DNS hostnames to private IP " +
+				"\naddresses when queried from instances in the peer VPC. This is not supported " +
+				"\nfor inter-region VPC peering.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "allow_classic_link_to_remote_vpc",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local linked EC2-Classic instance to communicate with " +
+				"\ninstances in a peer VPC. This enables an outbound communication from " +
+				"\nthe local ClassicLink connection to the remote VPC.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "allow_vpc_to_remote_classic_link",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local VPC to communicate with a linked EC2-Classic instance in a " +
+				"\bpeer VPC. This enables an outbound communication from the local VPC to the remote " +
+				"\nClassicLink connection.",
+			Validator: utils.BoolValidator,
+		},
+	}
+
+	resourceBlock["accepter"] = builder.PSOrder(types.ProvidePS(accepterRequesterSchema))
+
+	color.Green("\nEnter requester:\n(Optional) - An optional configuration block that allows for [VPC Peering Connection] " +
+		"\n(https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) options to be set for the " +
+		"\nVPC that accepts the peering connection (a maximum of one)." +
+		"\nThe requester block supports the following arguments:" +
+		"\n1.allow_remote_vpc_dns_resolution\n2.allow_classic_link_to_remote_vpc\n3.allow_vpc_to_remote_classic_link")
+
+	resourceBlock["requester"] = builder.PSOrder(types.ProvidePS(accepterRequesterSchema))
+
+	color.Green("Enter timeout configuration:\n")
+
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating a VPC endpoint",
+		},
+		{
+			Field: "update",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for VPC endpoint modifications",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for destroying VPC endpoints",
+		},
+	}
+
+	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
+	builder.ResourceBuilder("aws_vpc_peering_connection", blockName, resourceBlock)
 }
