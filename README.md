@@ -17,6 +17,7 @@ Boredom in Covid-19
 * Provider and resource support.
 * Boilerplate configuration without having to go to the official docs.  
 * In place documentation of fields.
+* Custom Terraform validators for ```int```,```bool```,```string```,```tags```  
 * Currently supports AWS EC2, S3, RDS, ELB, Lambda
 * Less development overhead(I guess :blush:)
 
