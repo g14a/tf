@@ -2337,3 +2337,48 @@ func AWSVPCEndpointPrompt() {
 
 	builder.ResourceBuilder("aws_vpc_endpoint", blockName, resourceBlock)
 }
+
+func AWSVPCEndpointConnectionNotificationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	color.Yellow("\nOne of vpc_endpoint_service_id or vpc_endpoint_id must be specified.\n")
+
+	schema := []types.Schema{
+		{
+			Type: "prompt",
+			Field: "vpc_endpoint_service_id",
+			Ex: "vpc-srv-id-123",
+			Doc: "(Optional) The ID of the VPC Endpoint Service to receive notifications for.",
+		},
+		{
+			Type: "prompt",
+			Field: "vpc_endpoint_id",
+			Ex: "vpc-ei-123",
+			Doc: "(Optional) The ID of the VPC Endpoint to receive notifications for.",
+		},
+		{
+			Type: "prompt",
+			Field: "connection_notification_arn",
+			Ex: "",
+			Doc: "(Required) The ARN of the SNS topic for the notifications.",
+		},
+		{
+			Type: "prompt",
+			Field: "connection_events",
+			Ex: "[\"e1\",\"e2\"]",
+			Doc: "(Required) One or more endpoint events for which to receive notifications.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpc_endpoint_connection_notification", blockName, resourceBlock)
+}

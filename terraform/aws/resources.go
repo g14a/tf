@@ -379,6 +379,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPCDHCPOptionsAssociationPrompt()
 	case "aws_vpc_endpoint":
 		resourceprompts.AWSVPCEndpointPrompt()
+	case "aws_vpc_endpoint_connection_notification":
+		resourceprompts.AWSVPCEndpointConnectionNotificationPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
