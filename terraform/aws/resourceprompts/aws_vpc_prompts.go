@@ -2767,3 +2767,32 @@ func AWSVPCConnectionPrompt() {
 
 	builder.ResourceBuilder("aws_vpn_connection", blockName, resourceBlock)
 }
+
+func AWSVPNConnectionRoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "destination_cidr_block",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Required) The CIDR block associated with the local subnet of the customer network.",
+		},
+		{
+			Field: "vpn_connection_id",
+			Ex:    "vpc-c123",
+			Doc:   "(Required) The ID of the VPN connection.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpn_connection_route", blockName, resourceBlock)
+}
