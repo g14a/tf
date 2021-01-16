@@ -15,20 +15,33 @@ Boredom in Covid-19
 
 ### Features
 * Provider and resource support.
-* Boilerplate configuration without having to go to the official docs.  
+* Boilerplate code without having to go to the official docs.  
 * In place documentation of fields.
 * Custom Terraform validators for ```int```,```bool```,```string```,```tags```  
-* Currently supports AWS EC2, S3, RDS, ELB, Lambda
+* Currently supports AWS EC2, S3, RDS, ELB, Lambda, VPC
 * Less development overhead(I guess :blush:)
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
 
+#### Fetching Boilerplate code for a resource
+
+1. Search through the resources for a given provider
+```shell
+tf resource -p <provider> -b
+```
+2. Directly provide the resource as well
+```shell
+tf resource -p <provider> -r <resource-in-the-provider> -b
+```
+
+[![asciicast](https://asciinema.org/a/IMsCtr687FYZKkjJEuJHjMvhH.svg)](https://asciinema.org/a/IMsCtr687FYZKkjJEuJHjMvhH)
+
 ### Stability
 This is a highly work in progress project, but I do my best to keep it stable so that things don't break.
-Please report issues if you find this tool useful and I will try to make time to resolve most of them.
+Please report issues if you find this tool useful and I will try to make time to resolve them.
 
-* Contributions are most welcome too :heart:
-* Upload a [asciinema cast](https://asciinema.org/) in your PR if you're developing a feature or adding extra support as it would be useful for tracking progress.
+### Contribution 
+Please check [CONTRIBUTION.md](https://github.com/g14a/tf/blob/main/CONTRIBUTING.md)
 
 ### Roadmap
 * Google and Azure
