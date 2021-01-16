@@ -2194,3 +2194,34 @@ func AWSVPCDHCPOptionsPrompt() {
 
 	builder.ResourceBuilder("aws_vpc_dhcp_options", blockName, resourceBlock)
 }
+
+func AWSVPCDHCPOptionsAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Type: "prompt",
+			Field: "vpc_id",
+			Ex: "vpc-123",
+			Doc: "(Required) The ID of the VPC to which we would like to associate a DHCP Options Set.",
+		},
+		{
+			Type: "prompt",
+			Field: "dhcp_options_id",
+			Ex: "dhcp-id-123",
+			Doc: "(Required) The ID of the DHCP Options Set to associate to the VPC.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpc_dhcp_options_association", blockName, resourceBlock)
+}
