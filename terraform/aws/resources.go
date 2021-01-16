@@ -436,6 +436,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPNConnectionRoutePrompt()
 	case "aws_vpn_gateway":
 		resourceprompts.AWSVPNGatewayPrompt()
+	case "aws_vpn_gateway_route_propagation":
+		resourceprompts.AWSVPNGatewayRoutePropagationPrompt()
 	case "aws_vpn_gateway_attachment":
 		resourceprompts.AWSVPNGatewayAttachmentPrompt()
 	case "aws_s3_bucket":

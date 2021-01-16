@@ -2852,13 +2852,13 @@ func AWSVPNGatewayAttachmentPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "vpc_id",
-			Ex: "vpc-123",
-			Doc: "(Required) The ID of the VPC.",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The ID of the VPC.",
 		},
 		{
 			Field: "vpn_gateway_id",
-			Ex: "vpn-gi-123",
-			Doc: "(Required) The ID of the Virtual Private Gateway.",
+			Ex:    "vpn-gi-123",
+			Doc:   "(Required) The ID of the Virtual Private Gateway.",
 		},
 	}
 
@@ -2867,24 +2867,31 @@ func AWSVPNGatewayAttachmentPrompt() {
 	builder.ResourceBuilder("aws_vpn_gateway_attachment", blockName, resourceBlock)
 }
 
+func AWSVPNGatewayRoutePropagationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
 
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	schema := []types.Schema{
+		{
+			Field: "vpn_gateway_id",
+			Ex:    "",
+			Doc:   "The id of the aws_vpn_gateway to propagate routes from.",
+		},
+		{
+			Field: "route_table_id",
+			Ex:    "",
+			Doc:   "The id of the aws_route_table to propagate routes into.",
+		},
+	}
 
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	builder.ResourceBuilder("aws_vpn_gateway_route_propagation", blockName, resourceBlock)
+}
