@@ -45,6 +45,7 @@ func resources() []string {
 		"aws_vpn_connection",
 		"aws_vpn_gateway",
 		"aws_vpn_gateway_attachment",
+		"aws_vpn_gateway_route_propagation",
 		"aws_s3_bucket",
 		"aws_s3_access_point",
 		"aws_s3_account_public_access_block",

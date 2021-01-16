@@ -2881,12 +2881,12 @@ func AWSVPNGatewayRoutePropagationPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "vpn_gateway_id",
-			Ex:    "",
+			Ex:    "vpn-gi-123",
 			Doc:   "The id of the aws_vpn_gateway to propagate routes from.",
 		},
 		{
 			Field: "route_table_id",
-			Ex:    "",
+			Ex:    "rti-123",
 			Doc:   "The id of the aws_route_table to propagate routes into.",
 		},
 	}
