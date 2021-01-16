@@ -1965,67 +1965,59 @@ func AWSSecurityGroupPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
+	var schemas []types.Schema
 
-	prompts["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Optional, Forces new resource) The name of the security group. If omitted, Terraform will assign a random, unique name",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schemas = []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "name",
+			Ex:    "new group",
+			Doc:   "(Optional, Forces new resource) The name of the security group. If omitted, Terraform will assign a random, unique name",
+		},
+		{
+			Type:  "prompt",
+			Field: "name_prefix",
+			Ex:    "new prefix",
+			Doc:   "(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. Conflicts with name",
+		},
+		{
+			Type:  "prompt",
+			Field: "description",
+			Ex:    "example description",
+			Doc: "(Optional, Forces new resource) The security group description. " +
+				"\nDefaults to \"Managed by Terraform\". Cannot be \"\". " +
+				"\nNOTE: This field maps to the AWS GroupDescription attribute, " +
+				"\nfor which there is no Update API. If you'd like to classify your " +
+				"\nsecurity groups in a way that can be updated, use tags",
+		},
+		{
+			Type:  "prompt",
+			Field: "revoke_rules_on_delete",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Instruct Terraform to revoke all of the Security Groups attached ingress and " +
+				"\negress rules before deleting the rule itself. This is normally not needed, however " +
+				"\ncertain AWS services such as Elastic Map Reduce may automatically add required rules " +
+				"\nto security groups used with the service, and those rules may contain a cyclic " +
+				"\ndependency that prevent the security groups from being destroyed without removing " +
+				"\nthe dependency first. Default false",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_id",
+			Ex:    "vpc-2f09a348",
+			Doc:   "(Optional, Forces new resource) The VPC ID.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "name")
 
-	prompts["name_prefix"] = types.TfPrompt{
-		Label: "Enter name_prefix:\n(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. Conflicts with name",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "name_prefix")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional, Forces new resource) The security group description. Defaults to \"Managed by Terraform\". " +
-			"\nCannot be \"\". NOTE: This field maps to the AWS GroupDescription attribute, " +
-			"\nfor which there is no Update API. If you'd like to classify your security groups in a " +
-			"\nway that can be updated, use tags",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["revoke_rules_on_delete"] = types.TfPrompt{
-		Label: "Enter revoke_rules_on_delete(true/false):\n(Optional) Instruct Terraform to revoke all of the Security Groups attached ingress " +
-			"\nand egress rules before deleting the rule itself. This is normally not needed, however certain AWS services " +
-			"\nsuch as Elastic Map Reduce may automatically add required rules to security groups used with the service, " +
-			"\nand those rules may contain a cyclic dependency that prevent the security groups from being destroyed " +
-			"\nwithout removing the dependency first. Default false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "revoke_rules_on_delete")
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Optional, Forces new resource) The VPC ID.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "vpc_id")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
 
 	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
 
@@ -2046,96 +2038,81 @@ func AWSSecurityGroupPrompt() {
 	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
 		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
 
-	ingressEgressPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
+	var ingressEgressSchemas []types.Schema
 
-	ingressEgressPrompt["cidr_blocks"] = types.TfPrompt{
-		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	ingressEgressSchemas = []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "cidr_blocks",
+			Ex:    "[\"172.2.0.0/16\",\"173.0.0.1/24\"]",
+			Doc:   "(Optional) List of CIDR blocks.",
+		},
+		{
+			Type:  "prompt",
+			Field: "ipv6_cidr_blocks",
+			Ex:    "[\"2001:db8:1234:1a00::/56\"]",
+			Doc:   "(Optional) List of IPv6 CIDR blocks.",
+		},
+		{
+			Type:  "prompt",
+			Field: "prefix_list_ids",
+			Ex:    "[\"pl-63a5400a\"]",
+			Doc:   "(Optional) List of IPv6 CIDR blocks.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "from_port",
+			Ex:        "443",
+			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "protocol",
+			Ex:    "-1",
+			Doc: "(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", " +
+				"\nwhich is not a valid value here), you must specify a \"from_port\" and \"to_port\" " +
+				"\nequal to 0. The supported values are defined in the \"IpProtocol\" argument on the " +
+				"\nIpPermission API reference. This argument is normalized to a lowercase value to match " +
+				"\nthe AWS API requirement when using with Terraform 0.12.x and above, please make sure " +
+				"\nthat the value of the protocol is specified as lowercase when using with older " +
+				"\nversion of Terraform to avoid an issue during upgrade.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "security_groups",
+			Ex:    "[\"g1\",\"g2\"]",
+			Doc:   "(Optional) List of security group Group Names if using EC2-Classic, or Group IDs if using a VPC.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "self",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:      "prompt",
+			Field:     "to_port",
+			Ex:        "443",
+			Doc:       "(Required) The end range port (or ICMP code if protocol is \"icmp\").",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "description",
+			Ex:    "example description",
+			Doc:   "(Optional) Description of this ingress/egress rule.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "cidr_blocks")
 
-	ingressEgressPrompt["ipv6_cidr_blocks"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_blocks:\n(Optional) List of IPv6 CIDR blocks.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_blocks")
-
-	ingressEgressPrompt["prefix_list_ids"] = types.TfPrompt{
-		Label: "Enter prefix_list_ids:\n(Optional) List of prefix list IDs.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "prefix_list_ids")
-
-	ingressEgressPrompt["from_port"] = types.TfPrompt{
-		Label: "Enter from_port:\n(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "from_port")
-
-	ingressEgressPrompt["protocol"] = types.TfPrompt{
-		Label: "Enter protocol:\n(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is " +
-			"\nnot a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. The supported values are " +
-			"\ndefined in the \"IpProtocol\" argument on the IpPermission API reference. This argument is normalized to a " +
-			"\nlowercase value to match the AWS API requirement when using with Terraform 0.12.x and above, please make " +
-			"\nsure that the value of the protocol is specified as lowercase when using with older version of Terraform " +
-			"\nto avoid an issue during upgrade.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "protocol")
-
-	ingressEgressPrompt["security_groups"] = types.TfPrompt{
-		Label: "Enter security_groups:\n(Optional) List of security group Group Names if using EC2-Classic, or Group IDs if using a VPC.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "security_groups")
-
-	ingressEgressPrompt["self"] = types.TfPrompt{
-		Label: "Enter self:\n(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "self")
-
-	ingressEgressPrompt["to_port"] = types.TfPrompt{
-		Label: "Enter to_port:\n(Required) The end range port (or ICMP code if protocol is \"icmp\").",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "to_port")
-
-	ingressEgressPrompt["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "description")
-
-	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["ingress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchemas))
 
 	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
 		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
 
-	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["egress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchemas))
 
 	builder.ResourceBuilder("aws_security_group", blockName, resourceBlock)
 }
@@ -2151,105 +2128,85 @@ func AWSSecurityGroupRulePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
+	var schemas []types.Schema
 
-	prompts["cidr_blocks"] = types.TfPrompt{
-		Label: "Enter cidr_blocks:\n(Optional) List of CIDR blocks. Cannot be specified with source_security_group_id",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schemas = []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "cidr_blocks",
+			Ex:    "[\"172.2.0.0/16\",\"173.0.0.1/24\"]",
+			Doc:   "(Optional) List of CIDR blocks. Cannot be specified with source_security_group_id",
 		},
-	}
-	promptOrder = append(promptOrder, "cidr_blocks")
-
-	prompts["ipv6_cidr_blocks"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_blocks:\n(Optional) List of IPv6 CIDR blocks.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "ipv6_cidr_blocks",
+			Ex:    "[\"2001:db8:1234:1a00::/56\"]",
+			Doc:   "(Optional) List of IPv6 CIDR blocks.",
 		},
-	}
-	promptOrder = append(promptOrder, "ipv6_cidr_blocks")
-
-	prompts["prefix_list_ids"] = types.TfPrompt{
-		Label: "Enter prefix_list_ids:\n(Optional) List of prefix list IDs.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "prefix_list_ids",
+			Ex:    "[\"pl-63a5400a\"]",
+			Doc:   "(Optional) List of Prefix List IDs.",
 		},
-	}
-	promptOrder = append(promptOrder, "prefix_list_ids")
-
-	prompts["from_port"] = types.TfPrompt{
-		Label: "Enter from_port:\n(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "from_port",
+			Ex:        "443",
+			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\").",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "from_port")
-
-	prompts["protocol"] = types.TfPrompt{
-		Label: "Enter protocol:\n(Required) The protocol. If not icmp, icmpv6, tcp, udp, or all use the protocol number." +
-			"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:  "prompt",
+			Field: "protocol",
+			Ex:    "tcp",
+			Doc: "(Required) The protocol. If not icmp, icmpv6, tcp, udp, or all use the protocol number" +
+				"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
 		},
-	}
-	promptOrder = append(promptOrder, "protocol")
-
-	prompts["security_group_id"] = types.TfPrompt{
-		Label: "Enter security_group_id:\n(Required) The security group to apply this rule to.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "security_group_id",
+			Ex:    "tcp",
+			Doc:   "(Required) The security group to apply this rule to.",
 		},
-	}
-	promptOrder = append(promptOrder, "security_group_id")
-
-	prompts["source_security_group_id"] = types.TfPrompt{
-		Label: "Enter source_security_group_id:\n(Optional) The security group id to allow access to/from, depending on the type. Cannot be specified with cidr_blocks and self",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "source_security_group_id",
+			Ex:    "sg-903004f8",
+			Doc: "(Optional) The security group id to allow access to/from, depending on the type. " +
+				"\nCannot be specified with cidr_blocks and self.",
 		},
-	}
-	promptOrder = append(promptOrder, "source_security_group_id")
-
-	prompts["self"] = types.TfPrompt{
-		Label: "Enter self:\n(Optional) If true, the security group itself will be added as a source to this ingress/egress rule. Cannot be specified with source_security_group_id",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Type:  "prompt",
+			Field: "self",
+			Ex:    "(true/false)",
+			Doc: "(Optional) If true, the security group itself will be added as a source to this ingress rule. " +
+				"\nCannot be specified with source_security_group_id",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "self")
-
-	prompts["to_port"] = types.TfPrompt{
-		Label: "Enter to_port:\n(Required) The end range port (or ICMP code if protocol is \"icmp\").",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "to_port",
+			Ex:        "443",
+			Doc:       "(Required) The end port (or ICMP code if protocol is \"icmp\").",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "to_port")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of this ingress/egress rule.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "description",
+			Ex:    "an example description",
+			Doc:   "(Optional) Description of the rule.",
 		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	selects := map[string]types.TfSelect{}
-	selects["type"] = types.TfSelect{
-		Label: "Enter type:\n(Required) The type of rule being created.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "type",
+			Ex:    "",
+			Doc:   "(Required) The type of rule being created. Valid options are ingress (inbound) or egress (outbound).",
 			Items: []string{"ingress", "egress"},
 		},
 	}
-	selectOrder = append(selectOrder, "type")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
 
 	builder.ResourceBuilder("aws_security_group_rule", blockName, resourceBlock)
 }
@@ -2269,91 +2226,68 @@ func AWSSubnetPrompt() {
 
 	schemas = []types.Schema{
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "availability_zone",
-			Ex: 
+			Ex:    "us-east-1a",
+			Doc:   "(Optional) The AZ for the subnet.",
+		},
+		{
+			Type:  "prompt",
+			Field: "availability_zone_id",
+			Ex:    "use-az2",
+			Doc:   "(Optional) The AZ ID of the subnet.",
+		},
+		{
+			Type:  "prompt",
+			Field: "cidr_block",
+			Ex:    "172.2.0.0/16",
+			Doc:   "(Required) The CIDR block for the subnet.",
+		},
+		{
+			Type:  "prompt",
+			Field: "ipv6_cidr_block",
+			Ex:    "2001:db8:1234:1a00::/56",
+			Doc: "(Optional) The IPv6 network range for the subnet, in CIDR notation. " +
+				"\nThe subnet size must use a /64 prefix length.",
+		},
+		{
+			Type:  "prompt",
+			Field: "map_public_ip_on_launch",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specify true to indicate that instances launched " +
+				"\ninto the subnet should be assigned a public IP address. Default is false",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "outpost_arn",
+			Ex:    "arn:aws:outposts:us-west-2:123456789012:outpost/op-xxxxxxxxxxxxxxxx",
+			Doc:   "(Optional) The Amazon Resource Name (ARN) of the Outpost.",
+		},
+		{
+			Type:  "prompt",
+			Field: "assign_ipv6_address_on_creation",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specify true to indicate that network interfaces created " +
+				"\nin the specified subnet should be assigned an IPv6 address. Default is false",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_id",
+			Ex:    "vpc-2f09a348",
+			Doc:   "(Required) The VPC ID.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "tags",
+			Ex:        "k1=v1,k1=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["availability_zone"] = types.TfPrompt{
-		Label: "Enter availability_zone:\n(Optional) The AZ for the subnet.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "availability_zone")
-
-	prompts["availability_zone_id"] = types.TfPrompt{
-		Label: "Enter availability_zone_id:\n(Optional) The AZ ID of the subnet.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "availability_zone_id")
-
-	prompts["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Required) The CIDR block for the subnet.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "cidr_block")
-
-	prompts["ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "ipv6_cidr_block")
-
-	prompts["map_public_ip_on_launch"] = types.TfPrompt{
-		Label: "Enter map_public_ip_on_launch(true/false):\n(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "map_public_ip_on_launch")
-
-	prompts["outpost_arn"] = types.TfPrompt{
-		Label: "Enter outpost_arn:\n(Optional) The Amazon Resource Name (ARN) of the Outpost.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "outpost_arn")
-
-	prompts["assign_ipv6_address_on_creation"] = types.TfPrompt{
-		Label: "Enter assign_ipv6_address_on_creation(true/false):\n(Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "assign_ipv6_address_on_creation")
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The VPC ID.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "vpc_id")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
 
 	builder.ResourceBuilder("aws_subnet", blockName, resourceBlock)
 }
