@@ -40,6 +40,7 @@ func resources() []string {
 		"aws_vpc_ipv4_cidr_block_association",
 		"aws_vpc_peering_connection",
 		"aws_vpc_peering_connection_accepter",
+		"aws_vpc_peering_connection_options",
 		"aws_s3_bucket",
 		"aws_s3_access_point",
 		"aws_s3_account_public_access_block",
@@ -423,6 +424,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSVPCPeeringConnectionPrompt()
 	case "aws_vpc_peering_connection_accepter":
 		resourceprompts.AWSVPCPeeringConnectionAccepterPrompt()
+	case "aws_vpc_peering_connection_options":
+		resourceprompts.AWSVPCPeeringConnectionOptionsPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":

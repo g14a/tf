@@ -2620,19 +2620,19 @@ func AWSVPCPeeringConnectionAccepterPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "vpc_peering_connection_id",
-			Ex: "vpc-pci-123",
-			Doc: "(Required) The VPC Peering Connection ID to manage.",
+			Ex:    "vpc-pci-123",
+			Doc:   "(Required) The VPC Peering Connection ID to manage.",
 		},
 		{
-			Field: "auto_accept",
-			Ex: "(true/false)",
-			Doc: "(Optional) Whether or not to accept the peering request. Defaults to false.",
+			Field:     "auto_accept",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether or not to accept the peering request. Defaults to false.",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Field: "tags",
-			Ex: "k1=v1,k2=v2",
-			Doc: "(Optional) A map of tags to assign to the resource.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 	}
@@ -2640,4 +2640,88 @@ func AWSVPCPeeringConnectionAccepterPrompt() {
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_vpc_peering_connection_accepter", blockName, resourceBlock)
+}
+
+func AWSVPCPeeringConnectionOptionsPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "vpc_peering_connection_id",
+			Ex:    "vpc-pci-123",
+			Doc:   "(Required) The ID of the requester VPC peering connection.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like accepter/requester [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_vpc_peering_connection", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter accepter:\n(Optional) - An optional configuration block that allows for [VPC Peering Connection] " +
+		"\n(https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) options to be set for the " +
+		"\nVPC that accepts the peering connection (a maximum of one)." +
+		"\n\nThe accepter block supports the following arguments:" +
+		"\n1.allow_remote_vpc_dns_resolution\n2.allow_classic_link_to_remote_vpc\n3.allow_vpc_to_remote_classic_link")
+
+	accepterRequesterSchema := []types.Schema{
+		{
+			Field: "allow_remote_vpc_dns_resolution",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local VPC to resolve public DNS hostnames to " +
+				"\nprivate IP addresses when queried from instances in the peer VPC.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "allow_classic_link_to_remote_vpc",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local linked EC2-Classic instance to communicate " +
+				"\nwith instances in a peer VPC. This enables an outbound communication " +
+				"\nfrom the local ClassicLink connection to the remote VPC. This option " +
+				"\nis not supported for inter-region VPC peering.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "allow_vpc_to_remote_classic_link",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Allow a local VPC to communicate with a linked EC2-Classic " +
+				"\ninstance in a peer VPC. This enables an outbound communication from " +
+				"\nthe local VPC to the remote ClassicLink connection. This option is not " +
+				"\nsupported for inter-region VPC peering.",
+			Validator: utils.BoolValidator,
+		},
+	}
+
+	resourceBlock["accepter"] = builder.PSOrder(types.ProvidePS(accepterRequesterSchema))
+
+	color.Green("\nEnter requester:\n(Optional) - A optional configuration block that allows for [VPC Peering Connection] " +
+		"\n(https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) options to be set for the VPC that requests " +
+		"\nthe peering connection (a maximum of one)." +
+		"\nThe requester block supports the following arguments:" +
+		"\n1.allow_remote_vpc_dns_resolution\n2.allow_classic_link_to_remote_vpc\n3.allow_vpc_to_remote_classic_link")
+
+	resourceBlock["requester"] = builder.PSOrder(types.ProvidePS(accepterRequesterSchema))
+
+	builder.ResourceBuilder("aws_vpc_peering_connection_options", blockName, resourceBlock)
 }
