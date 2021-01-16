@@ -2296,10 +2296,10 @@ func AWSVPCEndpointPrompt() {
 				"\nRequired for endpoints of type Interface.",
 		},
 		{
-			Type:  "prompt",
-			Field: "tags",
-			Ex:    "k1=v1,k2=v2",
-			Doc:   "(Optional) A map of tags to assign to the resource.",
+			Type:      "prompt",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 		{
@@ -2353,32 +2353,119 @@ func AWSVPCEndpointConnectionNotificationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "vpc_endpoint_service_id",
-			Ex: "vpc-srv-id-123",
-			Doc: "(Optional) The ID of the VPC Endpoint Service to receive notifications for.",
+			Ex:    "vpc-srv-id-123",
+			Doc:   "(Optional) The ID of the VPC Endpoint Service to receive notifications for.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "vpc_endpoint_id",
-			Ex: "vpc-ei-123",
-			Doc: "(Optional) The ID of the VPC Endpoint to receive notifications for.",
+			Ex:    "vpc-ei-123",
+			Doc:   "(Optional) The ID of the VPC Endpoint to receive notifications for.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "connection_notification_arn",
-			Ex: "",
-			Doc: "(Required) The ARN of the SNS topic for the notifications.",
+			Ex:    "",
+			Doc:   "(Required) The ARN of the SNS topic for the notifications.",
 		},
 		{
-			Type: "prompt",
+			Type:  "prompt",
 			Field: "connection_events",
-			Ex: "[\"e1\",\"e2\"]",
-			Doc: "(Required) One or more endpoint events for which to receive notifications.",
+			Ex:    "[\"e1\",\"e2\"]",
+			Doc:   "(Required) One or more endpoint events for which to receive notifications.",
 		},
 	}
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_vpc_endpoint_connection_notification", blockName, resourceBlock)
+}
+
+func AWSVPCEndpointRouteTableAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "route_table_id",
+			Ex:    "rti-123",
+			Doc:   "(Required) Identifier of the EC2 Route Table to be associated with the VPC Endpoint.",
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_endpoint_id",
+			Ex:    "vpc-ei-123",
+			Doc:   "(Required) Identifier of the VPC Endpoint with which the EC2 Route Table will be associated.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpc_endpoint_route_table_association", blockName, resourceBlock)
+}
+
+func AWSVPCEndpointServicePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "acceptance_required",
+			Ex:    "(true/false)",
+			Doc:   "(Required) Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - true or false.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "allowed_principals",
+			Ex:    "[\"p1\",\"p2\"]",
+			Doc:   "(Optional) The ARNs of one or more principals allowed to discover the endpoint service.",
+		},
+		{
+			Type:  "prompt",
+			Field: "gateway_load_balancer_arns",
+			Ex:    "[\"a1\",\"a2\"]",
+			Doc:   "(Optional) Amazon Resource Names (ARNs) of one or more Gateway Load Balancers for the endpoint service.",
+		},
+		{
+			Type:  "prompt",
+			Field: "network_load_balancer_arns",
+			Ex:    "[\"a1\",\"a2\"]",
+			Doc:   "(Optional) Amazon Resource Names (ARNs) of one or more Network Load Balancers for the endpoint service.",
+		},
+		{
+			Type:  "prompt",
+			Field: "tags",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "private_dns_name",
+			Ex:    "dns-123",
+			Doc:   "(Optional) The private DNS name for the service.",
+		},
+	}
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpc_endpoint_service", blockName, resourceBlock)
 }
