@@ -1651,106 +1651,82 @@ func AWSRoutePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["route_table_id"] = types.TfPrompt{
-		Label: "Enter route_table_id:\n(Required) The ID of the routing table.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "route_table_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the routing table.",
+		},
+		{
+			Type:  "prompt",
+			Field: "destination_cidr_block",
+			Ex:    "172.2.0.0/16",
+			Doc:   "(Optional) The destination CIDR block.",
+		},
+		{
+			Type:  "prompt",
+			Field: "destination_ipv6_cidr_block",
+			Ex:    "2001:db8:1234:1a00::/56",
+			Doc:   "(Optional) The destination IPv6 CIDR block.",
+		},
+		{
+			Type:  "prompt",
+			Field: "egress_only_gateway_id",
+			Ex:    "gateway-123",
+			Doc:   "(Optional) Identifier of a VPC Egress Only Internet Gateway.",
+		},
+		{
+			Type:  "prompt",
+			Field: "gateway_id",
+			Ex:    "gateway-123",
+			Doc:   "(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
+		},
+		{
+			Type:  "prompt",
+			Field: "instance_id",
+			Ex:    "instance-123",
+			Doc:   "(Optional) Identifier of an EC2 instance.",
+		},
+		{
+			Type:  "prompt",
+			Field: "nat_gateway_id",
+			Ex:    "gateway-nat-123",
+			Doc:   "(Optional) Identifier of a VPC NAT gateway.",
+		},
+		{
+			Type:  "prompt",
+			Field: "local_gateway_id",
+			Ex:    "gateway-local-123",
+			Doc:   "(Optional) Identifier of a Outpost local gateway.",
+		},
+		{
+			Type:  "prompt",
+			Field: "network_interface_id",
+			Ex:    "ni-123",
+			Doc:   "(Optional) Identifier of an EC2 network interface.",
+		},
+		{
+			Type:  "prompt",
+			Field: "transit_gateway_id",
+			Ex:    "tra-gateway-123",
+			Doc:   "(Optional) Identifier of an EC2 Transit Gateway.",
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_endpoint_id",
+			Ex:    "vpc-ei-123",
+			Doc:   "(Optional) Identifier of a VPC Endpoint.",
+		},
+		{
+			Type:  "prompt",
+			Field: "vpc_peering_connection_id",
+			Ex:    "vpc-pci-123",
+			Doc:   "(Optional) Identifier of a VPC peering connection.",
 		},
 	}
-	promptOrder = append(promptOrder, "route_table_id")
 
-	prompts["destination_cidr_block"] = types.TfPrompt{
-		Label: "Enter destination_cidr_block:\n(Optional) The destination CIDR block.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "destination_cidr_block")
-
-	prompts["destination_ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter destination_ipv6_cidr_block:\n(Optional) The destination IPv6 CIDR block.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "destination_ipv6_cidr_block")
-
-	prompts["egress_only_gateway_id"] = types.TfPrompt{
-		Label: "Enter egress_only_gateway_id:\n(Optional) Identifier of a VPC Egress Only Internet Gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "egress_only_gateway_id")
-
-	prompts["gateway_id"] = types.TfPrompt{
-		Label: "Enter gateway_id:\n(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "gateway_id")
-
-	prompts["instance_id"] = types.TfPrompt{
-		Label: "Enter instance_id:\n(Optional) Identifier of an EC2 instance.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "instance_id")
-
-	prompts["nat_gateway_id"] = types.TfPrompt{
-		Label: "Enter nat_gateway_id:\n(Optional) Identifier of a VPC NAT gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "nat_gateway_id")
-
-	prompts["local_gateway_id"] = types.TfPrompt{
-		Label: "Enter local_gateway_id:\n(Optional) Identifier of a Outpost local gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "local_gateway_id")
-
-	prompts["network_interface_id"] = types.TfPrompt{
-		Label: "Enter network_interface_id:\n(Optional) Identifier of an EC2 network interface.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "network_interface_id")
-
-	prompts["transit_gateway_id"] = types.TfPrompt{
-		Label: "Enter transit_gateway_id:\n(Optional) Identifier of an EC2 Transit Gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "transit_gateway_id")
-
-	prompts["vpc_endpoint_id"] = types.TfPrompt{
-		Label: "Enter vpc_endpoint_id:\n(Optional) Identifier of a VPC Endpoint.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "vpc_endpoint_id")
-
-	prompts["vpc_peering_connection_id"] = types.TfPrompt{
-		Label: "Enter vpc_peering_connection_id:\n(Optional) Identifier of a VPC peering connection.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "vpc_peering_connection_id")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_route", blockName, resourceBlock)
 }
@@ -1766,9 +1742,7 @@ func AWSRouteTablePrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "vpc_id",
@@ -1790,7 +1764,7 @@ func AWSRouteTablePrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like route [y/n]?\n\n", "text")
 
@@ -1811,9 +1785,7 @@ func AWSRouteTablePrompt() {
 	color.Green("\nEnter route:\n(Optional) A list of route objects." +
 		"\n1.cidr_block\n2.ipv6_cidr_block\n3.egress_only_gateway_id\n4.gateway_id\n5.instance_id\n6.nat_gateway_id\n7.local_gateway_id\n8.network_interface_id\n9.transit_gateway_id\n10.vpc_endpoint_id\n11.vpc_peering_connection_id\n")
 
-	var routeSchema []types.Schema
-
-	routeSchema = []types.Schema{
+	routeSchema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "cidr_block",
@@ -1898,9 +1870,7 @@ func AWSRouteTableAssociationPrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "subnet_id",
@@ -1921,7 +1891,7 @@ func AWSRouteTableAssociationPrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_route_table_association", blockName, resourceBlock)
 }
@@ -1937,9 +1907,7 @@ func AWSSecurityGroupPrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "name",
@@ -1989,7 +1957,7 @@ func AWSSecurityGroupPrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
 
@@ -2010,9 +1978,7 @@ func AWSSecurityGroupPrompt() {
 	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
 		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
 
-	var ingressEgressSchemas []types.Schema
-
-	ingressEgressSchemas = []types.Schema{
+	ingressEgressSchema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "cidr_blocks",
@@ -2079,12 +2045,12 @@ func AWSSecurityGroupPrompt() {
 		},
 	}
 
-	resourceBlock["ingress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchemas))
+	resourceBlock["ingress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
 		"\n1.cidr_blocks\n2.ipv6_cidr_blocks\n3.prefix_list_ids\n4.from_port\n5.protocol\n6.security_groups\n7.self\n8.to_port\n9.description\n")
 
-	resourceBlock["egress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchemas))
+	resourceBlock["egress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	builder.ResourceBuilder("aws_security_group", blockName, resourceBlock)
 }
@@ -2100,9 +2066,7 @@ func AWSSecurityGroupRulePrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "cidr_blocks",
@@ -2178,7 +2142,7 @@ func AWSSecurityGroupRulePrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_security_group_rule", blockName, resourceBlock)
 }
@@ -2194,9 +2158,7 @@ func AWSSubnetPrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "availability_zone",
@@ -2259,7 +2221,7 @@ func AWSSubnetPrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_subnet", blockName, resourceBlock)
 }
@@ -2275,9 +2237,7 @@ func AWSVPCDHCPOptionsPrompt() {
 		fmt.Println(err)
 	}
 
-	var schemas []types.Schema
-
-	schemas = []types.Schema{
+	schema := []types.Schema{
 		{
 			Type:  "prompt",
 			Field: "domain_name",
@@ -2317,7 +2277,7 @@ func AWSVPCDHCPOptionsPrompt() {
 		},
 	}
 
-	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_vpc_dhcp_options", blockName, resourceBlock)
 }
