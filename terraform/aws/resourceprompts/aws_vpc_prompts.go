@@ -1310,106 +1310,83 @@ func AWSNetworkACLRulePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["network_acl_id"] = types.TfPrompt{
-		Label: "Enter network_acl_id:\n(Required) The ID of the network ACL.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "network_acl_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the network ACL.",
 		},
-	}
-	promptOrder = append(promptOrder, "network_acl_id")
-
-	prompts["role_number"] = types.TfPrompt{
-		Label: "Enter role_number:\n(Required) The rule number for the entry (for example, 100). ACL entries are processed in ascending order by rule number.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "role_number",
+			Ex:        "",
+			Doc:       "(Required) The rule number for the entry (for example, 100). ACL entries are processed in ascending order by rule number.",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "role_number")
-
-	prompts["egress"] = types.TfPrompt{
-		Label: "Enter egress(true/false):\n(Optional, bool) Indicates whether this is an egress rule (rule is applied to traffic leaving the subnet). Default false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Type:      "prompt",
+			Field:     "egress",
+			Ex:        "(true/false)",
+			Doc:       "(Optional, bool) Indicates whether this is an egress rule (rule is applied to traffic leaving the subnet). Default false",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "egress")
-
-	prompts["protocol"] = types.TfPrompt{
-		Label: "Enter protocol:\n(Required) The protocol. A value of -1 means all protocols.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "protocol",
+			Ex:        "10",
+			Doc:       "(Required) The protocol. A value of -1 means all protocols.",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "protocol")
-
-	prompts["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Optional) The network range to allow or deny, in CIDR notation (for example 172.16.0.0/24).",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "cidr_block",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Optional) The network range to allow or deny, in CIDR notation.",
 		},
-	}
-	promptOrder = append(promptOrder, "cidr_block")
-
-	prompts["ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 CIDR block to allow or deny.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "ipv6_cidr_block",
+			Ex:    "2001:db8:1234:1a00::/56",
+			Doc:   "(Optional) The IPv6 CIDR block to allow or deny.",
 		},
-	}
-	promptOrder = append(promptOrder, "ipv6_cidr_block")
-
-	prompts["from_port"] = types.TfPrompt{
-		Label: "Enter from_port:\n(Optional) The from port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "from_port",
+			Ex:        "443",
+			Doc:       "(Optional) The from port to match.",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "from_port")
-
-	prompts["to_port"] = types.TfPrompt{
-		Label: "Enter to_port:\n(Optional) The to port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Type:      "prompt",
+			Field:     "to_port",
+			Ex:        "443",
+			Doc:       "(Optional) The to port to match.",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "to_port")
-
-	prompts["icmp_type"] = types.TfPrompt{
-		Label: "Enter icmp_type:\n(Optional) ICMP protocol: The ICMP type. Required if specifying ICMP for the protocol. e.g. -1",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:      "prompt",
+			Field:     "icmp_type",
+			Ex:        "-1",
+			Doc:       "(Optional) ICMP protocol: The ICMP type. Required if specifying ICMP for the protocol. e.g. -1",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "icmp_type")
-
-	prompts["icmp_code"] = types.TfPrompt{
-		Label: "Enter icmp_code:\n(Optional) ICMP protocol: The ICMP code. Required if specifying ICMP for the protocol. e.g. -1",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Type:      "prompt",
+			Field:     "icmp_code",
+			Ex:        "-1",
+			Doc:       "(Optional) ICMP protocol: The ICMP code. Required if specifying ICMP for the protocol. e.g. -1",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "icmp_code")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["rule_action"] = types.TfSelect{
-		Label: "Enter rule_action:\n(Required) Indicates whether to allow or deny the traffic that matches the rule.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "prompt",
+			Field: "rule_action",
+			Doc:   "(Required) Indicates whether to allow or deny the traffic that matches the rule.",
 			Items: []string{"allow", "deny"},
 		},
 	}
-	selectOrder = append(selectOrder, "rule_action")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_network_acl_rule", blockName, resourceBlock)
 }
@@ -1425,98 +1402,71 @@ func AWSNetworkInterfacePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["subnet_id"] = types.TfPrompt{
-		Label: "Enter subnet_id:\n(Required) Subnet ID to create the ENI in.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "subnet_id",
+			Ex:    "",
+			Doc:   "(Required) Subnet ID to create the ENI in.",
+		},
+		{
+			Type:  "prompt",
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) A description for the network interface.",
+		},
+		{
+			Type:  "prompt",
+			Field: "private_ips",
+			Ex:    "[\"ip1\",\"ip2\"]",
+			Doc:   "(Optional) List of private IPs to assign to the ENI.",
+		},
+		{
+			Type:  "prompt",
+			Field: "private_ips_count",
+			Ex:    "10",
+			Doc: "(Optional) Number of secondary private IPs to assign to the ENI. " +
+				"\nThe total number nof private IPs will be 1 + private_ips_count, " +
+				"\nas a primary private IP will be assiged to an ENI by default.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "ipv6_addresses",
+			Ex:    "",
+			Doc: "(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
+				"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
+		},
+		{
+			Type:  "prompt",
+			Field: "ipv6_addresses_count",
+			Ex:    "10",
+			Doc: "(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block range of your subnet. " +
+				"\nYou can't use this option if you're specifying ipv6_address_count",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type:  "prompt",
+			Field: "security_groups",
+			Ex:    "",
+			Doc:   "(Optional) List of security group IDs to assign to the ENI.",
+		},
+		{
+			Type:  "prompt",
+			Field: "source_dest_checks",
+			Ex:    "(true/false)",
+			Doc:   "(Optional) Whether to enable source destination checking for the ENI.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "subnet_id")
 
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) A description for the network interface.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["private_ips"] = types.TfPrompt{
-		Label: "Enter private_ips e.g.[\"ip1\",\"ip2\"]:\n(Optional) List of private IPs to assign to the ENI.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "private_ips")
-
-	prompts["private_ips_count"] = types.TfPrompt{
-		Label: "Enter private_ips_count:\n(Optional) Number of secondary private IPs to assign to the ENI. The total number " +
-			"\nof private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "private_ips_count")
-
-	prompts["ipv6_addresses"] = types.TfPrompt{
-		Label: "Enter ipv6_addresses:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
-			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "ipv6_addresses")
-
-	prompts["ipv6_addresses_count"] = types.TfPrompt{
-		Label: "Enter ipv6_addresses_count:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
-			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "ipv6_addresses_count")
-
-	prompts["ipv6_addresses_count"] = types.TfPrompt{
-		Label: "Enter ipv6_addresses_count:\n(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
-			"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "ipv6_addresses_count")
-
-	prompts["security_groups"] = types.TfPrompt{
-		Label: "Enter security_groups:\n(Optional) List of security group IDs to assign to the ENI.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "security_groups")
-
-	prompts["source_dest_checks"] = types.TfPrompt{
-		Label: "Enter source_dest_checks:\n(Optional) Whether to enable source destination checking for the ENI.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "source_dest_checks")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like attachment [y/n]?\n\n", "text")
 
@@ -1537,28 +1487,25 @@ func AWSNetworkInterfacePrompt() {
 	color.Green("\nEnter attachment:\n(Optional) Block to define the attachment of the ENI." +
 		"\n1.instance\n2.device_index")
 
-	attachmentPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	attachmentPrompt["instance"] = types.TfPrompt{
-		Label: "Enter instance:\n(Required) ID of the instance to attach to.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	attachmentSchema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "instance",
+			Ex:    "",
+			Doc:   "(Required) ID of the instance to attach to.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "device_index",
+			Ex:        "1",
+			Doc:       "(Required) Integer to define the devices index.",
+			Validator: utils.IntValidator,
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "instance")
 
-	attachmentPrompt["device_index"] = types.TfPrompt{
-		Label: "Enter device_index:\n(Required) Integer to define the devices index.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "device_index")
+	resourceBlock["attachment"] = builder.PSOrder(types.ProvidePS(attachmentSchema))
 
-	resourceBlock["attachment"] = builder.PSOrder(nestedPromptOrder, nil, attachmentPrompt, nil)
-
-	builder.ResourceBuilder("aws_network_inteface", blockName, resourceBlock)
+	builder.ResourceBuilder("aws_network_interface", blockName, resourceBlock)
 }
 
 func AWSNetworkInterfaceAttachmentPrompt() {
@@ -1572,35 +1519,29 @@ func AWSNetworkInterfaceAttachmentPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["instance_id"] = types.TfPrompt{
-		Label: "Enter instance_id:\n(Required) Instance ID to attach.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "instance_id",
+			Ex:    "instance-123",
+			Doc:   "(Required) Instance ID to attach.",
+		},
+		{
+			Type:  "prompt",
+			Field: "network_interface_id",
+			Ex:    "nid-123",
+			Doc:   "(Required) ENI ID to attach.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "device_index",
+			Ex:        "1",
+			Doc:       "(Required) Network interface index.",
+			Validator: utils.IntValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "instance_id")
 
-	prompts["network_interface_id"] = types.TfPrompt{
-		Label: "Enter network_interface_id:\n(Required) ENI ID to attach.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "network_interface_id")
-
-	prompts["device_index"] = types.TfPrompt{
-		Label: "Enter device_index:\n(Required) Network interface index (int).",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "device_index")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_network_interface_attachment", blockName, resourceBlock)
 }
@@ -1616,26 +1557,22 @@ func AWSNetworkInterfaceSGAttachmentPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["security_group_id"] = types.TfPrompt{
-		Label: "Enter security_group_id:\n(Required) The ID of the security group.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "security_group_id",
+			Ex:    "sec-gr-123",
+			Doc:   "(Required) The ID of the security group.",
+		},
+		{
+			Type:  "prompt",
+			Field: "network_interface_id",
+			Ex:    "net-id-123",
+			Doc:   "(Required) The ID of the network interface to attach to.",
 		},
 	}
-	promptOrder = append(promptOrder, "security_group_id")
 
-	prompts["network_interface_id"] = types.TfPrompt{
-		Label: "Enter network_interface_id:\n(Required) The ID of the network interface to attach to.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "network_interface_id")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_network_interface_sg_attachment", blockName, resourceBlock)
 }

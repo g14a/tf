@@ -64,7 +64,7 @@ func ProvidePS(schemas []Schema) ([]string, []string, map[string]TfPrompt, map[s
 			promptOrder = append(promptOrder, v.Field)
 		case "select":
 			s := TfSelect{
-				Label: "Enter " + v.Field + ": e.g. " + v.Ex + "\n" + v.Doc,
+				Label: "Enter " + v.Field + "\n" + v.Doc,
 				Select: promptui.Select{
 					Label: "",
 					Items: v.Items,
