@@ -16,9 +16,9 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/g14a/tf/file"
+	"github.com/g14a/tf/terraform"
 	"github.com/spf13/cobra"
-	"tf/file"
-	"tf/terraform"
 )
 
 // providerCmd represents the provider command

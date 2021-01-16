@@ -2,11 +2,11 @@ package file
 
 import (
 	"github.com/fatih/color"
+	"github.com/g14a/tf/utils"
 	"github.com/manifoldco/promptui"
 	"log"
 	"os"
 	"strings"
-	"tf/utils"
 )
 
 var TerraformFile os.File

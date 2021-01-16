@@ -3,13 +3,13 @@ package builder
 import (
 	"fmt"
 	"github.com/asaskevich/govalidator"
+	"github.com/g14a/tf/file"
+	"github.com/g14a/tf/types"
 	"log"
 	"os/exec"
 	"reflect"
 	"strconv"
 	"strings"
-	"tf/file"
-	"tf/types"
 )
 
 // ProviderBuilder builds the provider configuration

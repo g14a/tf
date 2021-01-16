@@ -1,7 +1,7 @@
 package aws
 
 import (
-	"tf/boilerplate/aws/resourcebps"
+	"github.com/g14a/tf/boilerplate/aws/resourcebps"
 )
 
 func ResourceBP(resource string) {

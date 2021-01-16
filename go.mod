@@ -1,4 +1,4 @@
-module tf
+module github.com/g14a/tf
 
 go 1.15
 

@@ -1,6 +1,6 @@
 package boilerplate
 
-import "tf/boilerplate/aws"
+import "github.com/g14a/tf/boilerplate/aws"
 
 func SelectResourceBP(provider string, resource string) {
 	switch provider {

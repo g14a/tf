@@ -3,9 +3,9 @@ package terraform
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/g14a/tf/terraform/aws"
 	"github.com/manifoldco/promptui"
 	"strings"
-	"tf/terraform/aws"
 )
 
 func getProviders() []string {

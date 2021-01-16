@@ -16,10 +16,10 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/g14a/tf/boilerplate"
+	"github.com/g14a/tf/file"
+	"github.com/g14a/tf/terraform"
 	"github.com/spf13/cobra"
-	"tf/boilerplate"
-	"tf/file"
-	"tf/terraform"
 )
 
 // resourceCmd represents the resource command

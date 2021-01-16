@@ -23,7 +23,7 @@ Boredom in Covid-19
 
 [![asciicast](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt.svg)](https://asciinema.org/a/p6e5I9fNEslVdcaKFAJHgRfdt)
 
-#### Fetching Boilerplate code for a resource
+### Fetching Boilerplate code for a resource
 
 1. Search through the resources for a given provider
 ```shell

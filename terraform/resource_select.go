@@ -1,6 +1,6 @@
 package terraform
 
-import "tf/terraform/aws"
+import "github.com/g14a/tf/terraform/aws"
 
 func SelectResourceTree(provider string, resource string, boilerplate bool) {
 	switch provider {
