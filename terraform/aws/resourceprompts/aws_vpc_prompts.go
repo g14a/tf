@@ -1161,34 +1161,28 @@ func AWSNetworkACLPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The ID of the associated VPC.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type: "prompt",
+			Field: "vpc_id",
+			Ex: "vpc-123",
+			Doc: "(Required) The ID of the associated VPC.",
+		},
+		{
+			Type: "prompt",
+			Field: "subnet_ids",
+			Ex: "[\"id1\",\"id2\"]",
+			Doc: "(Optional) A list of Subnet IDs to apply the ACL to",
+		},
+		{
+			Type: "prompt",
+			Field: "tags",
+			Ex: "k1=v1,k2=v2",
+			Doc: "(Optional) A list of Subnet IDs to apply the ACL to",
 		},
 	}
-	promptOrder = append(promptOrder, "vpc_id")
 
-	prompts["subnet_ids"] = types.TfPrompt{
-		Label: "Enter subnet_ids e.g.[\"id1\",\"id2\"]:\n(Optional) A list of Subnet IDs to apply the ACL to",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "subnet_ids")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
 
@@ -1209,92 +1203,74 @@ func AWSNetworkACLPrompt() {
 	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
 		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
 
-	ingressEgressPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	ingressEgressPrompt["from_port"] = types.TfPrompt{
-		Label: "Enter from_port:\n(Required) The from port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+	ingressEgressSchema := []types.Schema{
+		{
+			Type: "prompt",
+			Field: "from_port",
+			Ex: "",
+			Doc: "(Required) The from port to match.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type: "prompt",
+			Field: "to_port",
+			Ex: "",
+			Doc: "(Required) The to port to match.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type: "prompt",
+			Field: "rule_no",
+			Ex: "",
+			Doc: "(Required) The rule number. Used for ordering.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type: "prompt",
+			Field: "action",
+			Ex: "",
+			Doc: "(Required) The action to take.",
+		},
+		{
+			Type: "prompt",
+			Field: "protocol",
+			Ex: "-1",
+			Doc: "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
+		},
+		{
+			Type: "prompt",
+			Field: "cidr_block",
+			Ex: "172.16.0.0/24",
+			Doc: "(Optional) The CIDR block to match. This must be a valid network mask.",
+		},
+		{
+			Type: "prompt",
+			Field: "ipv6_cidr_block",
+			Ex: "172.16.0.0/24",
+			Doc: "(Optional) The IPv6 CIDR block.",
+		},
+		{
+			Type: "prompt",
+			Field: "icmp_type",
+			Ex: "",
+			Doc: "(Optional) The ICMP type to be used. Default 0.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Type: "prompt",
+			Field: "icmp_code",
+			Ex: "",
+			Doc: "(Optional) The ICMP type code to be used. Default 0.",
+			Validator: utils.IntValidator,
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "from_port")
 
-	ingressEgressPrompt["to_port"] = types.TfPrompt{
-		Label: "Enter to_port:\n(Required) The to port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "to_port")
-
-	ingressEgressPrompt["rule_no"] = types.TfPrompt{
-		Label: "Enter rule_no:\n(Required) The to port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "rule_no")
-
-	ingressEgressPrompt["action"] = types.TfPrompt{
-		Label: "Enter action:\n(Required) The action to take.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "action")
-
-	ingressEgressPrompt["protocol"] = types.TfPrompt{
-		Label: "Enter protocol:\n(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "protocol")
-
-	ingressEgressPrompt["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Optional) The CIDR block to match. This must be a valid network mask.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "cidr_block")
-
-	ingressEgressPrompt["ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 CIDR block.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_block")
-
-	ingressEgressPrompt["icmp_type"] = types.TfPrompt{
-		Label: "Enter icmp_type:\n(Optional) The ICMP type to be used. Default 0.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "icmp_type")
-
-	ingressEgressPrompt["icmp_code"] = types.TfPrompt{
-		Label: "Enter icmp_code:\n(Optional) The ICMP type code to be used. Default 0.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "icmp_code")
-
-	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["ingress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
 		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
 
-	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["egress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	builder.ResourceBuilder("aws_network_acl", blockName, resourceBlock)
 }
