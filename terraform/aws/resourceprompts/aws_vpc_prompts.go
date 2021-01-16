@@ -2725,3 +2725,45 @@ func AWSVPCPeeringConnectionOptionsPrompt() {
 
 	builder.ResourceBuilder("aws_vpc_peering_connection_options", blockName, resourceBlock)
 }
+
+func AWSVPCConnectionPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	color.Yellow("\nOnly one of the transit_gateway_id and vpn_gateway_id is required\n")
+
+	schema := []types.Schema{
+		{
+			Field: "customer_gateway_id",
+			Ex:    "cg-123",
+			Doc:   "(Required) The ID of the customer gateway.",
+		},
+		{
+			Type:  "select",
+			Field: "type",
+			Doc:   "(Required) The type of VPN connection. The only type AWS supports at this time is \"ipsec.1\"",
+			Items: []string{"ipsec.1"},
+		},
+		{
+			Field: "transit_gateway_id",
+			Ex:    "tg-123",
+			Doc:   "(Optional) The ID of the EC2 Transit Gateway.",
+		},
+		{
+			Field: "vpn_gateway_id",
+			Ex:    "vgi-123",
+			Doc:   "(Optional) The ID of the Virtual Private Gateway.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_vpn_connection", blockName, resourceBlock)
+}
