@@ -2002,7 +2002,7 @@ func AWSSecurityGroupPrompt() {
 			"\nand those rules may contain a cyclic dependency that prevent the security groups from being destroyed " +
 			"\nwithout removing the dependency first. Default false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2019,7 +2019,7 @@ func AWSSecurityGroupPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2244,7 +2244,7 @@ func AWSSecurityGroupRulePrompt() {
 		Label: "Enter type:\n(Required) The type of rule being created.",
 		Select: promptui.Select{
 			Label: "",
-			Items: []string{"ingress","egress"},
+			Items: []string{"ingress", "egress"},
 		},
 	}
 	selectOrder = append(selectOrder, "type")
@@ -2263,6 +2263,16 @@ func AWSSubnetPrompt() {
 	blockName, err := blockPrompt.Run()
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	var schemas []types.Schema
+
+	schemas = []types.Schema{
+		{
+			Type: "prompt",
+			Field: "availability_zone",
+			Ex: 
+		},
 	}
 
 	prompts := map[string]types.TfPrompt{}
@@ -2303,7 +2313,7 @@ func AWSSubnetPrompt() {
 	prompts["map_public_ip_on_launch"] = types.TfPrompt{
 		Label: "Enter map_public_ip_on_launch(true/false):\n(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2320,7 +2330,7 @@ func AWSSubnetPrompt() {
 	prompts["assign_ipv6_address_on_creation"] = types.TfPrompt{
 		Label: "Enter assign_ipv6_address_on_creation(true/false):\n(Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.BoolValidator,
 		},
 	}
@@ -2337,7 +2347,7 @@ func AWSSubnetPrompt() {
 	prompts["tags"] = types.TfPrompt{
 		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
-			Label: "",
+			Label:    "",
 			Validate: utils.RCValidator,
 		},
 	}
@@ -2346,4 +2356,62 @@ func AWSSubnetPrompt() {
 	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
 	builder.ResourceBuilder("aws_subnet", blockName, resourceBlock)
+}
+
+func AWSVPCDHCPOptionsPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var schemas []types.Schema
+
+	schemas = []types.Schema{
+		{
+			Type:  "prompt",
+			Field: "domain_name",
+			Ex:    "service.consul",
+			Doc:   "(Optional) the suffix domain name to use by default when resolving non Fully Qualified Domain Names. In other words, this is what ends up being the search value in the /etc/resolv.conf",
+		},
+		{
+			Type:  "prompt",
+			Field: "domain_name_servers",
+			Ex:    "[\"s1\", \"s2\"]",
+			Doc:   "(Optional) List of name servers to configure in /etc/resolv.conf. If you want to use the default AWS nameservers you should set this to AmazonProvidedDNS",
+		},
+		{
+			Type:  "prompt",
+			Field: "ntp_servers",
+			Ex:    "[\"s1\", \"s2\"]",
+			Doc:   "(Optional) List of NTP servers to configure.",
+		},
+		{
+			Type:  "prompt",
+			Field: "netbios_name_servers",
+			Ex:    "[\"s1\", \"s2\"]",
+			Doc:   "(Optional) List of NETBIOS name servers.",
+		},
+		{
+			Type:  "prompt",
+			Field: "netbios_node_type",
+			Ex:    "1",
+			Doc:   "(Optional) The NetBIOS node type (1, 2, 4, or 8). AWS recommends to specify 2 since broadcast and multicast are not supported in their network. For more information about these node types, see RFC 2132.",
+		},
+		{
+			Type:      "prompt",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schemas))
+
+	builder.ResourceBuilder("aws_vpc_dhcp_options", blockName, resourceBlock)
 }

@@ -373,6 +373,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSSecurityGroupRulePrompt()
 	case "aws_subnet":
 		resourceprompts.AWSSubnetPrompt()
+	case "aws_vpc_dhcp_options":
+		resourceprompts.AWSVPCDHCPOptionsPrompt()
 	case "aws_s3_bucket":
 		resourceprompts.AWSS3BucketPrompt()
 	case "aws_s3_access_point":
