@@ -1163,19 +1163,19 @@ func AWSNetworkACLPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
+
 			Field: "vpc_id",
 			Ex:    "vpc-123",
 			Doc:   "(Required) The ID of the associated VPC.",
 		},
 		{
-			Type:  "prompt",
+
 			Field: "subnet_ids",
 			Ex:    "[\"id1\",\"id2\"]",
 			Doc:   "(Optional) A list of Subnet IDs to apply the ACL to",
 		},
 		{
-			Type:  "prompt",
+
 			Field: "tags",
 			Ex:    "k1=v1,k2=v2",
 			Doc:   "(Optional) A list of Subnet IDs to apply the ACL to",
@@ -1205,59 +1205,54 @@ func AWSNetworkACLPrompt() {
 
 	ingressEgressSchema := []types.Schema{
 		{
-			Type:      "prompt",
 			Field:     "from_port",
 			Ex:        "",
 			Doc:       "(Required) The from port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "to_port",
 			Ex:        "",
 			Doc:       "(Required) The to port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "rule_no",
 			Ex:        "",
 			Doc:       "(Required) The rule number. Used for ordering.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
+
 			Field: "action",
 			Ex:    "",
 			Doc:   "(Required) The action to take.",
 		},
 		{
-			Type:  "prompt",
+
 			Field: "protocol",
 			Ex:    "-1",
 			Doc:   "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
 		},
 		{
-			Type:  "prompt",
+
 			Field: "cidr_block",
 			Ex:    "172.16.0.0/24",
 			Doc:   "(Optional) The CIDR block to match. This must be a valid network mask.",
 		},
 		{
-			Type:  "prompt",
+
 			Field: "ipv6_cidr_block",
 			Ex:    "172.16.0.0/24",
 			Doc:   "(Optional) The IPv6 CIDR block.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "icmp_type",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type to be used. Default 0.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "icmp_code",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type code to be used. Default 0.",
@@ -1288,74 +1283,63 @@ func AWSNetworkACLRulePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "network_acl_id",
 			Ex:    "",
 			Doc:   "(Required) The ID of the network ACL.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "role_number",
 			Ex:        "",
 			Doc:       "(Required) The rule number for the entry (for example, 100). ACL entries are processed in ascending order by rule number.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "egress",
 			Ex:        "(true/false)",
 			Doc:       "(Optional, bool) Indicates whether this is an egress rule (rule is applied to traffic leaving the subnet). Default false",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "protocol",
 			Ex:        "10",
 			Doc:       "(Required) The protocol. A value of -1 means all protocols.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "cidr_block",
 			Ex:    "172.16.0.0/24",
 			Doc:   "(Optional) The network range to allow or deny, in CIDR notation.",
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_cidr_block",
 			Ex:    "2001:db8:1234:1a00::/56",
 			Doc:   "(Optional) The IPv6 CIDR block to allow or deny.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Optional) The from port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Optional) The to port to match.",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "icmp_type",
 			Ex:        "-1",
 			Doc:       "(Optional) ICMP protocol: The ICMP type. Required if specifying ICMP for the protocol. e.g. -1",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "icmp_code",
 			Ex:        "-1",
 			Doc:       "(Optional) ICMP protocol: The ICMP code. Required if specifying ICMP for the protocol. e.g. -1",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "rule_action",
 			Doc:   "(Required) Indicates whether to allow or deny the traffic that matches the rule.",
 			Items: []string{"allow", "deny"},
@@ -1380,25 +1364,21 @@ func AWSNetworkInterfacePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "subnet_id",
 			Ex:    "",
 			Doc:   "(Required) Subnet ID to create the ENI in.",
 		},
 		{
-			Type:  "prompt",
 			Field: "description",
 			Ex:    "",
 			Doc:   "(Optional) A description for the network interface.",
 		},
 		{
-			Type:  "prompt",
 			Field: "private_ips",
 			Ex:    "[\"ip1\",\"ip2\"]",
 			Doc:   "(Optional) List of private IPs to assign to the ENI.",
 		},
 		{
-			Type:  "prompt",
 			Field: "private_ips_count",
 			Ex:    "10",
 			Doc: "(Optional) Number of secondary private IPs to assign to the ENI. " +
@@ -1407,14 +1387,12 @@ func AWSNetworkInterfacePrompt() {
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_addresses",
 			Ex:    "",
 			Doc: "(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block " +
 				"\nrange of your subnet. You can't use this option if you're specifying ipv6_address_count",
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_addresses_count",
 			Ex:    "10",
 			Doc: "(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block range of your subnet. " +
@@ -1422,19 +1400,16 @@ func AWSNetworkInterfacePrompt() {
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "security_groups",
 			Ex:    "",
 			Doc:   "(Optional) List of security group IDs to assign to the ENI.",
 		},
 		{
-			Type:  "prompt",
 			Field: "source_dest_checks",
 			Ex:    "(true/false)",
 			Doc:   "(Optional) Whether to enable source destination checking for the ENI.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
@@ -1465,13 +1440,11 @@ func AWSNetworkInterfacePrompt() {
 
 	attachmentSchema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "instance",
 			Ex:    "",
 			Doc:   "(Required) ID of the instance to attach to.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "device_index",
 			Ex:        "1",
 			Doc:       "(Required) Integer to define the devices index.",
@@ -1497,19 +1470,16 @@ func AWSNetworkInterfaceAttachmentPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "instance_id",
 			Ex:    "instance-123",
 			Doc:   "(Required) Instance ID to attach.",
 		},
 		{
-			Type:  "prompt",
 			Field: "network_interface_id",
 			Ex:    "nid-123",
 			Doc:   "(Required) ENI ID to attach.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "device_index",
 			Ex:        "1",
 			Doc:       "(Required) Network interface index.",
@@ -1535,13 +1505,11 @@ func AWSNetworkInterfaceSGAttachmentPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "security_group_id",
 			Ex:    "sec-gr-123",
 			Doc:   "(Required) The ID of the security group.",
 		},
 		{
-			Type:  "prompt",
 			Field: "network_interface_id",
 			Ex:    "net-id-123",
 			Doc:   "(Required) The ID of the network interface to attach to.",
@@ -1566,73 +1534,61 @@ func AWSRoutePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "route_table_id",
 			Ex:    "",
 			Doc:   "(Required) The ID of the routing table.",
 		},
 		{
-			Type:  "prompt",
 			Field: "destination_cidr_block",
 			Ex:    "172.2.0.0/16",
 			Doc:   "(Optional) The destination CIDR block.",
 		},
 		{
-			Type:  "prompt",
 			Field: "destination_ipv6_cidr_block",
 			Ex:    "2001:db8:1234:1a00::/56",
 			Doc:   "(Optional) The destination IPv6 CIDR block.",
 		},
 		{
-			Type:  "prompt",
 			Field: "egress_only_gateway_id",
 			Ex:    "gateway-123",
 			Doc:   "(Optional) Identifier of a VPC Egress Only Internet Gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "gateway_id",
 			Ex:    "gateway-123",
 			Doc:   "(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "instance_id",
 			Ex:    "instance-123",
 			Doc:   "(Optional) Identifier of an EC2 instance.",
 		},
 		{
-			Type:  "prompt",
 			Field: "nat_gateway_id",
 			Ex:    "gateway-nat-123",
 			Doc:   "(Optional) Identifier of a VPC NAT gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "local_gateway_id",
 			Ex:    "gateway-local-123",
 			Doc:   "(Optional) Identifier of a Outpost local gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "network_interface_id",
 			Ex:    "ni-123",
 			Doc:   "(Optional) Identifier of an EC2 network interface.",
 		},
 		{
-			Type:  "prompt",
 			Field: "transit_gateway_id",
 			Ex:    "tra-gateway-123",
 			Doc:   "(Optional) Identifier of an EC2 Transit Gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_endpoint_id",
 			Ex:    "vpc-ei-123",
 			Doc:   "(Optional) Identifier of a VPC Endpoint.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_peering_connection_id",
 			Ex:    "vpc-pci-123",
 			Doc:   "(Optional) Identifier of a VPC peering connection.",
@@ -1657,20 +1613,17 @@ func AWSRouteTablePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "vpc_id",
 			Ex:    "vpc-2f09a348",
 			Doc:   "(Required) The VPC ID.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "propagating_vgws",
 			Ex:    "[\"g1\",\"g2\"]",
 			Doc:   "(Optional) A list of virtual gateways for propagation.",
@@ -1700,67 +1653,56 @@ func AWSRouteTablePrompt() {
 
 	routeSchema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "cidr_block",
 			Ex:    "172.2.0.0/16",
 			Doc:   "(Required) The CIDR block of the route.",
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_cidr_block",
 			Ex:    "2001:db8:1234:1a00::/56",
 			Doc:   "(Optional) The Ipv6 CIDR block of the route.",
 		},
 		{
-			Type:  "prompt",
 			Field: "egress_only_gateway_id",
 			Ex:    "gateway-123",
 			Doc:   "(Optional) Identifier of a VPC Egress Only Internet Gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "gateway_id",
 			Ex:    "gateway-123",
 			Doc:   "(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "instance_id",
 			Ex:    "instance-123",
 			Doc:   "(Optional) Identifier of an EC2 instance.",
 		},
 		{
-			Type:  "prompt",
 			Field: "nat_gateway_id",
 			Ex:    "gateway-nat-123",
 			Doc:   "(Optional) Identifier of a VPC NAT gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "local_gateway_id",
 			Ex:    "gateway-local-123",
 			Doc:   "(Optional) Identifier of a Outpost local gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "network_interface_id",
 			Ex:    "nid-123",
 			Doc:   "(Optional) Identifier of an EC2 network interface.",
 		},
 		{
-			Type:  "prompt",
 			Field: "transit_gateway_id",
 			Ex:    "tra-gateway-123",
 			Doc:   "(Optional) Identifier of an EC2 Transit Gateway.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_endpoint_id",
 			Ex:    "vpd-eid-123",
 			Doc:   "(Optional) Identifier of a VPC Endpoint.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_peering_connection_id",
 			Ex:    "vpc-pci-123",
 			Doc:   "(Optional) Identifier of a VPC peering connection.",
@@ -1785,19 +1727,16 @@ func AWSRouteTableAssociationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "subnet_id",
 			Ex:    "subnet-0bb1c79de3EXAMPLE",
 			Doc:   "(Optional) The subnet ID to create an association. Conflicts with gateway_id",
 		},
 		{
-			Type:  "prompt",
 			Field: "gateway_id",
 			Ex:    "gateway-0bb1c79de3EXAMPLE",
 			Doc:   "(Optional) The gateway ID to create an association. Conflicts with subnet_id",
 		},
 		{
-			Type:  "prompt",
 			Field: "route_table_id",
 			Ex:    "rtb-09ba434c1bEXAMPLE",
 			Doc:   "(Required) The ID of the routing table to associate with.",
@@ -1822,21 +1761,17 @@ func AWSSecurityGroupPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "name",
 			Ex:    "new group",
 			Doc:   "(Optional, Forces new resource) The name of the security group. If omitted, Terraform will assign a random, unique name",
 		},
 		{
-			Type:  "prompt",
 			Field: "name_prefix",
 			Ex:    "new prefix",
 			Doc:   "(Optional, Forces new resource) Creates a unique name beginning with the specified prefix. Conflicts with name",
 		},
-		{
-			Type:  "prompt",
-			Field: "description",
-			Ex:    "example description",
+		{Field: "description",
+			Ex: "example description",
 			Doc: "(Optional, Forces new resource) The security group description. " +
 				"\nDefaults to \"Managed by Terraform\". Cannot be \"\". " +
 				"\nNOTE: This field maps to the AWS GroupDescription attribute, " +
@@ -1844,7 +1779,6 @@ func AWSSecurityGroupPrompt() {
 				"\nsecurity groups in a way that can be updated, use tags",
 		},
 		{
-			Type:  "prompt",
 			Field: "revoke_rules_on_delete",
 			Ex:    "(true/false)",
 			Doc: "(Optional) Instruct Terraform to revoke all of the Security Groups attached ingress and " +
@@ -1856,14 +1790,12 @@ func AWSSecurityGroupPrompt() {
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_id",
 			Ex:    "vpc-2f09a348",
 			Doc:   "(Optional, Forces new resource) The VPC ID.",
 		},
 		{
-			Type:      "prompt",
-			Field:     "tags",
+			Field: "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
@@ -1893,32 +1825,27 @@ func AWSSecurityGroupPrompt() {
 
 	ingressEgressSchema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "cidr_blocks",
 			Ex:    "[\"172.2.0.0/16\",\"173.0.0.1/24\"]",
 			Doc:   "(Optional) List of CIDR blocks.",
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_cidr_blocks",
 			Ex:    "[\"2001:db8:1234:1a00::/56\"]",
 			Doc:   "(Optional) List of IPv6 CIDR blocks.",
 		},
 		{
-			Type:  "prompt",
 			Field: "prefix_list_ids",
 			Ex:    "[\"pl-63a5400a\"]",
 			Doc:   "(Optional) List of IPv6 CIDR blocks.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "protocol",
 			Ex:    "-1",
 			Doc: "(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", " +
@@ -1931,27 +1858,23 @@ func AWSSecurityGroupPrompt() {
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "security_groups",
 			Ex:    "[\"g1\",\"g2\"]",
 			Doc:   "(Optional) List of security group Group Names if using EC2-Classic, or Group IDs if using a VPC.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "self",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Required) The end range port (or ICMP code if protocol is \"icmp\").",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "description",
 			Ex:    "example description",
 			Doc:   "(Optional) Description of this ingress/egress rule.",
@@ -1981,52 +1904,44 @@ func AWSSecurityGroupRulePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "cidr_blocks",
 			Ex:    "[\"172.2.0.0/16\",\"173.0.0.1/24\"]",
 			Doc:   "(Optional) List of CIDR blocks. Cannot be specified with source_security_group_id",
 		},
 		{
-			Type:  "prompt",
 			Field: "ipv6_cidr_blocks",
 			Ex:    "[\"2001:db8:1234:1a00::/56\"]",
 			Doc:   "(Optional) List of IPv6 CIDR blocks.",
 		},
 		{
-			Type:  "prompt",
 			Field: "prefix_list_ids",
 			Ex:    "[\"pl-63a5400a\"]",
 			Doc:   "(Optional) List of Prefix List IDs.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\").",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "protocol",
 			Ex:    "tcp",
 			Doc: "(Required) The protocol. If not icmp, icmpv6, tcp, udp, or all use the protocol number" +
 				"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
 		},
 		{
-			Type:  "prompt",
 			Field: "security_group_id",
 			Ex:    "tcp",
 			Doc:   "(Required) The security group to apply this rule to.",
 		},
 		{
-			Type:  "prompt",
 			Field: "source_security_group_id",
 			Ex:    "sg-903004f8",
 			Doc: "(Optional) The security group id to allow access to/from, depending on the type. " +
 				"\nCannot be specified with cidr_blocks and self.",
 		},
 		{
-			Type:  "prompt",
 			Field: "self",
 			Ex:    "(true/false)",
 			Doc: "(Optional) If true, the security group itself will be added as a source to this ingress rule. " +
@@ -2034,14 +1949,12 @@ func AWSSecurityGroupRulePrompt() {
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:      "prompt",
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Required) The end port (or ICMP code if protocol is \"icmp\").",
 			Validator: utils.IntValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "description",
 			Ex:    "an example description",
 			Doc:   "(Optional) Description of the rule.",
@@ -2073,46 +1986,37 @@ func AWSSubnetPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "availability_zone",
 			Ex:    "us-east-1a",
 			Doc:   "(Optional) The AZ for the subnet.",
 		},
 		{
-			Type:  "prompt",
 			Field: "availability_zone_id",
 			Ex:    "use-az2",
 			Doc:   "(Optional) The AZ ID of the subnet.",
 		},
 		{
-			Type:  "prompt",
 			Field: "cidr_block",
 			Ex:    "172.2.0.0/16",
 			Doc:   "(Required) The CIDR block for the subnet.",
 		},
-		{
-			Type:  "prompt",
-			Field: "ipv6_cidr_block",
+		{Field: "ipv6_cidr_block",
 			Ex:    "2001:db8:1234:1a00::/56",
 			Doc: "(Optional) The IPv6 network range for the subnet, in CIDR notation. " +
 				"\nThe subnet size must use a /64 prefix length.",
 		},
-		{
-			Type:  "prompt",
-			Field: "map_public_ip_on_launch",
+		{Field: "map_public_ip_on_launch",
 			Ex:    "(true/false)",
 			Doc: "(Optional) Specify true to indicate that instances launched " +
 				"\ninto the subnet should be assigned a public IP address. Default is false",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "outpost_arn",
 			Ex:    "arn:aws:outposts:us-west-2:123456789012:outpost/op-xxxxxxxxxxxxxxxx",
 			Doc:   "(Optional) The Amazon Resource Name (ARN) of the Outpost.",
 		},
 		{
-			Type:  "prompt",
 			Field: "assign_ipv6_address_on_creation",
 			Ex:    "(true/false)",
 			Doc: "(Optional) Specify true to indicate that network interfaces created " +
@@ -2120,13 +2024,11 @@ func AWSSubnetPrompt() {
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_id",
 			Ex:    "vpc-2f09a348",
 			Doc:   "(Required) The VPC ID.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "tags",
 			Ex:        "k1=v1,k1=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
@@ -2152,37 +2054,31 @@ func AWSVPCDHCPOptionsPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "domain_name",
 			Ex:    "service.consul",
 			Doc:   "(Optional) the suffix domain name to use by default when resolving non Fully Qualified Domain Names. In other words, this is what ends up being the search value in the /etc/resolv.conf",
 		},
 		{
-			Type:  "prompt",
 			Field: "domain_name_servers",
 			Ex:    "[\"s1\", \"s2\"]",
 			Doc:   "(Optional) List of name servers to configure in /etc/resolv.conf. If you want to use the default AWS nameservers you should set this to AmazonProvidedDNS",
 		},
 		{
-			Type:  "prompt",
 			Field: "ntp_servers",
 			Ex:    "[\"s1\", \"s2\"]",
 			Doc:   "(Optional) List of NTP servers to configure.",
 		},
 		{
-			Type:  "prompt",
 			Field: "netbios_name_servers",
 			Ex:    "[\"s1\", \"s2\"]",
 			Doc:   "(Optional) List of NETBIOS name servers.",
 		},
 		{
-			Type:  "prompt",
 			Field: "netbios_node_type",
 			Ex:    "1",
 			Doc:   "(Optional) The NetBIOS node type (1, 2, 4, or 8). AWS recommends to specify 2 since broadcast and multicast are not supported in their network. For more information about these node types, see RFC 2132.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
@@ -2208,13 +2104,11 @@ func AWSVPCDHCPOptionsAssociationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "vpc_id",
 			Ex:    "vpc-123",
 			Doc:   "(Required) The ID of the VPC to which we would like to associate a DHCP Options Set.",
 		},
 		{
-			Type:  "prompt",
 			Field: "dhcp_options_id",
 			Ex:    "dhcp-id-123",
 			Doc:   "(Required) The ID of the DHCP Options Set to associate to the VPC.",
@@ -2239,26 +2133,22 @@ func AWSVPCEndpointPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "service_name",
 			Ex:    "srv-123",
 			Doc:   "(Required) The service name. For AWS services the service name is usually in the form com.amazonaws.<region>.<service> (the SageMaker Notebook service is an exception to this rule, the service name is in the form aws.sagemaker.<region>.notebook",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_id",
 			Ex:    "vpc-123",
 			Doc:   "(Required) The ID of the VPC in which the endpoint will be used.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "auto_accept",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Accept the VPC endpoint (the VPC endpoint and service need to be in the same AWS account).",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "policy",
 			Ex:    "",
 			Doc: "(Optional) A policy to attach to the endpoint that controls access to the service. " +
@@ -2267,7 +2157,6 @@ func AWSVPCEndpointPrompt() {
 				"\ninformation about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide.",
 		},
 		{
-			Type:  "prompt",
 			Field: "private_dns_enabled",
 			Ex:    "(true/false)",
 			Doc: "(Optional) AWS services and AWS Marketplace partner services only) Whether " +
@@ -2276,27 +2165,23 @@ func AWSVPCEndpointPrompt() {
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "route_table_ids",
 			Ex:    "[\"id1\",\"id2\"]",
 			Doc:   "(Optional) One or more route table IDs. Applicable for endpoints of type Gateway",
 		},
 		{
-			Type:  "prompt",
 			Field: "subnet_ids",
 			Ex:    "[\"id1\",\"id2\"]",
 			Doc: "(Optional) The ID of one or more subnets in which to create a network interface " +
 				"\nfor the endpoint. Applicable for endpoints of type GatewayLoadBalancer and Interface",
 		},
 		{
-			Type:  "prompt",
 			Field: "security_group_ids",
 			Ex:    "[\"id1\",\"id2\"]",
 			Doc: "(Optional) The ID of one or more security groups to associate with the network interface. " +
 				"\nRequired for endpoints of type Interface.",
 		},
 		{
-			Type:      "prompt",
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
@@ -2314,19 +2199,16 @@ func AWSVPCEndpointPrompt() {
 
 	timeoutSchema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "create",
 			Ex:    "60s | 10m | 2h",
 			Doc:   "Used for creating a VPC endpoint",
 		},
 		{
-			Type:  "prompt",
 			Field: "update",
 			Ex:    "60s | 10m | 2h",
 			Doc:   "Used for VPC endpoint modifications",
 		},
 		{
-			Type:  "prompt",
 			Field: "delete",
 			Ex:    "60s | 10m | 2h",
 			Doc:   "Used for destroying VPC endpoints",
@@ -2353,25 +2235,21 @@ func AWSVPCEndpointConnectionNotificationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "vpc_endpoint_service_id",
 			Ex:    "vpc-srv-id-123",
 			Doc:   "(Optional) The ID of the VPC Endpoint Service to receive notifications for.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_endpoint_id",
 			Ex:    "vpc-ei-123",
 			Doc:   "(Optional) The ID of the VPC Endpoint to receive notifications for.",
 		},
 		{
-			Type:  "prompt",
 			Field: "connection_notification_arn",
 			Ex:    "",
 			Doc:   "(Required) The ARN of the SNS topic for the notifications.",
 		},
 		{
-			Type:  "prompt",
 			Field: "connection_events",
 			Ex:    "[\"e1\",\"e2\"]",
 			Doc:   "(Required) One or more endpoint events for which to receive notifications.",
@@ -2396,13 +2274,11 @@ func AWSVPCEndpointRouteTableAssociationPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
 			Field: "route_table_id",
 			Ex:    "rti-123",
 			Doc:   "(Required) Identifier of the EC2 Route Table to be associated with the VPC Endpoint.",
 		},
 		{
-			Type:  "prompt",
 			Field: "vpc_endpoint_id",
 			Ex:    "vpc-ei-123",
 			Doc:   "(Required) Identifier of the VPC Endpoint with which the EC2 Route Table will be associated.",
@@ -2427,39 +2303,33 @@ func AWSVPCEndpointServicePrompt() {
 
 	schema := []types.Schema{
 		{
-			Type:  "prompt",
-			Field: "acceptance_required",
-			Ex:    "(true/false)",
-			Doc:   "(Required) Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - true or false.",
+			Field:     "acceptance_required",
+			Ex:        "(true/false)",
+			Doc:       "(Required) Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - true or false.",
 			Validator: utils.BoolValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "allowed_principals",
 			Ex:    "[\"p1\",\"p2\"]",
 			Doc:   "(Optional) The ARNs of one or more principals allowed to discover the endpoint service.",
 		},
 		{
-			Type:  "prompt",
 			Field: "gateway_load_balancer_arns",
 			Ex:    "[\"a1\",\"a2\"]",
 			Doc:   "(Optional) Amazon Resource Names (ARNs) of one or more Gateway Load Balancers for the endpoint service.",
 		},
 		{
-			Type:  "prompt",
 			Field: "network_load_balancer_arns",
 			Ex:    "[\"a1\",\"a2\"]",
 			Doc:   "(Optional) Amazon Resource Names (ARNs) of one or more Network Load Balancers for the endpoint service.",
 		},
 		{
-			Type:  "prompt",
-			Field: "tags",
-			Ex:    "k1=v1,k2=v2",
-			Doc:   "(Optional) A map of tags to assign to the resource.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 		{
-			Type:  "prompt",
 			Field: "private_dns_name",
 			Ex:    "dns-123",
 			Doc:   "(Optional) The private DNS name for the service.",
@@ -2483,20 +2353,62 @@ func AWSCallerIdentityPrompt() {
 
 	schema := []types.Schema{
 		{
-			Type: "prompt",
 			Field: "vpc_endpoint_service_id",
-			Ex: "vpc-epsrv-123",
-			Doc: "(Required) The ID of the VPC endpoint service to allow permission.",
+			Ex:    "vpc-epsrv-123",
+			Doc:   "(Required) The ID of the VPC endpoint service to allow permission.",
 		},
 		{
-			Type: "prompt",
 			Field: "principal_arn",
-			Ex: "",
-			Doc: "(Required) The ARN of the principal to allow permissions.",
+			Ex:    "",
+			Doc:   "(Required) The ARN of the principal to allow permissions.",
 		},
 	}
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_caller_identity", blockName, resourceBlock)
+}
+
+func AWSVPCEndpointSubnetAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "vpc_endpoint_id",
+			Ex:    "vpc-ei-123",
+			Doc:   "(Required) The ID of the VPC endpoint with which the subnet will be associated.",
+		},
+		{
+			Field: "subnet_id",
+			Ex:    "subnet-123",
+			Doc:   "(Required) The ID of the subnet to be associated with the VPC endpoint.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating a VPC endpoint",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for destroying VPC endpoints",
+		},
+	}
+
+	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
+	builder.ResourceBuilder("aws_vpc_endpoint_subnet_association", blockName, resourceBlock)
 }

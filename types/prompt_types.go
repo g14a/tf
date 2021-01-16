@@ -52,16 +52,6 @@ func ProvidePS(schemas []Schema) ([]string, []string, map[string]TfPrompt, map[s
 
 	for _, v := range schemas {
 		switch v.Type {
-		case "prompt":
-			p := TfPrompt{
-				Label: "Enter " + v.Field + ": e.g. " + v.Ex + "\n" + v.Doc,
-				Prompt: promptui.Prompt{
-					Label:    "",
-					Validate: v.Validator,
-				},
-			}
-			prompts[v.Field] = p
-			promptOrder = append(promptOrder, v.Field)
 		case "select":
 			s := TfSelect{
 				Label: "Enter " + v.Field + "\n" + v.Doc,
@@ -72,6 +62,16 @@ func ProvidePS(schemas []Schema) ([]string, []string, map[string]TfPrompt, map[s
 			}
 			selects[v.Field] = s
 			selectOrder = append(selectOrder, v.Field)
+		default:
+			p := TfPrompt{
+				Label: "Enter " + v.Field + ": e.g. " + v.Ex + "\n" + v.Doc,
+				Prompt: promptui.Prompt{
+					Label:    "",
+					Validate: v.Validator,
+				},
+			}
+			prompts[v.Field] = p
+			promptOrder = append(promptOrder, v.Field)
 		}
 	}
 
