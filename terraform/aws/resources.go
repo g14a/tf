@@ -578,7 +578,7 @@ func ResourcePrompt(resource string, boilerplate bool) {
 	case "aws_api_gateway_api_key":
 		resourceprompts.AWSAPIGatewayApiKeyPrompt()
 	case "aws_api_gateway_authorizer":
-		resourceprompts.AWSAPiGatewayAuthorizer()
+		resourceprompts.AWSAPIGatewayAuthorizerPrompt()
 	case "aws_api_gateway_base_path_mapping":
 		resourceprompts.AWSAPIGatewayBasePathMappingPrompt()
 	case "aws_api_gateway_client_certificate":
