@@ -149,6 +149,88 @@ func ResourceBP(resource string) {
 		resourcebps.AWSLambdaAliasBP()
 	case "aws_vpc":
 		resourcebps.AWSVPCBP()
+	case "aws_customer_gateway":
+		resourcebps.AWSCustomerGatewayBP()
+	case "aws_default_network_acl":
+		resourcebps.AWSDefaultNetworkACLBP()
+	case "aws_default_route_table":
+		resourcebps.AWSDefaultRouteTableBP()
+	case "aws_default_security_group":
+		resourcebps.AWSDefaultSecurityGroupBP()
+	case "aws_default_subnet":
+		resourcebps.AWSDefaultSubnetBP()
+	case "aws_default_vpc":
+		resourcebps.AWSDefaultVPCBP()
+	case "aws_default_vpc_dhcp_options":
+		resourcebps.AWSDefaultVPCDHCPOptionsBP()
+	case "aws_ec2_managed_prefix_list":
+		resourcebps.AWSEC2ManagedPrefixListBP()
+	case "aws_egress_only_internet_gateway":
+		resourcebps.AWSEgressOnlyInternetGatewayBP()
+	case "aws_flow_log":
+		resourcebps.AWSFlowLogBP()
+	case "aws_internet_gateway":
+		resourcebps.AWSInternetGatewayBP()
+	case "aws_main_route_table_association":
+		resourcebps.AWSMainRouteTableAssociationBP()
+	case "aws_nat_gateway":
+		resourcebps.AWSNatGatewayBP()
+	case "aws_network_acl":
+		resourcebps.AWSNetworkACLBP()
+	case "aws_network_acl_rule":
+		resourcebps.AWSNetworkACLRuleBP()
+	case "aws_network_interface":
+		resourcebps.AWSNetworkInterfaceBP()
+	case "aws_network_interface_attachment":
+		resourcebps.AWSNetworkInterfaceAttachmentBP()
+	case "aws_network_interface_sg_attachment":
+		resourcebps.AWSNetworkInterfaceSGAttachmentBP()
+	case "aws_route":
+		resourcebps.AWSRouteBP()
+	case "aws_route_table":
+		resourcebps.AWSRouteTableBP()
+	case "aws_route_table_association":
+		resourcebps.AWSRouteTableAssociationBP()
+	case "aws_security_group":
+		resourcebps.AWSSecurityGroupBP()
+	case "aws_security_group_rule":
+		resourcebps.AWSSecurityGroupRuleBP()
+	case "aws_subnet":
+		resourcebps.AWSSubnetBP()
+	case "aws_vpc_dhcp_options":
+		resourcebps.AWSVPCDHCPOptionsBP()
+	case "aws_vpc_dhcp_options_association":
+		resourcebps.AWSVPCDHCPOptionsAssociationBP()
+	case "aws_vpc_endpoint":
+		resourcebps.AWSVPCEndpointBP()
+	case "aws_vpc_endpoint_connection_notification":
+		resourcebps.AWSVPCEndpointConnectionNotificationBP()
+	case "aws_vpc_endpoint_route_table_association":
+		resourcebps.AWSVPCEndpointRouteTableAssociationBP()
+	case "aws_vpc_endpoint_service":
+		resourcebps.AWSVPCEndpointServiceBP()
+	case "aws_vpc_endpoint_service_allowed_principal":
+		resourcebps.AWSVPCEndpointServiceAllowedPrincipalBP()
+	case "aws_vpc_endpoint_subnet_association":
+		resourcebps.AWSVPCEndpointSubnetAssociationBP()
+	case "aws_vpc_ipv4_cidr_block_association":
+		resourcebps.AWSVPCIPV4CIDRBlockAssociationBP()
+	case "aws_vpc_peering_connection":
+		resourcebps.AWSVPCPeeringConnectionBP()
+	case "aws_vpc_peering_connection_accepter":
+		resourcebps.AWSVPCPeeringConnectionAccepterBP()
+	case "aws_vpc_peering_connection_options":
+		resourcebps.AWSVPCPeeringConnectionOptionsBP()
+	case "aws_vpn_connection":
+		resourcebps.AWSVPNConnectionBP()
+	case "aws_vpn_connection_route":
+		resourcebps.AWSVPNConnectionRouteBP()
+	case "aws_vpn_gateway":
+		resourcebps.AWSVPNGatewayBP()
+	case "aws_vpn_gateway_attachment":
+		resourcebps.AWSVPNGatewayAttachmentBP()
+	case "aws_vpn_gateway_route_propagation":
+		resourcebps.AWSVPNGatewayRoutePropagationBP()
 	case "aws_sns_platform_application":
 		resourcebps.AWSSNSPlatformApplicationBP()
 	case "aws_elastic_beanstalk_application":
