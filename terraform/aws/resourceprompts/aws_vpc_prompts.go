@@ -816,18 +816,18 @@ func AWSNatGatewayPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "allocation_id",
-			Ex: "",
-			Doc: "(Required) The Allocation ID of the Elastic IP address for the gateway.",
+			Ex:    "",
+			Doc:   "(Required) The Allocation ID of the Elastic IP address for the gateway.",
 		},
 		{
 			Field: "subnet_id",
-			Ex: "",
-			Doc: "(Required) The Subnet ID of the subnet in which to place the gateway.",
+			Ex:    "",
+			Doc:   "(Required) The Subnet ID of the subnet in which to place the gateway.",
 		},
 		{
-			Field: "tags",
-			Ex: "k1=v1,k2=v2",
-			Doc: "(Optional) A map of tags to assign to the resource.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 	}
