@@ -358,9 +358,9 @@ func AWSDefaultSecurityGroupPrompt() {
 			Doc:   "(Optional, Forces new resource) The VPC ID. Note that changing the vpc_id will not restore any default security group rules that were modified, added, or removed. It will be left in its current state",
 		},
 		{
-			Field: "tags",
-			Ex:    "k1=v1,k2=v2",
-			Doc:   "(Optional) A map of tags to assign to the resource.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
 			Validator: utils.RCValidator,
 		},
 	}
@@ -414,9 +414,9 @@ func AWSDefaultSecurityGroupPrompt() {
 			Doc:   "(Optional) List of IPv6 CIDR blocks.",
 		},
 		{
-			Field: "protocol",
-			Ex:    "-1",
-			Doc: "(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is not a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. If not icmp, icmpv6, tcp, udp, or \"-1\" use the protocol number",
+			Field:     "protocol",
+			Ex:        "-1",
+			Doc:       "(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is not a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. If not icmp, icmpv6, tcp, udp, or \"-1\" use the protocol number",
 			Validator: utils.IntValidator,
 		},
 		{
@@ -459,36 +459,26 @@ func AWSDefaultSubnetPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["availability_zone"] = types.TfPrompt{
-		Label: "Enter availability_zone:\n(Optional) The AZ for the subnet.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "availability_zone",
+			Ex:    "",
+			Doc:   "The AZ for the subnet.",
+		},
+		{
+			Field: "map_public_ip_on_launch",
+			Ex:    "",
+			Doc:   "(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "availability_zone")
 
-	prompts["map_public_ip_on_launch"] = types.TfPrompt{
-		Label: "Enter map_public_ip_on_launch:\n(Optional) Specify true to indicate that instances launched into the subnet " +
-			"\nshould be assigned a public IP address.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "map_public_ip_on_launch")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_default_subnet", blockName, resourceBlock)
 }
@@ -504,48 +494,36 @@ func AWSDefaultVPCPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["enable_dns_support"] = types.TfPrompt{
-		Label: "Enter enable_dns_support:\n(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults to true.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+	schema := []types.Schema{
+		{
+			Field:     "enable_dns_support",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults true.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field:     "enable_dns_hostnames",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "enable_classiclink",
+			Ex:    "(true/false)",
+			Doc: "(Optional) A boolean flag to enable/disable ClassicLink for the VPC. Only valid in regions " +
+				"\nand accounts that support EC2 Classic. Defaults false." +
+				"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.BoolValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "enable_dns_support")
 
-	prompts["enable_dns_hostnames"] = types.TfPrompt{
-		Label: "Enter enable_dns_hostnames:\n(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults to false.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "enable_dns_hostnames")
-
-	prompts["enable_classiclink"] = types.TfPrompt{
-		Label: "Enter enable_classiclink:\n(Optional) A boolean flag to enable/disable ClassicLink for the VPC. Only valid in " +
-			"\nregions and accounts that support EC2 Classic. Defaults false." +
-			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "enable_classiclink")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_default_vpc", blockName, resourceBlock)
 }
@@ -561,35 +539,28 @@ func AWSDefaultVPCDHCPOptionsPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["netbios_name_servers"] = types.TfPrompt{
-		Label: "Enter netbios_name_servers:\n(Optional) List of NETBIOS name servers.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "netbios_name_servers",
+			Ex:    "[\"s1\",\"s2\"]",
+			Doc:   "(Optional) List of NETBIOS name servers.",
+		},
+		{
+			Field: "netbios_node_type",
+			Ex:    "",
+			Doc: "(Optional) The NetBIOS node type (1, 2, 4, or 8). AWS recommends to specify 2 since broadcast " +
+				"\nand multicast are not supported in their network. For more information about these node types," +
+				"\ncheckout http://www.ietf.org/rfc/rfc2132.txt",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "netbios_name_servers")
 
-	prompts["netbios_node_type"] = types.TfPrompt{
-		Label: "Enter netbios_node_type:\n(Optional) List of NETBIOS name servers.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "netbios_node_type")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) List of NETBIOS name servers.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_default_vpc_dhcp_options", blockName, resourceBlock)
 }
@@ -605,49 +576,37 @@ func AWSEC2ManagedPrefixListPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
 	color.Yellow("\nWhen you reference a Prefix List in a resource, the maximum number of entries " +
 		"\nfor the prefix lists counts as the same number of rules or entries for the resource. " +
 		"\nFor example, if you create a prefix list with a maximum of 20 entries and you reference " +
 		"\nthat prefix list in a security group rule, this counts as 20 rules for the security group.")
 
-	prompts["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Required) The name of this resource. The name must not start with com.amazonaws",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) The name of this resource. The name must not start with com.amazonaws.",
+		},
+		{
+			Field: "address_family",
+			Ex:    "",
+			Doc:   "(Required, Forces new resource) The address family (IPv4 or IPv6) of this prefix list.",
+		},
+		{
+			Field:     "max_retries",
+			Ex:        "",
+			Doc:       "(Required, Forces new resource) The address family (IPv4 or IPv6) of this prefix list.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to this resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "name")
 
-	prompts["address_family"] = types.TfPrompt{
-		Label: "Enter address_family:\n(Required, Forces new resource) The address family (IPv4 or IPv6) of this prefix list.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "address_family")
-
-	prompts["max_retries"] = types.TfPrompt{
-		Label: "Enter max_retries:\n(Required, Forces new resource) The maximum number of entries that this prefix list can contain.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "max_retries")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to this resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like entry [y/n]?\n\n", "text")
 
@@ -665,26 +624,20 @@ func AWSEC2ManagedPrefixListPrompt() {
 		return
 	}
 
-	entryPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	entryPrompt["cidr"] = types.TfPrompt{
-		Label: "Enter cidr:\n(Required) The CIDR block of this entry.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	entrySchema := []types.Schema{
+		{
+			Field: "cidr",
+			Ex:    "172.0.0.1/24",
+			Doc:   "(Required) The CIDR block of this entry.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Description of this entry.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "cidr")
 
-	entryPrompt["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of this entry.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "description")
-
-	resourceBlock["entry"] = builder.PSOrder(nestedPromptOrder, nil, entryPrompt, nil)
+	resourceBlock["entry"] = builder.PSOrder(types.ProvidePS(entrySchema))
 
 	builder.ResourceBuilder("aws_ec2_managed_prefix_list", blockName, resourceBlock)
 }
@@ -700,27 +653,21 @@ func AWSEgressOnlyInternetGatewayPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The VPC ID to create in.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The VPC ID to create in.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "vpc_id")
 
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_egress_only_internet_gateway", blockName, resourceBlock)
 }
@@ -736,89 +683,62 @@ func AWSFlowLogPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
 	color.Yellow("\nOne of eni_id, subnet_id, or vpc_id must be specified.")
 
-	prompts["eni_id"] = types.TfPrompt{
-		Label: "Enter eni_id:\n(Optional) Elastic Network Interface ID to attach to",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "traffic_type",
+			Doc:   "(Required) The type of traffic to capture",
+			Items: []string{"ACCEPT", "REJECT", "ALL"},
 		},
-	}
-	promptOrder = append(promptOrder, "eni_id")
-
-	prompts["iam_role_arn"] = types.TfPrompt{
-		Label: "Enter iam_role_arn:\n(Optional) The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "eni_id",
+			Ex:    "",
+			Doc:   "(Optional) Elastic Network Interface ID to attach to",
 		},
-	}
-	promptOrder = append(promptOrder, "iam_role_arn")
-
-	prompts["log_destination"] = types.TfPrompt{
-		Label: "Enter log_destination:\n(Optional) The ARN of the logging destination.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "iam_role_arn",
+			Ex:    "",
+			Doc:   "(Optional) The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group",
 		},
-	}
-	promptOrder = append(promptOrder, "log_destination")
-
-	prompts["subnet_id"] = types.TfPrompt{
-		Label: "Enter subnet_id:\n(Optional) Subnet ID to attach to",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "subnet_id")
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Optional) VPC ID to attach to",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "vpc_id")
-
-	prompts["log_format"] = types.TfPrompt{
-		Label: "Enter log_format:\n(Optional) The fields to include in the flow log record, in the order in which they should appear.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "log_format")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["traffic_type"] = types.TfSelect{
-		Label: "Enter traffic_type:\n(Required) The type of traffic to capture.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"ACCEPT", "REJECT"},
-		},
-	}
-	selectOrder = append(selectOrder, "traffic_type")
-
-	selects["log_destination_type"] = types.TfSelect{
-		Label: "Enter log_destination_type:\n(Optional) The type of the logging destination.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "log_destination",
+			Doc:   "(Optional) The ARN for the IAM role that's used to post flow logs to a CloudWatch Logs log group",
 			Items: []string{"cloud-watch-logs", "s3"},
 		},
+		{
+			Field: "subnet_id",
+			Ex:    "",
+			Doc:   "(Optional) Subnet ID to attach to",
+		},
+		{
+			Field: "vpc_id",
+			Ex:    "",
+			Doc:   "(Optional) VPC ID to attach to",
+		},
+		{
+			Field: "log_format",
+			Ex:    "",
+			Doc:   "(Optional) The fields to include in the flow log record, in the order in which they should appear.",
+		},
+		{
+			Type:  "select",
+			Field: "max_aggregation_interval",
+			Doc: "(Optional) The maximum interval(in seconds) of time during which a flow of " +
+				"\npackets is captured and aggregated into a flow log record.",
+			Items: []string{"60", "600"},
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: utils.RCValidator,
+		},
 	}
-	selectOrder = append(selectOrder, "log_destination_type")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_flow_log", blockName, resourceBlock)
 }
