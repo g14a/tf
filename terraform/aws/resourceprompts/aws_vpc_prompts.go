@@ -20,42 +20,34 @@ func AWSCustomerGatewayPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["bgp_asn"] = types.TfPrompt{
-		Label: "Enter bgp_asn:\n(Required) The gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field:     "bgp_asn",
+			Ex:        "10000",
+			Doc:       "(Required) The gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field: "ip_address",
+			Ex:    "172.83.124.10",
+			Doc:   "(Required) The IP address of the gateway's Internet-routable external interface.",
+		},
+		{
+			Type:  "select",
+			Field: "type",
+			Ex:    "ipsec.1",
+			Doc:   "(Required) The type of customer gateway.",
+			Items: []string{"ipsec.1"},
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Tags to apply to the gateway.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "bgp_asn")
 
-	prompts["ip_address"] = types.TfPrompt{
-		Label: "Enter ip_address:\n(Required) The IP address of the gateway's Internet-routable external interface.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "ip_address")
-
-	prompts["type"] = types.TfPrompt{
-		Label: "Enter type:\n(Required) The type of customer gateway. The only type AWS supports at this time is \"ipsec.1\"",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "type")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) Tags to apply to the gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_customer_gateway", blockName, resourceBlock)
 }
@@ -71,35 +63,26 @@ func AWSDefaultNetworkACLPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["default_network_acl_id"] = types.TfPrompt{
-		Label: "Enter default_network_acl_id:\n(Required) The Network ACL ID to manage. This attribute is exported from aws_vpc, or manually found via the AWS Console.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "default_network_acl_id",
+			Ex:    "",
+			Doc:   "(Required) The Network ACL ID to manage. This attribute is exported from aws_vpc, or manually found via the AWS Console.",
+		},
+		{
+			Field: "subnet_ids",
+			Ex:    "",
+			Doc:   "(Optional) A list of Subnet IDs to apply the ACL to. See the notes below on managing Subnets in the Default Network ACL",
+		},
+		{
+			Field:     "tags",
+			Ex:        "",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "default_network_acl_id")
 
-	prompts["subnet_ids"] = types.TfPrompt{
-		Label: "Enter subnet_ids e.g.[\"id1\",\"id2\"]:\n(Optional) A list of Subnet IDs to apply the ACL to. See the notes below on managing Subnets in the Default Network ACL",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "subnet_ids")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like ingress/egress [y/n]?\n\n", "text")
 
@@ -120,92 +103,65 @@ func AWSDefaultNetworkACLPrompt() {
 	color.Green("\nEnter ingress:\n(Optional) Specifies an ingress rule." +
 		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
 
-	ingressEgressPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	ingressEgressPrompt["from_port"] = types.TfPrompt{
-		Label: "Enter from_port:\n(Required) The from port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+	ingressEgressSchema := []types.Schema{
+		{
+			Field:     "from_port",
+			Ex:        "",
+			Doc:       "(Required) The from port to match.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field:     "to_port",
+			Ex:        "",
+			Doc:       "(Required) The to port to match.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field:     "rule_no",
+			Ex:        "",
+			Doc:       "(Required) The rule number. Used for ordering.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field: "action",
+			Ex:    "",
+			Doc:   "(Required) The action to take.",
+		},
+		{
+			Field: "protocol",
+			Ex:    "-1",
+			Doc:   "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
+		},
+		{
+			Field: "cidr_block",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Optional) The CIDR block to match. This must be a valid network mask.",
+		},
+		{
+			Field: "ipv6_cidr_block",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Optional) The IPv6 CIDR block.",
+		},
+		{
+			Field:     "icmp_type",
+			Ex:        "",
+			Doc:       "(Optional) The ICMP type to be used. Default 0.",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field:     "icmp_code",
+			Ex:        "",
+			Doc:       "(Optional) The ICMP type code to be used. Default 0.",
+			Validator: utils.IntValidator,
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "from_port")
 
-	ingressEgressPrompt["to_port"] = types.TfPrompt{
-		Label: "Enter to_port:\n(Required) The to port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "to_port")
-
-	ingressEgressPrompt["rule_no"] = types.TfPrompt{
-		Label: "Enter rule_no:\n(Required) The to port to match.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "rule_no")
-
-	ingressEgressPrompt["action"] = types.TfPrompt{
-		Label: "Enter action:\n(Required) The action to take.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "action")
-
-	ingressEgressPrompt["protocol"] = types.TfPrompt{
-		Label: "Enter protocol:\n(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "protocol")
-
-	ingressEgressPrompt["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Optional) The CIDR block to match. This must be a valid network mask.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "cidr_block")
-
-	ingressEgressPrompt["ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_block:\n(Optional) The IPv6 CIDR block.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_block")
-
-	ingressEgressPrompt["icmp_type"] = types.TfPrompt{
-		Label: "Enter icmp_type:\n(Optional) The ICMP type to be used. Default 0.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "icmp_type")
-
-	ingressEgressPrompt["icmp_code"] = types.TfPrompt{
-		Label: "Enter icmp_code:\n(Optional) The ICMP type code to be used. Default 0.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "icmp_code")
-
-	resourceBlock["ingress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["ingress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	color.Green("\nEnter egress:\n(Optional) Specifies an egress rule." +
 		"\n1.from_port\n2.to_port\n3.rule_no\n4.action\n5.protocol\n6.cidr_block\n7.ipv6_cidr_block\n8.icmp_type\n9.icmp_code\n")
 
-	resourceBlock["egress"] = builder.PSOrder(nestedPromptOrder, nil, ingressEgressPrompt, nil)
+	resourceBlock["egress"] = builder.PSOrder(types.ProvidePS(ingressEgressSchema))
 
 	builder.ResourceBuilder("aws_default_network_acl", blockName, resourceBlock)
 }
@@ -221,35 +177,26 @@ func AWSDefaultRouteTablePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["default_route_table_id"] = types.TfPrompt{
-		Label: "Enter default_route_table_id:\n(Required) The ID of the Default Routing Table.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "default_route_table_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the Default Routing Table.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
+		{
+			Field: "propagating_vgws",
+			Ex:    "[\"g1\",\"g2\"]",
+			Doc:   "(Optional) A list of virtual gateways for propagation.",
 		},
 	}
-	promptOrder = append(promptOrder, "default_route_table_id")
 
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	prompts["propagating_vgws"] = types.TfPrompt{
-		Label: "Enter propagating_vgws:\n(Optional) A list of virtual gateways for propagation.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "propagating_vgws")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like route [y/n]?\n\n", "text")
 
@@ -267,91 +214,60 @@ func AWSDefaultRouteTablePrompt() {
 		return
 	}
 
-	routePrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	routePrompt["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Required) The CIDR block of the route.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	routeSchema := []types.Schema{
+		{
+			Field: "cidr_block",
+			Ex:    "172.16.0.0/24",
+			Doc:   "(Required) The CIDR block of the route.",
+		},
+		{
+			Field: "ipv6_cidr_block",
+			Ex:    "2001:db8:1234:1a00::/56",
+			Doc:   "(Optional) The Ipv6 CIDR block of the route",
+		},
+		{
+			Field: "egress_only_gateway_id",
+			Ex:    "eg-123",
+			Doc:   "(Optional) Identifier of a VPC Egress Only Internet Gateway.",
+		},
+		{
+			Field: "gateway_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
+		},
+		{
+			Field: "instance_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of an EC2 instance.",
+		},
+		{
+			Field: "nat_gateway_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of a VPC NAT gateway.",
+		},
+		{
+			Field: "network_interface_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of an EC2 network interface.",
+		},
+		{
+			Field: "transit_gateway_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of an EC2 Transit Gateway.",
+		},
+		{
+			Field: "vpc_endpoint_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of a VPC Endpoint. This route must be removed prior to VPC Endpoint deletion.",
+		},
+		{
+			Field: "vpc_peering_connection_id",
+			Ex:    "",
+			Doc:   "(Optional) Identifier of a VPC peering connection.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "cidr_block")
 
-	routePrompt["ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter ipv6_cidr_block:\n(Optional) The Ipv6 CIDR block of the route.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "ipv6_cidr_block")
-
-	routePrompt["egress_only_gateway_id"] = types.TfPrompt{
-		Label: "Enter egress_only_gateway_id:\n(Optional) Identifier of a VPC Egress Only Internet Gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "egress_only_gateway_id")
-
-	routePrompt["gateway_id"] = types.TfPrompt{
-		Label: "Enter gateway_id:\n(Optional) Identifier of a VPC internet gateway or a virtual private gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "gateway_id")
-
-	routePrompt["instance_id"] = types.TfPrompt{
-		Label: "Enter instance_id:\n(Optional) Identifier of an EC2 instance.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "instance_id")
-
-	routePrompt["nat_gateway_id"] = types.TfPrompt{
-		Label: "Enter nat_gateway_id:\n(Optional) Identifier of a VPC NAT gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "nat_gateway_id")
-
-	routePrompt["network_interface_id"] = types.TfPrompt{
-		Label: "Enter network_interface_id:\n(Optional) Identifier of an EC2 network interface.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "network_interface_id")
-
-	routePrompt["transit_gateway_id"] = types.TfPrompt{
-		Label: "Enter transit_gateway_id:\n(Optional) Identifier of an EC2 Transit Gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "transit_gateway_id")
-
-	routePrompt["vpc_endpoint_id"] = types.TfPrompt{
-		Label: "Enter vpc_endpoint_id:\n(Optional) Identifier of a VPC Endpoint. This route must be removed prior to VPC Endpoint deletion.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "vpc_endpoint_id")
-
-	routePrompt["vpc_peering_connection_id"] = types.TfPrompt{
-		Label: "Enter vpc_peering_connection_id:\n(Optional) Identifier of a VPC Endpoint. This route must be removed prior to VPC Endpoint deletion.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "vpc_peering_connection_id")
-	selectOrder = append(selectOrder, "route")
-
-	resourceBlock["route"] = builder.PSOrder(nestedPromptOrder, nil, routePrompt, nil)
+	resourceBlock["route"] = builder.PSOrder(types.ProvidePS(routeSchema))
 
 	builder.ResourceBuilder("aws_default_route_table", blockName, resourceBlock)
 }
@@ -368,153 +284,58 @@ func AWSVPCPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["cidr_block"] = types.TfPrompt{
-		Label: "Enter cidr_block:\n(Required) The CIDR block for the VPC",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "cidr_block",
+			Ex:    "",
+			Doc:   "(Required) The CIDR block for the VPC.",
 		},
-	}
-	promptOrder = append(promptOrder, "cidr_block")
-
-	prompts["owner_id"] = types.TfPrompt{
-		Label: "The ID of the AWS account that owns the VPC.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field:     "enable_dns_support",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults true.",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "owner_id")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n For e.g. k1=v1,k2=v2",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field:     "enable_dns_hostnames",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false.",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	prompts["enable_classiclink"] = types.TfPrompt{
-		Label: "Enter enable_classiclink(true/false):\nWhether or not the VPC has Classiclink enabled",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field: "enable_classiclink",
+			Ex:    "(true/false)",
+			Doc: "(Optional) A boolean flag to enable/disable ClassicLink for the VPC. Only valid in regions and accounts that support EC2 Classic. Defaults false." +
+				"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "enable_classiclink")
-
-	prompts["enable_dns_hostnames"] = types.TfPrompt{
-		Label: "Enter enable_dns_hostnames(true/false):\nWhether or not the VPC has DNS hostname support",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field:     "enable_classiclink_dns_support",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC. Only valid in regions and accounts that support EC2 Classic.",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "enable_dns_hostnames")
-
-	prompts["enable_dns_support"] = types.TfPrompt{
-		Label: "Enter enable_dns_hostnames(true/false):\nWhether or not the VPC has DNS support",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field:     "assign_generated_ipv6_cidr_block",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false.",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "enable_dns_support")
-
-	prompts["enable_classiclink_dns_support"] = types.TfPrompt{
-		Label: "Enter enable_classiclink_dns_support(true/false):\n(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC." +
-			" Only valid in regions and accounts that support EC2 Classic.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "enable_classiclink_dns_support")
-
-	prompts["assign_generated_ipv6_cidr_block"] = types.TfPrompt{
-		Label: "Enter assign_generated_ipv6_cidr_block(true/false):\nEnter (Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix " +
-			"length for the VPC. You cannot specify the range of IP addresses, " +
-			"or the size of the CIDR block. Default is false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "assign_generated_ipv6_cidr_block")
-
-	var selectOrder []string
-	selects := map[string]types.TfSelect{}
-
-	selects["instance_tenancy"] = types.TfSelect{
-		Label: "Enter instance_tenancy:\bTenancy of instances spin up within VPC. Default is `default`",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "instance_tenancy",
+			Doc:   "(Optional) A tenancy option for instances launched into the VPC. Default is default, which makes your instances shared on the host. Using either of the other options (dedicated or host) costs at least $2/hr.",
 			Items: []string{"dedicated", "host"},
 		},
 	}
-	selectOrder = append(selectOrder, "instance_tenancy")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
-
-	color.Yellow("\nConfigure nested settings like tags [y/n]?\n\n", "text")
-
-	ynPrompt := promptui.Prompt{
-		Label: "",
-	}
-
-	yn, err := ynPrompt.Run()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	if yn == "n" || yn == "" {
-		builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
-		return
-	}
-
-	lifecyclePrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	color.Green("Enter lifecycle block:\n")
-
-	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
-		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
-			"that cannot be updated in-place due to remote API limitations, \n" +
-			"Terraform will instead destroy the existing object and then \n" +
-			"create a new replacement object with the new configured arguments.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "create_before_destroy")
-
-	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
-		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
-			"reject with an error any plan that would destroy the infrastructure \n" +
-			"object associated with the resource, as long as the argument \n" +
-			"remains present in the configuration.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "prevent_destroy")
-
-	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
-		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
-			"current settings of a real infrastructure object and plans to " +
-			"update the remote object to match configuration." +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "ignore_changes")
-	selectOrder = append(selectOrder, "lifecycle")
-
-	resourceBlock["lifecycle"] = builder.PSOrder(nestedPromptOrder, nil, lifecyclePrompt, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_vpc", blockName, resourceBlock)
 }
@@ -1223,25 +1044,21 @@ func AWSNetworkACLPrompt() {
 			Validator: utils.IntValidator,
 		},
 		{
-
 			Field: "action",
 			Ex:    "",
 			Doc:   "(Required) The action to take.",
 		},
 		{
-
 			Field: "protocol",
 			Ex:    "-1",
 			Doc:   "(Required) The protocol to match. If using the -1 'all' protocol, you must specify a from and to port of 0.",
 		},
 		{
-
 			Field: "cidr_block",
 			Ex:    "172.16.0.0/24",
 			Doc:   "(Optional) The CIDR block to match. This must be a valid network mask.",
 		},
 		{
-
 			Field: "ipv6_cidr_block",
 			Ex:    "172.16.0.0/24",
 			Doc:   "(Optional) The IPv6 CIDR block.",
