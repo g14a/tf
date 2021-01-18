@@ -754,27 +754,21 @@ func AWSInternetGatewayPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The VPC ID to create in.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The VPC ID to create in.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "vpc_id")
 
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_internet_gateway", blockName, resourceBlock)
 }
@@ -790,26 +784,20 @@ func AWSMainRouteTableAssociationPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The ID of the VPC whose main route table should be set",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex:    "vpc-123",
+			Doc:   "(Required) The VPC ID to create in.",
+		},
+		{
+			Field: "route_table_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the Route Table to set as the new main route table for the target VPC",
 		},
 	}
-	promptOrder = append(promptOrder, "vpc_id")
 
-	prompts["route_table_id"] = types.TfPrompt{
-		Label: "Enter route_table_id:\n(Required) The ID of the Route Table to set as the new main route table for the target VPC",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "route_table_id")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_main_route_table_association", blockName, resourceBlock)
 }
@@ -825,35 +813,26 @@ func AWSNatGatewayPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["allocation_id"] = types.TfPrompt{
-		Label: "Enter allocation_id:\n(Required) The Allocation ID of the Elastic IP address for the gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "allocation_id",
+			Ex: "",
+			Doc: "(Required) The Allocation ID of the Elastic IP address for the gateway.",
+		},
+		{
+			Field: "subnet_id",
+			Ex: "",
+			Doc: "(Required) The Subnet ID of the subnet in which to place the gateway.",
+		},
+		{
+			Field: "tags",
+			Ex: "k1=v1,k2=v2",
+			Doc: "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "allocation_id")
 
-	prompts["subnet_id"] = types.TfPrompt{
-		Label: "Enter subnet_id:\n(Required) The Subnet ID of the subnet in which to place the gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "subnet_id")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_nat_gateway", blockName, resourceBlock)
 }
