@@ -192,50 +192,38 @@ func AWSS3BucketPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["bucket"] = types.TfPrompt{
-		Label: "The name of the bucket. If omitted, Terraform will assign a random, unique name",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "bucket",
+			Ex:    "",
+			Doc:   "(Optional, Forces new resource) The name of the bucket. If omitted, Terraform will assign a random, unique name. Must be less than or equal to 63 characters in length.",
 		},
-	}
-	promptOrder = append(promptOrder, "bucket")
-
-	selects := map[string]types.TfSelect{}
-	var selectOrder []string
-
-	selects["acl"] = types.TfSelect{
-		Label: "Enter acl:\nThe canned ACL to apply",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "acl",
+			Doc:   "(Optional) The canned ACL to apply.",
 			Items: []string{"private", "public-read", "public-read-write", "aws-exec-read", "authenticated-read", "log-delivery-write"},
 		},
-	}
-	selectOrder = append(selectOrder, "acl")
-
-	selects["force_destroy"] = types.TfSelect{
-		Label: "Enter force_destroy:\n(Optional, Default:false) A boolean that indicates all objects \n" +
-			"(including any locked objects) should be deleted from the bucket \n" +
-			"so that the bucket can be destroyed without error. These objects are not recoverable.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"true", "false"},
+		{
+			Field: "force_destroy",
+			Doc:   "(Optional) The canned ACL to apply.",
+			Items: []string{"private", "public-read", "public-read-write", "aws-exec-read", "authenticated-read", "log-delivery-write"},
 		},
-	}
-	selectOrder = append(selectOrder, "force_destroy")
-
-	selects["acceleration_status"] = types.TfSelect{
-		Label: "Enter acceleration_status:\n(Optional) Sets the accelerate " +
-			"configuration of an existing bucket. Can be Enabled or Suspended",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Field:     "force_destroy",
+			Ex:        "(true/false)",
+			Doc:       "(Optional, Default:false) A boolean that indicates all objects (including any locked objects) should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Type:  "select",
+			Field: "acceleration_status",
+			Doc:   "(Optional) Sets the accelerate configuration of an existing bucket.",
 			Items: []string{"Enabled", "Suspended"},
 		},
 	}
-	selectOrder = append(selectOrder, "acceleration_status")
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like cors_rule/versioning/website etc [y/n]?\n\n", "text")
 
@@ -253,138 +241,99 @@ func AWSS3BucketPrompt() {
 		return
 	}
 
-	corsRulePrompt := map[string]types.TfPrompt{}
-	var nestedOrder []string
-
 	color.Green("\nEnter cors_rule (Optional) A rule of Cross-Origin Resource Sharing :\n\n")
 
-	corsRulePrompt["allowed_headers"] = types.TfPrompt{
-		Label: "Enter allowed_headers:\n(Optional) Specifies which headers are allowed",
-		Prompt: promptui.Prompt{
-			Label: "",
+	corsRuleSchema := []types.Schema{
+		{
+			Field: "allowed_headers",
+			Ex:    "",
+			Doc:   "(Optional) Specifies which headers are allowed.",
+		},
+		{
+			Type:  "select",
+			Field: "allowed_methods",
+			Doc:   "(Required) Specifies which methods are allowed.",
+			Items: []string{"GET", "PUT", "POST", "DELETE", "HEAD"},
+		},
+		{
+			Field: "allowed_origins",
+			Ex:    "",
+			Doc:   "(Required) Specifies which origins are allowed.",
+		},
+		{
+			Field: "exposed_headers",
+			Ex:    "",
+			Doc:   "(Optional) Specifies expose header in the response.",
+		},
+		{
+			Field:     "max_age_seconds",
+			Ex:        "30",
+			Doc:       "(Optional) Specifies time in seconds that browser can cache the response for a preflight request.",
+			Validator: utils.IntValidator,
 		},
 	}
-	nestedOrder = append(nestedOrder, "allowed_headers")
 
-	corsRulePrompt["allowed_methods"] = types.TfPrompt{
-		Label: "Enter allowed_methods:\nRequired) Specifies which methods are allowed. Can be GET, PUT, POST, DELETE or HEAD.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "allowed_methods")
-
-	corsRulePrompt["allowed_origins"] = types.TfPrompt{
-		Label: "Enter allowed_origins:\n(Required) Specifies which origins are allowed.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "allowed_origins")
-
-	corsRulePrompt["exposed_headers"] = types.TfPrompt{
-		Label: "Enter exposed_headers:\n(Optional) Specifies expose header in the response.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "exposed_headers")
-
-	corsRulePrompt["max_age_seconds"] = types.TfPrompt{
-		Label: "Enter max_age_seconds:\n(Optional) Specifies time in seconds " +
-			"that browser can cache the response for a preflight request.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "max_age_seconds")
-
-	resourceBlock["cors_rule"] = builder.PSOrder(nestedOrder, nil, corsRulePrompt, nil)
+	resourceBlock["cors_rule"] = builder.PSOrder(types.ProvidePS(corsRuleSchema))
 
 	color.Green("\nEnter website:\nThe website object supports the following:" +
 		"\n1.index_document\n2.error_document\n3.redirect_all_requests_to\n4.routing_rules\n\n")
 
-	websitePrompt := map[string]types.TfPrompt{}
-
-	websitePrompt["index_document"] = types.TfPrompt{
-		Label: "Enter index_document:\n(Required), unless using redirect_all_requests_to) Amazon S3\n" +
-			" returns this index document when requests are made to the" +
-			" root domain or any of the subfolders.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	websiteSchema := []types.Schema{
+		{
+			Field: "index_document",
+			Ex:    "index.html",
+			Doc:   "(Required, unless using redirect_all_requests_to) Amazon S3 returns this index document when requests are made to the root domain or any of the subfolders.",
+		},
+		{
+			Field: "error_document",
+			Ex:    "",
+			Doc:   "(Optional) An absolute path to the document to return in case of a 4XX error.",
+		},
+		{
+			Field: "redirect_all_requests_to",
+			Ex:    "",
+			Doc:   "(Optional) A hostname to redirect all website requests for this bucket to. Hostname can optionally be prefixed with a protocol (http:// or https://) to use when redirecting requests. The default is the protocol that is used in the original request.",
+		},
+		{
+			Field: "routing_rules",
+			Ex:    "",
+			Doc:   "(Optional) A json array containing routing rules describing redirect behavior and when redirects are applied.",
 		},
 	}
-	nestedOrder = append(nestedOrder, "index_document")
 
-	websitePrompt["error_document"] = types.TfPrompt{
-		Label: "Enter error_document:\n(Optional) An absolute path to the document to return in case of a 4XX error.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	resourceBlock["website"] = builder.PSOrder(types.ProvidePS(websiteSchema))
+
+	versioningSchema := []types.Schema{
+		{
+			Field:     "enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Enable versioning. Once you version-enable a bucket, it can never return to an unversioned state. You can, however, suspend versioning on that bucket.",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field:     "mfa_delete",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Enable MFA delete for either Change the versioning state of your bucket or Permanently delete an object version. Default is false. This cannot be used to toggle this setting but is available to allow managed buckets to reflect the state in AWS",
+			Validator: utils.BoolValidator,
 		},
 	}
-	nestedOrder = append(nestedOrder, "error_document")
 
-	websitePrompt["redirect_all_requests_to"] = types.TfPrompt{
-		Label: "Enter redirect_all_requests_to:\nOptional) A hostname to redirect all website requests for \n" +
-			"this bucket to. Hostname can optionally be prefixed with a \n" +
-			"protocol (http:// or https://) to use when redirecting requests. \n" +
-			"The default is the protocol that is used in the original request.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	resourceBlock["versioning"] = builder.PSOrder(types.ProvidePS(versioningSchema))
+
+	loggingSchema := []types.Schema{
+		{
+			Field: "target_bucket",
+			Ex:    "",
+			Doc:   "(Required) The name of the bucket that will receive the log objects.",
+		},
+		{
+			Field: "target_prefix",
+			Ex:    "",
+			Doc:   "(Optional) To specify a key prefix for log objects.",
 		},
 	}
-	nestedOrder = append(nestedOrder, "redirect_all_requests_to")
 
-	websitePrompt["routing_rules"] = types.TfPrompt{
-		Label: "Enter routing_rules:\n(Optional) A json array containing routing rules describing redirect behavior and when redirects are applied.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "routing_rules")
-
-	resourceBlock["website"] = builder.PSOrder(nestedOrder[len(nestedOrder)-4:], nil, websitePrompt, nil)
-
-	versioningPrompt := map[string]types.TfPrompt{}
-	versioningPrompt["enabled"] = types.TfPrompt{
-		Label: "Enter enabled:(true/false)(Optional) A state of versioning",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "enabled")
-
-	versioningPrompt["mfa_delete"] = types.TfPrompt{
-		Label: "Enter mfa_delete:\n(Optional) Enable MFA delete for either Change the versioning\n" +
-			"state of your bucket or Permanently delete an object version.\n" +
-			"Default is false. This cannot be used to toggle this setting but is \n" +
-			"available to allow managed buckets to reflect the state in AWS.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "mfa_delete")
-
-	resourceBlock["versioning"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, versioningPrompt, nil)
-
-	loggingPrompt := map[string]types.TfPrompt{}
-
-	loggingPrompt["target_bucket"] = types.TfPrompt{
-		Label: "Enter target_bucket:\n(Required) The name of the bucket that will receive the log objects.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "target_bucket")
-	loggingPrompt["target_prefix"] = types.TfPrompt{
-		Label: "Enter target_prefix:\n(Optional) To specify a key prefix for log objects.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "target_prefix")
-
-	resourceBlock["logging"] = builder.PSOrder(nestedOrder[len(nestedOrder)-2:], nil, loggingPrompt, nil)
+	resourceBlock["logging"] = builder.PSOrder(types.ProvidePS(loggingSchema))
 
 	builder.ResourceBuilder("aws_s3_bucket", blockName, resourceBlock)
 }

@@ -65,3 +65,21 @@ func BlockDurationValidator(input string) error {
 	}
 	return nil
 }
+
+func MinMaxIntValidator(min, max int64) func(input string) error {
+	return func(input string) error {
+		if input != "" {
+			f, err := strconv.ParseInt(input, 10, 64)
+			if err != nil {
+				return errors.New("invalid number")
+			}
+			if f >= min && f <= max {
+				return nil
+			} else {
+
+				return errors.New("value has to be within " + strconv.FormatInt(min, 10) + " and " + strconv.FormatInt(max, 10))
+			}
+		}
+		return nil
+	}
+}

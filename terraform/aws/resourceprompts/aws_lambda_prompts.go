@@ -10,8 +10,6 @@ import (
 )
 
 func AWSLambdaAliasPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -22,46 +20,35 @@ func AWSLambdaAliasPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder []string
-
-	prompts["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Required) Name for the alias you are creating. Pattern: (?!^[0-9]+$)([a-zA-Z0-9-_]+)",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) Name for the alias you are creating. Pattern: (?!^[0-9]+$)([a-zA-Z0-9-_]+)",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Description of the alias.",
+		},
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) Lambda Function name or ARN.",
+		},
+		{
+			Field: "function_version",
+			Ex:    "",
+			Doc:   "(Required) Lambda function version for which you are creating the alias. Pattern: (\\$LATEST|[0-9]+).",
 		},
 	}
-	promptOrder = append(promptOrder, "name")
 
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of the alias.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
-	prompts["function_name"] = types.TfPrompt{
-		Label: "Enter function_name:\n(Required) Lambda Function name or ARN.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "function_name")
-
-	prompts["function_version"] = types.TfPrompt{
-		Label: "Enter function_version:\n(Required) Lambda function version for which you are creating the alias. Pattern: (\\$LATEST|[0-9]+)",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "function_version")
-
-	builder.ResourceBuilder("aws_lambda_alias", blockName, builder.PSOrder(promptOrder, nil, prompts, nil))
+	builder.ResourceBuilder("aws_lambda_alias", blockName, resourceBlock)
 }
 
 func AWSLambdaCodeSigningConfigPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -72,60 +59,53 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, nestedPromptOrder, nestedSelectOrder []string
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Descriptive name for this code signing configuration.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Descriptive name for this code signing configuration.",
 		},
 	}
-	promptOrder = append(promptOrder, "description")
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 
-	policiesSelect := map[string]types.TfSelect{}
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Green("\nEnter policies:\n(Optional) A configuration block of code signing policies that define the " +
 		"\nactions to take if the validation checks fail. Detailed below." +
 		"\nThe policies block supports the following argument:" +
 		"\n1.untrusted_artifact_on_deployment")
 
-	policiesSelect["untrusted_artifact_on_deployment"] = types.TfSelect{
-		Label: "Enter untrusted_artifact_on_deployment:\n (Required) Code signing configuration policy for deployment validation failure. " +
-			"\nIf you set the policy to Enforce, Lambda blocks the deployment request if " +
-			"\ncode-signing validation checks fail. If you set the policy to Warn, " +
-			"\nLambda allows the deployment and creates a CloudWatch log. \n" +
-			"Valid values: Warn, Enforce. Default value: Warn",
-		Select: promptui.Select{
-			Label: "",
+	policiesSchema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "untrusted_artifact_on_deployment",
+			Doc:   "(Required) Code signing configuration policy for deployment validation failure. " +
+				"\nIf you set the policy to Enforce, Lambda blocks the deployment request if code-signing " +
+				"\nvalidation checks fail. If you set the policy to Warn, Lambda allows the deployment and " +
+				"\ncreates a CloudWatch log.",
 			Items: []string{"Warn", "Enforce"},
 		},
 	}
-	nestedSelectOrder = append(nestedSelectOrder, "untrusted_artifact_on_deployment")
 
-	resourceBlock["policies"] = builder.PSOrder(nil, nestedSelectOrder, nil, policiesSelect)
+	resourceBlock["policies"] = builder.PSOrder(types.ProvidePS(policiesSchema))
 
-	allowedPublishersPrompt := map[string]types.TfPrompt{}
+	color.Green("\nEnter allowed_publishers:\n(Required) A configuration block of allowed publishers as " +
+		"\nsigning profiles for this code signing configuration. Detailed below.")
 
-	color.Green("\nEnter allowed_publishers:\n(Required) A configuration block of allowed publishers as signing profiles for this code signing configuration. Detailed below.")
-
-	allowedPublishersPrompt["signing_profile_version_arns"] = types.TfPrompt{
-		Label: "Enter signing_profile_version_arns:\n(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
-			"\nA signing profile defines a trusted user who can sign a code package.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	allowedPublishersSchema := []types.Schema{
+		{
+			Field: "signing_profile_version_arns",
+			Ex:    "",
+			Doc:   "(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
+				"\nA signing profile defines a trusted user who can sign a code package.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "signing_profile_version_arns")
 
-	resourceBlock["allowed_publishers"] = builder.PSOrder(nestedPromptOrder, nil, allowedPublishersPrompt, nil)
+	resourceBlock["allowed_publishers"] = builder.PSOrder(types.ProvidePS(allowedPublishersSchema))
 
 	builder.ResourceBuilder("aws_lambda_code_signing_config", blockName, resourceBlock)
 }
 
 func AWSLambdaEventSourceMappingPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -136,124 +116,86 @@ func AWSLambdaEventSourceMappingPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder []string
-
-	prompts["batch_size"] = types.TfPrompt{
-		Label: "Enter batch_size:\n(Optional) The largest number of records that Lambda will retrieve from " +
-			"\nyour event source at the time of invocation. Defaults to 100 for DynamoDB and Kinesis, 10 for SQS.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field:     "batch_size",
+			Ex:        "",
+			Doc:       "(Optional) The largest number of records that Lambda will retrieve from your event source at the time of invocation. Defaults to 100 for DynamoDB and Kinesis, 10 for SQS.",
+			Validator: utils.IntValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "batch_size")
-
-	prompts["maximum_batching_window_in_seconds"] = types.TfPrompt{
-		Label: "Enter maximum_batching_window_in_seconds:\n(Optional) The maximum amount of time to gather records before invoking the function, " +
-			"\nin seconds (between 0 and 300). Records will continue to buffer (or accumulate in the case " +
-			"\nof an SQS queue event source) until either maximum_batching_window_in_seconds expires or " +
-			"\nbatch_size has been met. For streaming event sources, defaults to as soon as records are " +
-			"\navailable in the stream. If the batch it reads from the stream/queue only has one record " +
-			"\nin it, Lambda only sends one record to the function.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Field: "maximum_batching_window_in_seconds",
+			Ex:    "",
+			Doc: "(Optional) The maximum amount of time to gather records before invoking the function, " +
+				"\nin seconds (between 0 and 300). Records will continue to buffer (or accumulate in the case " +
+				"\nof an SQS queue event source) until either maximum_batching_window_in_seconds expires or " +
+				"\nbatch_size has been met. For streaming event sources, defaults to as soon as records are " +
+				"\navailable in the stream. If the batch it reads from the stream/queue only has one record in " +
+				"\nit, Lambda only sends one record to the function.",
+			Validator: utils.IntValidator,
 		},
-	}
-
-	promptOrder = append(promptOrder, "maximum_batching_window_in_seconds")
-
-	prompts["event_source_arn"] = types.TfPrompt{
-		Label: "Enter event_source_arn:\n(Required) The event source ARN - can be a Kinesis stream, DynamoDB stream, or SQS queue.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "event_source_arn",
+			Ex:    "",
+			Doc:   "(Required) The event source ARN - can be a Kinesis stream, DynamoDB stream, or SQS queue.",
 		},
-	}
-
-	promptOrder = append(promptOrder, "event_source_arn")
-
-	prompts["enabled"] = types.TfPrompt{
-		Label: "Enter enabled:\n(Optional) Determines if the mapping will be enabled on creation. Defaults to true",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field:     "enabled",
+			Ex:        "",
+			Doc:       "(Optional) Determines if the mapping will be enabled on creation. Defaults to true",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "enabled")
-
-	prompts["function_name"] = types.TfPrompt{
-		Label: "Enter function_name:\n(Required) The name or the ARN of the Lambda function that will be subscribing to events.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) The name or the ARN of the Lambda function that will be subscribing to events.",
 		},
-	}
-	promptOrder = append(promptOrder, "function_name")
-
-	prompts["parallelization_factor"] = types.TfPrompt{
-		Label: "Enter parallelization_factor:\n(Optional) The number of batches to process from each shard concurrently. Only available for stream sources (DynamoDB and Kinesis). Minimum and default of 1, maximum of 10.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Field: "parallelization_factor",
+			Ex:    "",
+			Doc: "(Optional) The number of batches to process from each shard concurrently. " +
+				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum and default of 1, maximum of 10.",
+			Validator: utils.MinMaxIntValidator(1, 10),
 		},
-	}
-	promptOrder = append(promptOrder, "parallelization_factor")
-
-	prompts["maximum_retry_attempts"] = types.TfPrompt{
-		Label: "Enter maximum_retry_attempts:\n(Optional) The maximum number of times to retry when the function returns an error. " +
-			"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 0, maximum and " +
-			"\ndefault of 10000.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Field: "maximum_retry_attempts",
+			Ex:    "",
+			Doc: "(Optional) The maximum number of times to retry when the function returns an error. " +
+				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 0, maximum and default of 10000.",
+			Validator: utils.MinMaxIntValidator(0, 10000),
 		},
-	}
-	promptOrder = append(promptOrder, "maximum_retry_attempts")
-
-	prompts["maximum_record_age_in_seconds"] = types.TfPrompt{
-		Label: "Enter maximum_record_age_in_seconds:\n(Optional) The maximum age of a record that Lambda sends to a function " +
-			"\nfor processing. Only available for stream sources (DynamoDB and Kinesis). " +
-			"\nMinimum of 60, maximum and default of 604800.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+		{
+			Field: "maximum_record_age_in_seconds",
+			Ex:    "",
+			Doc: "(Optional) The maximum age of a record that Lambda sends to a function for processing. " +
+				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 60, maximum and default of 604800.",
+			Validator: utils.MinMaxIntValidator(60, 604800),
 		},
-	}
-	promptOrder = append(promptOrder, "maximum_record_age_in_seconds")
-
-	prompts["bisect_batch_on_function_error"] = types.TfPrompt{
-		Label: "Enter bisect_batch_on_function_error:\n(Optional) If the function returns an error, split the batch in two and retry. " +
-			"\nOnly available for stream sources (DynamoDB and Kinesis). Defaults to false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
+		{
+			Field:     "bisect_batch_on_function_error",
+			Ex:        "",
+			Doc:       "(Optional) If the function returns an error, split the batch in two and retry. Only available for stream sources (DynamoDB and Kinesis). Defaults to false.",
+			Validator: utils.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "bisect_batch_on_function_error")
-
-	prompts["starting_position_timestamp"] = types.TfPrompt{
-		Label: "Enter starting_position_timestamp:\n (Optional) A timestamp in RFC3339 format of the data record which to start " +
-			"\nreading when using starting_position set to AT_TIMESTAMP. If a record with this exact " +
-			"\ntimestamp does not exist, the next later record is chosen. If the timestamp is older " +
-			"\nthan the current trim horizon, the oldest available record is chosen.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "starting_position_timestamp",
+			Ex:    "",
+			Doc: "(Optional) A timestamp in RFC3339 format of the data record which to start " +
+				"\nreading when using starting_position set to AT_TIMESTAMP. If a record with this " +
+				"\nexact timestamp does not exist, the next later record is chosen. " +
+				"\nIf the timestamp is older than the current trim horizon, the oldest available record is chosen.",
 		},
-	}
-	promptOrder = append(promptOrder, "starting_position_timestamp")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["starting_position"] = types.TfSelect{
-		Label: "Enter starting_position:\n(Optional) The position in the stream where AWS Lambda should start reading. " +
-			"\nMust be one of AT_TIMESTAMP (Kinesis only), LATEST or TRIM_HORIZON if getting events " +
-			"\nfrom Kinesis or DynamoDB. Must not be provided if getting events from SQS.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "starting_position",
+			Doc: "(Optional) The position in the stream where AWS Lambda should start reading. Must be one of " +
+				"\nAT_TIMESTAMP (Kinesis only), LATEST or TRIM_HORIZON if getting events from Kinesis or DynamoDB. " +
+				"\nMust not be provided if getting events from SQS",
 			Items: []string{"AT_TIMESTAMP", "LATEST", "TRIM_HORIZON"},
 		},
 	}
-	selectOrder = append(selectOrder, "starting_position")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_lambda_event_source_mapping", blockName, resourceBlock)
 
