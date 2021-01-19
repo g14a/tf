@@ -78,7 +78,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		{
 			Type:  "select",
 			Field: "untrusted_artifact_on_deployment",
-			Doc:   "(Required) Code signing configuration policy for deployment validation failure. " +
+			Doc: "(Required) Code signing configuration policy for deployment validation failure. " +
 				"\nIf you set the policy to Enforce, Lambda blocks the deployment request if code-signing " +
 				"\nvalidation checks fail. If you set the policy to Warn, Lambda allows the deployment and " +
 				"\ncreates a CloudWatch log.",
@@ -95,7 +95,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		{
 			Field: "signing_profile_version_arns",
 			Ex:    "",
-			Doc:   "(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
+			Doc: "(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
 				"\nA signing profile defines a trusted user who can sign a code package.",
 		},
 	}
