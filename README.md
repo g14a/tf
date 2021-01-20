@@ -2,6 +2,10 @@
  
 Tf is a command line tool to easily generate your Terraform configuration with an interactive prompt.
 
+![OpenSource](https://img.shields.io/badge/Open%20Source-000000?style=for-the-badge&logo=github)
+![go](https://img.shields.io/badge/-Written%20In%20Go-00add8?style=for-the-badge&logo=Go&logoColor=ffffff)
+![cli](https://img.shields.io/badge/-Build%20for%20CLI-000000?style=for-the-badge&logo=Powershell&logoColor=ffffff)
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/g14a/tf)](https://goreportcard.com/report/github.com/g14a/tf)
 [![Go Workflow Status](https://github.com/g14a/tf/workflows/Go/badge.svg)](https://github.com/g14a/tf/workflows/Go/badge.svg)
 ![CodeQL](https://github.com/g14a/tf/workflows/CodeQL/badge.svg)

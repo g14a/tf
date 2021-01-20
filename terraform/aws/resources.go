@@ -601,6 +601,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSLambdaEventSourceMappingPrompt()
 	case "aws_lambda_function":
 		resourceprompts.AWSLambdaFunctionPrompt()
+	case "aws_lambda_function_event_invoke_config":
+		resourceprompts.AWSLambdaFunctionEventInvokeConfigPrompt()
 	case "aws_lambda_layer_version":
 		resourceprompts.AWSLambdaLayerVersionPrompt()
 	case "aws_lambda_permission":

@@ -78,7 +78,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		{
 			Type:  "select",
 			Field: "untrusted_artifact_on_deployment",
-			Doc:   "(Required) Code signing configuration policy for deployment validation failure. " +
+			Doc: "(Required) Code signing configuration policy for deployment validation failure. " +
 				"\nIf you set the policy to Enforce, Lambda blocks the deployment request if code-signing " +
 				"\nvalidation checks fail. If you set the policy to Warn, Lambda allows the deployment and " +
 				"\ncreates a CloudWatch log.",
@@ -95,7 +95,7 @@ func AWSLambdaCodeSigningConfigPrompt() {
 		{
 			Field: "signing_profile_version_arns",
 			Ex:    "",
-			Doc:   "(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
+			Doc: "(Required) The Amazon Resource Name (ARN) for each of the signing profiles. " +
 				"\nA signing profile defines a trusted user who can sign a code package.",
 		},
 	}
@@ -202,8 +202,6 @@ func AWSLambdaEventSourceMappingPrompt() {
 }
 
 func AWSLambdaFunctionPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -214,165 +212,113 @@ func AWSLambdaFunctionPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder, selectOrder []string
-
-	prompts["function_name"] = types.TfPrompt{
-		Label: "Enter function_name:\n(Required) A unique name for your Lambda Function.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "filename",
+			Ex:    "",
+			Doc:   "(Optional) The path to the function's deployment package within the local filesystem. If defined, The s3_-prefixed options and image_uri cannot be used.",
+		},
+		{
+			Field: "s3_bucket",
+			Ex:    "",
+			Doc:   "(Optional) The S3 bucket location containing the function's deployment package. Conflicts with filename and image_uri. This bucket must reside in the same AWS region where you are creating the Lambda function.",
+		},
+		{
+			Field: "s3_key",
+			Ex:    "",
+			Doc:   "(Optional) The S3 key of an object containing the function's deployment package. Conflicts with filename and image_uri.",
+		},
+		{
+			Field: "s3_object_version",
+			Ex:    "",
+			Doc:   "(Optional) The object version containing the function's deployment package. Conflicts with filename and image_uri",
+		},
+		{
+			Field: "image_uri",
+			Ex:    "",
+			Doc:   "(Optional) The ECR image URI containing the function's deployment package. Conflicts with filename, s3_bucket, s3_key, and s3_object_version",
+		},
+		{
+			Type:  "select",
+			Field: "package_type",
+			Doc:   "(Optional) The Lambda deployment package type. Valid values are Zip and Image. Defaults to Zip",
+			Items: []string{"Zip", "Image"},
+		},
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) A unique name for your Lambda Function.",
+		},
+		{
+			Field: "handler",
+			Ex:    "",
+			Doc:   "(Required) The function entrypoint in your code.",
+		},
+		{
+			Field: "role",
+			Ex:    "",
+			Doc: "(Required) IAM role attached to the Lambda Function. This governs both who / what " +
+				"\ncan invoke your Lambda Function, as well as what resources our Lambda Function has access to. " +
+				"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Description of what your Lambda Function does.",
+		},
+		{
+			Field: "layers",
+			Ex:    "",
+			Doc: "(Optional) List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function." +
+				"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html",
+		},
+		{
+			Field:     "memory_size",
+			Ex:        "",
+			Doc:       "(Optional) Amount of memory in MB your Lambda Function can use at runtime. Defaults to 128",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field: "runtime",
+			Ex:    "",
+			Doc:   "(Optional) Checkout https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime",
+		},
+		{
+			Field:     "timeout",
+			Ex:        "3",
+			Doc:       "(Optional) The amount of time your Lambda Function has to run in seconds. Defaults to 3",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field: "reserved_concurrent_executions",
+			Ex:    "",
+			Doc:   "(Optional) The amount of reserved concurrent executions for this lambda function. A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations. Defaults to Unreserved Concurrency Limits -1",
+		},
+		{
+			Field:     "publish",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether to publish creation/change as new Lambda Function Version. Defaults to false",
+			Validator: utils.BoolValidator,
+		},
+		{
+			Field: "kms_key_arn",
+			Ex:    "",
+			Doc: "(Optional) Amazon Resource Name (ARN) of the AWS Key Management Service (KMS) " +
+				"\nkey that is used to encrypt environment variables. If this configuration is not " +
+				"\nprovided when environment variables are in use, AWS Lambda uses a default service key. " +
+				"\nIf this configuration is provided when environment variables are not in use, " +
+				"\nthe AWS Lambda API does not save this configuration and Terraform will show a " +
+				"\nperpetual difference of adding the key. To fix the perpetual difference, remove this configuration.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the object.",
+			Validator: utils.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "function_name")
 
-	prompts["handler"] = types.TfPrompt{
-		Label: "Enter handler:\n(Required) The function entrypoint in your code." +
-			"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/walkthrough-custom-events-create-test-function.html",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "handler")
-
-	prompts["role"] = types.TfPrompt{
-		Label: "Enter role:\n(Required) IAM role attached to the Lambda Function. This governs both " +
-			"\nwho / what can invoke your Lambda Function, as well as what resources our Lambda " +
-			"\nFunction has access to. See Lambda Permission Model for more details.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "role")
-
-	prompts["runtime"] = types.TfPrompt{
-		Label: "Enter runtime:\n(Optional) See Runtimes for valid values." +
-			"Checkout https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "runtime")
-
-	prompts["filename"] = types.TfPrompt{
-		Label: "Enter filename:\n(Optional) The path to the function's deployment package within the local " +
-			"\nfilesystem. If defined, The s3_-prefixed options and image_uri cannot be used.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "filename")
-
-	prompts["s3_bucket"] = types.TfPrompt{
-		Label: "Enter s3_bucket:\n(Optional) The S3 bucket location containing the function's deployment package. " +
-			"\nConflicts with filename and image_uri. This bucket must reside in the same " +
-			"\nAWS region where you are creating the Lambda function.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_bucket")
-
-	prompts["s3_key"] = types.TfPrompt{
-		Label: "Enter s3_key:\n(Optional) The S3 key of an object containing the function's deployment package. Conflicts with filename and image_uri.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_key")
-
-	prompts["s3_object_version"] = types.TfPrompt{
-		Label: "Enter s3_object_version:\n(Optional) The object version containing the function's deployment package. Conflicts with filename and image_uri.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_object_version")
-
-	prompts["image_uri"] = types.TfPrompt{
-		Label: "Enter image_uri:\n(Optional) The ECR image URI containing the function's deployment package. Conflicts with filename, s3_bucket, s3_key, and s3_object_version",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "image_uri")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of what your Lambda Function does.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["layers"] = types.TfPrompt{
-		Label: "Enter layers: e.g. [\"\"]\n(Optional) List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function. See Lambda Layers",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "layers")
-
-	prompts["memory_size"] = types.TfPrompt{
-		Label: "Enter memory_size:\n(Optional) Amount of memory in MB your Lambda Function can use at runtime. Defaults to 128. See Limits",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "memory_size")
-
-	prompts["publish"] = types.TfPrompt{
-		Label: "Enter publish(true/false):\n(Optional) Whether to publish creation/change as new Lambda Function Version. Defaults to false.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "publish")
-
-	prompts["reserved_concurrent_executions"] = types.TfPrompt{
-		Label: "Enter reserved_concurrent_executions(true/false):\n(Optional) The amount of reserved concurrent executions for this lambda function. " +
-			"\nA value of 0 disables lambda from being triggered and -1 removes any concurrency limitations. " +
-			"\nDefaults to Unreserved Concurrency Limits -1",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "reserved_concurrent_executions")
-
-	prompts["kms_key_arn"] = types.TfPrompt{
-		Label: "Enter kms_key_arn:\n(Optional) Amazon Resource Name (ARN) of the AWS Key Management Service " +
-			"\n(KMS) key that is used to encrypt environment variables. If this configuration is not " +
-			"\nprovided when environment variables are in use, AWS Lambda uses a default service key. " +
-			"\nIf this configuration is provided when environment variables are not in use, " +
-			"\nthe AWS Lambda API does not save this configuration and Terraform will show a " +
-			"\nperpetual difference of adding the key. To fix the perpetual difference, " +
-			"\nremove this configuration.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "kms_key_arn")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags: For e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the object.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	selects := map[string]types.TfSelect{}
-	selects["package_type"] = types.TfSelect{
-		Label: "Enter package_type:\n(Optional) The Lambda deployment package type. Valid values are Zip and Image. Defaults to Zip.",
-		Select: promptui.Select{
-			Label: "",
-		},
-	}
-	selectOrder = append(selectOrder, "package_type")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nWould you like to configure nested settings like vpc_config/file_system_config etc: [y/n]?\n\n", "text")
 
@@ -390,85 +336,151 @@ func AWSLambdaFunctionPrompt() {
 		return
 	}
 
-	vpcConfigPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	vpcConfigPrompt["security_group_ids"] = types.TfPrompt{
-		Label: "Enter security_group_ids  e.g.[\"id1\",\"id2\"]:\n(Required) A list of security group IDs associated with the Lambda function.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	vpcConfigSchema := []types.Schema{
+		{
+			Field: "subnet_ids",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc:   "(Required) A list of subnet IDs associated with the Lambda function.",
+		},
+		{
+			Field: "security_group_ids",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc:   "(Required) A list of security group IDs associated with the Lambda function.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "security_group_ids")
 
-	vpcConfigPrompt["subnet_ids"] = types.TfPrompt{
-		Label: "Enter subnet_ids  e.g.[\"id1\",\"id2\"]:\n(Required) A list of subnet IDs associated with the Lambda function.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	resourceBlock["vpc_config"] = builder.PSOrder(types.ProvidePS(vpcConfigSchema))
+
+	fileSystemConfigSchema := []types.Schema{
+		{
+			Field: "arn",
+			Ex:    "",
+			Doc:   "(Required) The Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system.",
+		},
+		{
+			Field: "local_mount_path",
+			Ex:    "",
+			Doc:   "(Required) The path where the function can access the file system, starting with /mnt/",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "subnet_ids")
 
-	resourceBlock["vpc_config"] = builder.PSOrder(nestedPromptOrder, nil, vpcConfigPrompt, nil)
+	resourceBlock["file_system_config"] = builder.PSOrder(types.ProvidePS(fileSystemConfigSchema))
 
-	fileSystemConfigPrompt := map[string]types.TfPrompt{}
-
-	fileSystemConfigPrompt["arn"] = types.TfPrompt{
-		Label: "Enter arn:\n(Required) The Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "(Default 10m) How long to wait for slow uploads or EC2 throttling errors.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "arn")
 
-	fileSystemConfigPrompt["local_mount_path"] = types.TfPrompt{
-		Label: "Enter local_mount_path:\n(Required) The path where the function can access the file system, starting with /mnt/.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	resourceBlock["timeout"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
+	tracingConfigSchema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "mode",
+			Ex:    "",
+			Doc:   "(Required) Can be either PassThrough or Active. If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with \"sampled=1\". If Active, Lambda will respect any tracing header it receives from an upstream service. If no tracing header is received, Lambda will call X-Ray for a tracing decision.",
+			Items: []string{"PassThrough", "Active"},
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "local_mount_path")
 
-	resourceBlock["file_system_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-2:], nil, fileSystemConfigPrompt, nil)
+	resourceBlock["tracing_config"] = builder.PSOrder(types.ProvidePS(tracingConfigSchema))
 
-	timeoutPrompt := map[string]types.TfPrompt{}
-	timeoutPrompt["create"] = types.TfPrompt{
-		Label: "Enter create:\n(Default 10m) How long to wait for slow uploads or EC2 throttling errors.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	deadLetterConfigSchema := []types.Schema{
+		{
+			Field: "target_arn",
+			Ex:    "",
+			Doc:   "(Required) The ARN of an SNS topic or SQS queue to notify when an invocation fails. If this option is used, the function's IAM role must be granted suitable access to write to the target object, which means allowing either the sns:Publish or sqs:SendMessage action on this ARN, depending on which service is targeted.",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "create")
 
-	resourceBlock["timeout"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, fileSystemConfigPrompt, nil)
-
-	tracingConfigPrompt := map[string]types.TfPrompt{}
-	tracingConfigPrompt["mode"] = types.TfPrompt{
-		Label: "Enter mode:\n(Required) Can be either PassThrough or Active. If PassThrough, Lambda will only trace " +
-			"\nthe request from an upstream service if it contains a tracing header with \"sampled=1\". " +
-			"\nIf Active, Lambda will respect any tracing header it receives from an upstream service. " +
-			"\nIf no tracing header is received, Lambda will call X-Ray for a tracing decision.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "mode")
-
-	resourceBlock["tracing_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, tracingConfigPrompt, nil)
-
-	deadLetterConfigPrompt := map[string]types.TfPrompt{}
-
-	deadLetterConfigPrompt["target_arn"] = types.TfPrompt{
-		Label: "Enter target_arn:\n(Required) The ARN of an SNS topic or SQS queue to notify when an invocation fails. If this option is used, the function's IAM role must be granted suitable access to write to the target object, which means allowing either the sns:Publish or sqs:SendMessage action on this ARN, depending on which service is targeted.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "target_arn")
-
-	resourceBlock["dead_letter_config"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-1:], nil, deadLetterConfigPrompt, nil)
+	resourceBlock["dead_letter_config"] = builder.PSOrder(types.ProvidePS(deadLetterConfigSchema))
 
 	builder.ResourceBuilder("aws_lambda_function", blockName, resourceBlock)
+}
+
+func AWSLambdaFunctionEventInvokeConfigPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) Name or Amazon Resource Name (ARN) of the Lambda Function, omitting any version or alias qualifier.",
+		},
+		{
+			Field:     "maximum_event_age_in_seconds",
+			Ex:        "100",
+			Doc:       "(Optional) Maximum age of a request that Lambda sends to a function for processing in seconds. Valid values between 60 and 21600.",
+			Validator: utils.MinMaxIntValidator(60, 21600),
+		},
+		{
+			Field:     "maximum_retry_attempts",
+			Ex:        "1",
+			Doc:       "(Optional) Maximum number of times to retry when the function returns an error. Valid values between 0 and 2. Defaults to 2.",
+			Validator: utils.MinMaxIntValidator(0, 2),
+		},
+		{
+			Field: "qualifier",
+			Ex:    "",
+			Doc:   "(Optional) Lambda Function published version, $LATEST, or Lambda Alias name.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Green("\nEnter destination_config:\n(Optional) Configuration block with destination configuration." +
+		"\nThe destination_config block supports the following arguments:" +
+		"\n1.on_failure\n2.on_success")
+
+	color.Green("\nEnter on_failure block:\n(Optional) Configuration block with destination configuration for failed asynchronous invocations." +
+		"\nThe on_failure block supports the following arguments:" +
+		"\n1.destination")
+
+	onFailureSchema := []types.Schema{
+		{
+			Field: "destination",
+			Ex:    "",
+			Doc: "(Required) Amazon Resource Name (ARN) of the destination resource. " +
+				"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations for acceptable resource types and associated IAM permissions.",
+		},
+	}
+
+	onFailureBlock := builder.PSOrder(types.ProvidePS(onFailureSchema))
+
+	color.Green("\nEnter on_success block:\n(Optional) Configuration block with destination configuration for failed asynchronous invocations." +
+		"\nThe on_success block supports the following arguments:" +
+		"\n1.destination")
+
+	onSuccessSchema := []types.Schema{
+		{
+			Field: "destination",
+			Ex:    "",
+			Doc: "(Required) Amazon Resource Name (ARN) of the destination resource. " +
+				"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations for acceptable resource types and associated IAM permissions.",
+		},
+	}
+
+	onSuccessBlock := builder.PSOrder(types.ProvidePS(onSuccessSchema))
+
+	destinationConfig := map[string]interface{}{
+		"on_failure": onFailureBlock,
+		"on_success": onSuccessBlock,
+	}
+
+	resourceBlock["destination_config"] = destinationConfig
+
+	builder.ResourceBuilder("aws_lambda_function_event_invoke_config", blockName, resourceBlock)
 }
 
 func AWSLambdaLayerVersionPrompt() {
