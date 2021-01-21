@@ -3,6 +3,8 @@ package resourceprompts
 import (
 	"fmt"
 
+	"github.com/g14a/tf/utils"
+
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
@@ -20,75 +22,54 @@ func AWSACMCertificatePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	selects := map[string]types.TfSelect{}
-	var promptOrder, selectOrder []string
-
-	prompts["domain_name"] = types.TfPrompt{
-		Label: "Enter domain_name:\n(Required) A domain name for which the certificate should be issued",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "domain_name",
+			Ex:    "",
+			Doc:   "(Required) A domain name for which the certificate should be issued",
 		},
-	}
-	promptOrder = append(promptOrder, "domain_name")
-
-	prompts["private_key"] = types.TfPrompt{
-		Label: "Enter private_key:\n(Required) The certificate's PEM-formatted private key",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "subject_alternative_names",
+			Ex:    "",
+			Doc:   "(Optional) Set of domains that should be SANs in the issued certificate. To remove all elements of a previously configured list, set this value equal to an empty list ([]) or use the terraform taint command to trigger recreation.",
 		},
-	}
-	promptOrder = append(promptOrder, "private_key")
-
-	prompts["certificate_body"] = types.TfPrompt{
-		Label: "Enter certificate_body:\n(Required) The certificate's PEM-formatted public key",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "certificate_body")
-
-	prompts["certificate_chain"] = types.TfPrompt{
-		Label: "Enter certificate_chain:\n(Optional) The certificate's PEM-formatted chain",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "certificate_chain")
-
-	prompts["certificate_authority_arn"] = types.TfPrompt{
-		Label: "Enter certificate_authority_arn:\n(Required) ARN of an ACMPCA",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "certificate_authority_arn")
-
-	prompts["subject_alternative_names"] = types.TfPrompt{
-		Label: "Enter subject_alternative_names:\n(Optional) Set of domains that should be SANs \n" +
-			"in the issued certificate. To remove all elements of a previously \n" +
-			"configured list, set this value equal to an empty list ([]) \n" +
-			"or use the terraform taint command to trigger recreation.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "subject_alternative_names")
-
-	selects["validation_method"] = types.TfSelect{
-		Label: "Enter validation_method:\n(Required) Which method to use for validation. \n" +
-			"DNS or EMAIL are valid, NONE can be used for certificates that were \n" +
-			"imported into ACM and then into Terraform.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "validation_method",
+			Doc:   "(Required) Which method to use for validation. DNS or EMAIL are valid, NONE can be used for certificates that were imported into ACM and then into Terraform.",
 			Items: []string{"DNS", "EMAIL", "NONE"},
 		},
+		{
+			Field: "private_key",
+			Ex:    "",
+			Doc:   "(Required) The certificate's PEM-formatted private key",
+		},
+		{
+			Field: "certificate_body",
+			Ex:    "",
+			Doc:   "(Required) The certificate's PEM-formatted public key",
+		},
+		{
+			Field: "certificate_chain",
+			Ex:    "",
+			Doc:   "(Optional) The certificate's PEM-formatted chain",
+		},
+		{
+			Field: "certification_authority_arn",
+			Ex:    "",
+			Doc:   "(Required) ARN of an ACMPCA",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: utils.RCValidator,
+		},
 	}
-	selectOrder = append(selectOrder, "validation_method")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
-	color.Yellow("\nConfigure nested settings like lifecycle/tags etc [y/n]?\n\n", "text")
+	color.Yellow("\nConfigure nested settings like options [y/n]?\n\n", "text")
 
 	ynPrompt := promptui.Prompt{
 		Label: "",
@@ -104,62 +85,16 @@ func AWSACMCertificatePrompt() {
 		return
 	}
 
-	lifecyclePrompt := map[string]types.TfPrompt{}
-	var nestedOrder []string
-
-	color.Green("Enter lifecycle block:\n")
-
-	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
-		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
-			"that cannot be updated in-place due to remote API limitations, \n" +
-			"Terraform will instead destroy the existing object and then \n" +
-			"create a new replacement object with the new configured arguments.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
+	optionsSchema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "certificate_transparency_logging_preference",
+			Doc: "(Optional) Specifies whether certificate details should be added to a certificate transparency log. " +
+				"\nCheckout https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency",
+			Items: []string{"ENABLED", "DISABLED"},
 		},
 	}
-	nestedOrder = append(nestedOrder, "create_before_destroy")
-
-	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
-		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
-			"reject with an error any plan that would destroy the infrastructure \n" +
-			"object associated with the resource, as long as the argument \n" +
-			"remains present in the configuration.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "prevent_destroy")
-
-	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
-		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
-			"current settings of a real infrastructure object and plans to " +
-			"update the remote object to match configuration." +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "ignore_changes")
-	selectOrder = append(selectOrder, "lifecycle")
-
-	resourceBlock["lifecycle"] = builder.PSOrder(nestedOrder, nil, lifecyclePrompt, nil)
-
-	color.Green("\nEnter tags:\n")
-
-	tagsPrompt := map[string]types.TfPrompt{}
-	tagsPrompt["Environment"] = types.TfPrompt{
-		Label: "Enter Environment:\n",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "Environment")
-	selectOrder = append(selectOrder, "tags")
-
-	resourceBlock["tags"] = builder.PSOrder(nestedOrder[len(nestedOrder)-1:], nil, tagsPrompt, nil)
+	resourceBlock["options"] = builder.PSOrder(types.ProvidePS(optionsSchema))
 
 	builder.ResourceBuilder("aws_acm_certificate", blockName, resourceBlock)
 }
