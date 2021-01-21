@@ -2,11 +2,12 @@ package aws
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fatih/color"
 	boilerplate2 "github.com/g14a/tf/boilerplate"
 	"github.com/g14a/tf/terraform/aws/resourceprompts"
 	"github.com/manifoldco/promptui"
-	"strings"
 )
 
 func resources() []string {

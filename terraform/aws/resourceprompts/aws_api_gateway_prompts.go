@@ -2,6 +2,7 @@ package resourceprompts
 
 import (
 	"fmt"
+
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
 	"github.com/g14a/tf/utils"

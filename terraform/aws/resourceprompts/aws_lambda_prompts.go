@@ -2,6 +2,7 @@ package resourceprompts
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
@@ -484,8 +485,6 @@ func AWSLambdaFunctionEventInvokeConfigPrompt() {
 }
 
 func AWSLambdaLayerVersionPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -496,137 +495,61 @@ func AWSLambdaLayerVersionPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder []string
-
-	prompts["layer_name"] = types.TfPrompt{
-		Label: "Enter layer_name:\n(Required) A unique name for your Lambda Layer",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "layer_name",
+			Ex:    "",
+			Doc:   "(Required) A unique name for your Lambda Layer",
+		},
+		{
+			Field: "filename",
+			Ex:    "",
+			Doc:   "(Optional) The path to the function's deployment package within the local filesystem. If defined, The s3_-prefixed options cannot be used.",
+		},
+		{
+			Field: "s3_bucket",
+			Ex:    "",
+			Doc:   "(Optional) The S3 bucket location containing the function's deployment package. Conflicts with filename. This bucket must reside in the same AWS region where you are creating the Lambda function.",
+		},
+		{
+			Field: "s3_key",
+			Ex:    "",
+			Doc:   "(Optional) The S3 key of an object containing the function's deployment package. Conflicts with filename",
+		},
+		{
+			Field: "s3_object_version",
+			Ex:    "",
+			Doc:   "(Optional) The object version containing the function's deployment package. Conflicts with filename",
+		},
+		{
+			Field: "compatible_runtimes",
+			Ex:    "",
+			Doc:   "(Optional) A list of Runtimes this layer is compatible with. Up to 5 runtimes can be specified.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Description of what your Lambda Layer does.",
+		},
+		{
+			Field: "license_info",
+			Ex:    "",
+			Doc: "(Optional) License info for your Lambda Layer." +
+				"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/API_PublishLayerVersion.html#SSS-PublishLayerVersion-request-LicenseInfo",
+		},
+		{
+			Field: "source_code_hash",
+			Ex:    "",
+			Doc:   "(Optional) Used to trigger updates. Must be set to a base64-encoded SHA256 hash of the package file specified with either filename or s3_key. The usual way to set this is ${filebase64sha256(\"file.zip\")} (Terraform 0.11.12 or later) or ${base64sha256(file(\"file.zip\"))} (Terraform 0.11.11 and earlier), where \"file.zip\" is the local filename of the lambda layer source archive.",
 		},
 	}
-	promptOrder = append(promptOrder, "layer_name")
 
-	prompts["filename"] = types.TfPrompt{
-		Label: "Enter filename:\n(Optional) The path to the function's deployment package within the local filesystem. " +
-			"\nIf defined, The s3_-prefixed options cannot be used.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "filename")
-
-	prompts["s3_bucket"] = types.TfPrompt{
-		Label: "Enter s3_bucket:\n(Optional) The S3 bucket location containing the function's deployment package. " +
-			"\nConflicts with filename. This bucket must reside in the same AWS region where you are " +
-			"\ncreating the Lambda function.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_bucket")
-
-	prompts["s3_key"] = types.TfPrompt{
-		Label: "Enter s3_key:\n(Optional) The S3 key of an object containing the function's deployment package. Conflicts with filename",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_key")
-
-	prompts["s3_object_version"] = types.TfPrompt{
-		Label: "Enter s3_object_version:\n(Optional) The object version containing the function's deployment package. Conflicts with filename",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "s3_object_version")
-
-	prompts["compatible_runtimes"] = types.TfPrompt{
-		Label: "Enter compatible_runtimes: e.g. [\"nodejs12.x\"]\n(Optional) A list of Runtimes this layer is compatible with. Up to 5 runtimes can be specified.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "compatible_runtimes")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Description of what your Lambda Layer does.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["license_info"] = types.TfPrompt{
-		Label: "Enter license_info:\n(Optional) License info for your Lambda Layer. " +
-			"\nCheckout https://docs.aws.amazon.com/lambda/latest/dg/API_PublishLayerVersion.html#SSS-PublishLayerVersion-request-LicenseInfo",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "license_info")
-
-	prompts["source_code_hash"] = types.TfPrompt{
-		Label: "Enter source_code_hash:\n(Optional) Used to trigger updates. Must be set to a base64-encoded SHA256 hash of the package " +
-			"\nfile specified with either filename or s3_key. The usual way to set this is ${filebase64sha256(\"file.zip\")}",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_code_hash")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
-
-	lifecyclePrompt := map[string]types.TfPrompt{}
-	var nestedSelectOrder []string
-
-	color.Green("Enter lifecycle block:\nThe lifecycle block supports" +
-		"\n1.create_before_destroy\n2.prevent_destroy\n3.ignore_changes\n")
-
-	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
-		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
-			"that cannot be updated in-place due to remote API limitations, \n" +
-			"Terraform will instead destroy the existing object and then \n" +
-			"create a new replacement object with the new configured arguments.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	nestedSelectOrder = append(nestedSelectOrder, "create_before_destroy")
-
-	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
-		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
-			"reject with an error any plan that would destroy the infrastructure \n" +
-			"object associated with the resource, as long as the argument \n" +
-			"remains present in the configuration.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.BoolValidator,
-		},
-	}
-	nestedSelectOrder = append(nestedSelectOrder, "prevent_destroy")
-
-	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
-		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
-			"current settings of a real infrastructure object and plans to " +
-			"update the remote object to match configuration." +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedSelectOrder = append(nestedSelectOrder, "ignore_changes")
-
-	resourceBlock["lifecycle"] = builder.PSOrder(nestedSelectOrder, nil, lifecyclePrompt, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_lambda_layer_version", blockName, resourceBlock)
 }
 
 func AWSLambdaPermissionPrompt() {
-	prompts := map[string]types.TfPrompt{}
 
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
@@ -638,97 +561,68 @@ func AWSLambdaPermissionPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder []string
-
-	prompts["action"] = types.TfPrompt{
-		Label: "Enter action:\n(Required) The AWS Lambda action you want to allow in this statement. (e.g. lambda:InvokeFunction)",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "action",
+			Ex:    "lambda:InvokeFunction",
+			Doc:   "(Required) The AWS Lambda action you want to allow in this statement.",
+		},
+		{
+			Field: "event_source_token",
+			Ex:    "",
+			Doc:   "(Optional) The Event Source Token to validate.",
+		},
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) Name of the Lambda function whose resource policy you are updating",
+		},
+		{
+			Field: "principal",
+			Ex:    "s3.amazonaws.com",
+			Doc: "(Required) The principal who is getting this permission. " +
+				"\nAny valid AWS service principal such as events.amazonaws.com or sns.amazonaws.com",
+		},
+		{
+			Field: "qualifier",
+			Ex:    "arn:aws:lambda:aws-region:acct-id:function:function-name:2",
+			Doc: "(Optional) Query parameter to specify function version or alias name. " +
+				"\nThe permission will then apply to the specific qualified ARN.",
+		},
+		{
+			Field: "source_account",
+			Ex:    "",
+			Doc: "(Optional) This parameter is used for S3 and SES. " +
+				"\nThe AWS account ID (without a hyphen) of the source owner.",
+		},
+		{
+			Field: "source_arn",
+			Ex:    "",
+			Doc: "(Optional) When the principal is an AWS service, the ARN of the specific resource within that service to grant permission to. " +
+				"\nWithout this, any resource from principal will be granted permission – even if that resource is from another account. " +
+				"\nFor S3, this should be the ARN of the S3 Bucket. For CloudWatch Events, this should be the ARN of the CloudWatch Events Rule. " +
+				"\nFor API Gateway, this should be the ARN of the API, as described here.",
+		},
+		{
+			Field: "statement_id",
+			Ex:    "",
+			Doc:   "(Optional) A unique statement identifier. By default generated by Terraform.",
+		},
+		{
+			Field: "statement_id_prefix",
+			Ex:    "",
+			Doc: "(Optional) A statement identifier prefix. Terraform will generate a unique suffix. " +
+				"\nConflicts with statement_id",
 		},
 	}
-	promptOrder = append(promptOrder, "action")
 
-	prompts["event_source_token"] = types.TfPrompt{
-		Label: "Enter event_source_token:\n(Optional) The Event Source Token to validate. Used with Alexa Skills.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "event_source_token")
-
-	prompts["function_name"] = types.TfPrompt{
-		Label: "Enter function_name:\n(Required) Name of the Lambda function whose resource policy you are updating",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "function_name")
-
-	prompts["principal"] = types.TfPrompt{
-		Label: "Enter principal:\n(Required) The principal who is getting this permission. e.g. s3.amazonaws.com, an AWS account ID, " +
-			"\nor any valid AWS service principal such as events.amazonaws.com or sns.amazonaws.com",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "principal")
-
-	prompts["qualifier"] = types.TfPrompt{
-		Label: "Enter qualifier:\n(Optional) Query parameter to specify function version or alias name. " +
-			"\nThe permission will then apply to the specific qualified ARN. " +
-			"\ne.g. arn:aws:lambda:aws-region:acct-id:function:function-name:2",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "qualifier")
-
-	prompts["source_account"] = types.TfPrompt{
-		Label: "Enter source_account:\n(Optional) This parameter is used for S3 and SES. The AWS account ID (without a hyphen) of the source owner.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_account")
-
-	prompts["source_arn"] = types.TfPrompt{
-		Label: "Enter source_arn:\n(Optional) When the principal is an AWS service, the ARN of the specific resource " +
-			"\nwithin that service to grant permission to. Without this, any resource from principal will be granted " +
-			"\npermission – even if that resource is from another account. For S3, this should be the ARN " +
-			"\nof the S3 Bucket. For CloudWatch Events, this should be the ARN of the CloudWatch Events Rule. " +
-			"\nFor API Gateway, this should be the ARN of the API, as described in" +
-			"\nhttps://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_arn")
-
-	prompts["statement_id"] = types.TfPrompt{
-		Label: "Enter statement_id:\n(Optional) A unique statement identifier. By default generated by Terraform.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "statement_id")
-
-	prompts["statement_id_prefix"] = types.TfPrompt{
-		Label: "Enter statement_id_prefix:\n(Optional) A statement identifier prefix. Terraform will generate a unique suffix. Conflicts with statement_id.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "statement_id_prefix")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_lambda_permission", blockName, resourceBlock)
 
 }
 
 func AWSLambdaProvisionedConcurrencyConfigPrompt() {
-	prompts := map[string]types.TfPrompt{}
-
 	color.Green("\nEnter block name(Required) e.g. web\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -739,34 +633,57 @@ func AWSLambdaProvisionedConcurrencyConfigPrompt() {
 		fmt.Println(err)
 	}
 
-	var promptOrder []string
-
-	prompts["function_name"] = types.TfPrompt{
-		Label: "Enter function_name:\n(Required) Name or Amazon Resource Name (ARN) of the Lambda Function.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "function_name",
+			Ex:    "",
+			Doc:   "(Required) Name or Amazon Resource Name (ARN) of the Lambda Function.",
+		},
+		{
+			Field:     "provisioned_concurrent_executions",
+			Ex:        "",
+			Doc:       "(Required) Amount of capacity to allocate. Must be greater than or equal to 1",
+			Validator: utils.IntValidator,
+		},
+		{
+			Field: "qualifier",
+			Ex:    "",
+			Doc:   "(Required) Lambda Function version or Lambda Alias name.",
 		},
 	}
-	promptOrder = append(promptOrder, "function_name")
 
-	prompts["provisioned_concurrent_executions"] = types.TfPrompt{
-		Label: "Enter provisioned_concurrent_executions:\n(Required) Amount of capacity to allocate. Must be greater than or equal to 1.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: utils.IntValidator,
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like timeouts [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_lambda_provisioned_concurrency_config", blockName, resourceBlock)
+		return
+	}
+
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 30m | 2h",
+			Doc:   "(Default 15 minutes) How long to wait for the Lambda Provisioned Concurrency Config to be ready on creation.",
+		},
+		{
+			Field: "update",
+			Ex:    "60s | 30m | 2h",
+			Doc:   "(Default 15 minutes) How long to wait for the Lambda Provisioned Concurrency Config to be ready on update.",
 		},
 	}
-	promptOrder = append(promptOrder, "provisioned_concurrent_executions")
 
-	prompts["qualifier"] = types.TfPrompt{
-		Label: "Enter qualifier:\n(Required) Lambda Function version or Lambda Alias name.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "qualifier")
+	resourceBlock["timeouts"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
 
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
 	builder.ResourceBuilder("aws_lambda_provisioned_concurrency_config", blockName, resourceBlock)
-
 }

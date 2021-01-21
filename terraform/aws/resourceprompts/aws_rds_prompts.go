@@ -2,6 +2,7 @@ package resourceprompts
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"

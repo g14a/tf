@@ -1,8 +1,9 @@
 package google
 
 import (
-	"github.com/manifoldco/promptui"
 	"strings"
+
+	"github.com/manifoldco/promptui"
 )
 
 func GetRegions() []string {

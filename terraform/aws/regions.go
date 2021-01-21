@@ -1,9 +1,10 @@
 package aws
 
 import (
+	"strings"
+
 	"github.com/g14a/tf/types"
 	"github.com/manifoldco/promptui"
-	"strings"
 )
 
 func GetRegions() []string {
