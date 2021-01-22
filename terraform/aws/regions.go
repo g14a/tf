@@ -1,6 +1,7 @@
 package aws
 
 import (
+	"github.com/fatih/color"
 	"strings"
 
 	"github.com/g14a/tf/types"
@@ -18,8 +19,10 @@ func GetRegions() []string {
 
 func RegionPrompt() types.TfSelect {
 
+	color.Green("Select one of the AWS regions:")
+
 	return types.TfSelect{
-		Label: "Select one of the AWS regions",
+		Label: "",
 		Select: promptui.Select{
 			Label:             "",
 			Size:              20,

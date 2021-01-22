@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -143,6 +144,28 @@ func Ipv6CIDRBlockValidator(input string) error {
 
 	if !cidrBlocksEqual(input, ipnet.String()) {
 		return fmt.Errorf("%q is not a valid IPv6 CIDR block; did you mean %q?", input, ipnet)
+	}
+
+	return nil
+}
+
+func JSONValidator(input string) error {
+	var j interface{}
+
+	if input == "" {
+		return nil
+	}
+
+	s := input
+
+	err := json.Unmarshal([]byte(s), &j)
+	if err != nil {
+		return errors.New("invalid json")
+	}
+
+	_, err = json.Marshal(j)
+	if err != nil {
+		return errors.New("invalid json")
 	}
 
 	return nil

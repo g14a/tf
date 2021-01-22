@@ -19,7 +19,9 @@ type TfSelect struct {
 
 // Run runs the custom TfPrompt
 func (p TfPrompt) Run() (string, error) {
-	color.Green("\n"+p.Label+"\n\n", "text")
+	if p.Label != "" {
+		color.Green("\n"+p.Label+"\n\n", "text")
+	}
 
 	value, err := p.Prompt.Run()
 
@@ -28,7 +30,9 @@ func (p TfPrompt) Run() (string, error) {
 
 // Run runs the custom TfSelect
 func (s TfSelect) Run() (string, error) {
-	color.Green("\n"+s.Label+"\n\n", "text")
+	if s.Label != "" {
+		color.Green("\n"+s.Label+"\n\n", "text")
+	}
 
 	_, value, err := s.Select.Run()
 
@@ -63,12 +67,23 @@ func ProvidePS(schemas []Schema) ([]string, []string, map[string]TfPrompt, map[s
 			selects[v.Field] = s
 			selectOrder = append(selectOrder, v.Field)
 		default:
-			p := TfPrompt{
-				Label: "Enter " + v.Field + ": e.g. " + v.Ex + "\n" + v.Doc,
-				Prompt: promptui.Prompt{
-					Label:    "",
-					Validate: v.Validator,
-				},
+			var p TfPrompt
+			if v.Ex == "" {
+				p = TfPrompt{
+					Label: "Enter " + v.Field + "\n" + v.Doc,
+					Prompt: promptui.Prompt{
+						Label:    "",
+						Validate: v.Validator,
+					},
+				}
+			} else {
+				p = TfPrompt{
+					Label: "Enter " + v.Field + ": e.g. " + v.Ex + "\n" + v.Doc,
+					Prompt: promptui.Prompt{
+						Label:    "",
+						Validate: v.Validator,
+					},
+				}
 			}
 			prompts[v.Field] = p
 			promptOrder = append(promptOrder, v.Field)
