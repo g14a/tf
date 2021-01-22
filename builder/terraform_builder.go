@@ -20,7 +20,6 @@ func ProviderBuilder(provider string, providerBlock map[string]interface{}) {
 	if provider != "" {
 		providerInfo.WriteString("\nprovider \"" + provider + "\" {\n")
 		providerInfo = recursiveBuilder(&providerInfo, reflect.ValueOf(providerBlock))
-		providerInfo.WriteString("}\n")
 
 		_, err := file.TerraformFile.WriteString(providerInfo.String())
 		if err != nil {

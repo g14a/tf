@@ -45,7 +45,7 @@ func ProviderPrompt() {
 		},
 		{
 			Field:     "max_retries",
-			Ex:        "",
+			Ex:        "25",
 			Doc:       "(Optional) This is the maximum number of times an API call is retried, in the case where requests are being throttled or experiencing transient failures. The delay between the subsequent API calls increases exponentially. If omitted, the default value is 25",
 			Validator: validators.IntValidator,
 		},
@@ -124,12 +124,12 @@ func ProviderPrompt() {
 
 	color.Green("\nEnter assume_role:\nThe assume_role configuration block supports " +
 		"the following optional arguments:\n1.duration_seconds\n2.external_id\n" +
-		"3.policy\n4.policy_arns\n5.role_arn\n6.session_name\n7.tags(not supported by this cli yet)\n")
+		"3.policy\n4.policy_arns\n5.role_arn\n6.session_name\n\n")
 
 	assumeRoleSchema := []types.Schema{
 		{
 			Field:     "duration_seconds",
-			Ex:        "",
+			Ex:        "10",
 			Doc:       "(Optional) Number of seconds to restrict the assume role session duration.",
 			Validator: validators.IntValidator,
 		},
@@ -137,12 +137,6 @@ func ProviderPrompt() {
 			Field: "external_id",
 			Ex:    "",
 			Doc:   "(Optional) External identifier to use when assuming the role.",
-		},
-		{
-			Field:     "policy",
-			Ex:        "",
-			Doc:       "(Optional) IAM Policy JSON describing further restricting permissions for the IAM Role being assumed.",
-			Validator: validators.JSONValidator,
 		},
 		{
 			Field: "policy_arns",
