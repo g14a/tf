@@ -1,7 +1,9 @@
-package utils
+package validators
 
 import (
 	"errors"
+	"fmt"
+	"net"
 	"strconv"
 	"strings"
 )
@@ -82,4 +84,66 @@ func MinMaxIntValidator(min, max int64) func(input string) error {
 		}
 		return nil
 	}
+}
+
+func CIDRValidator(input string) error {
+	_, ipnet, err := net.ParseCIDR(input)
+	if err != nil {
+		return fmt.Errorf("%q is not a valid CIDR block: %w", input, err)
+	}
+
+	if !cidrBlocksEqual(input, ipnet.String()) {
+		return fmt.Errorf("%q is not a valid CIDR block; did you mean %q?", input, ipnet)
+	}
+
+	return nil
+}
+
+func cidrBlocksEqual(cidr1, cidr2 string) bool {
+	ip1, ipnet1, err := net.ParseCIDR(cidr1)
+	if err != nil {
+		return false
+	}
+	ip2, ipnet2, err := net.ParseCIDR(cidr2)
+	if err != nil {
+		return false
+	}
+
+	return ip2.String() == ip1.String() && ipnet2.String() == ipnet1.String()
+}
+
+func Ipv4CIDRBlockValidator(input string) error {
+	ip, ipnet, err := net.ParseCIDR(input)
+	if err != nil {
+		return fmt.Errorf("%q is not a valid CIDR block: %w", input, err)
+	}
+
+	ipv4 := ip.To4()
+	if ipv4 == nil {
+		return fmt.Errorf("%q is not a valid IPv4 CIDR block", input)
+	}
+
+	if !cidrBlocksEqual(input, ipnet.String()) {
+		return fmt.Errorf("%q is not a valid IPv4 CIDR block; did you mean %q?", input, ipnet)
+	}
+
+	return nil
+}
+
+func Ipv6CIDRBlockValidator(input string) error {
+	ip, ipnet, err := net.ParseCIDR(input)
+	if err != nil {
+		return fmt.Errorf("%q is not a valid CIDR block: %w", input, err)
+	}
+
+	ipv4 := ip.To4()
+	if ipv4 != nil {
+		return fmt.Errorf("%q is not a valid IPv6 CIDR block", input)
+	}
+
+	if !cidrBlocksEqual(input, ipnet.String()) {
+		return fmt.Errorf("%q is not a valid IPv6 CIDR block; did you mean %q?", input, ipnet)
+	}
+
+	return nil
 }

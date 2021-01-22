@@ -3,7 +3,7 @@ package resourceprompts
 import (
 	"fmt"
 
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
@@ -63,7 +63,7 @@ func AWSACMCertificatePrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -99,7 +99,7 @@ func AWSACMCertificatePrompt() {
 	builder.ResourceBuilder("aws_acm_certificate", blockName, resourceBlock)
 }
 
-func AWSACMPCACertificatePrompt() {
+func AWSACMPCACertificateAuthorityPrompt() {
 	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
 	blockPrompt := promptui.Prompt{
 		Label: "",
@@ -110,39 +110,34 @@ func AWSACMPCACertificatePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	selects := map[string]types.TfSelect{}
-	var promptOrder, selectOrder []string
-
-	prompts["permanent_deletion_time_in_days"] = types.TfPrompt{
-		Label: "Enter permanent_deletion_time_in_days\n(Optional) The number of days to make a CA restorable after \n" +
-			"it has been deleted, must be between 7 to 30 days, with default to 30 days.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field:     "enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether the certificate authority is enabled or disabled. Defaults to true",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Specifies a key-value map of user-defined tags that are attached to the certificate authority.",
+			Validator: validators.RCValidator,
+		},
+		{
+			Type:  "select",
+			Field: "type",
+			Doc:   "(Optional) The type of the certificate authority. Defaults to SUBORDINATE",
+			Items: []string{"SUBORDINATE", "ROOT"},
+		},
+		{
+			Field:     "permanent_deletion_time_in_days",
+			Ex:        "15",
+			Doc:       "(Optional) The number of days to make a CA restorable after it has been deleted, must be between 7 to 30 days, with default to 30 days.",
+			Validator: validators.MinMaxIntValidator(7, 30),
 		},
 	}
 
-	promptOrder = append(promptOrder, "permanent_deletion_time_in_days")
-
-	prompts["enabled"] = types.TfPrompt{
-		Label: "Enter enabled\n(Optional) Whether the certificate authority is enabled or disabled. Defaults to true",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-
-	promptOrder = append(promptOrder, "enabled")
-
-	selects["type"] = types.TfSelect{
-		Label: "Enter type:\n(Optional) The type of the certificate authority. Defaults to SUBORDINATE. Valid values: ROOT and SUBORDINATE",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"ROOT", "SUBORDINATE"},
-		},
-	}
-	selectOrder = append(selectOrder, "type")
-
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_acmpca_certificate_authority", blockName, resourceBlock)
 

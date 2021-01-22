@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -44,7 +44,7 @@ func AWSAMIPrompt() {
 		Label: "Enter ena_support(true/false):\n(Optional) Specifies whether enhanced networking with ENA is enabled. Defaults to false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ena_support")
@@ -69,7 +69,7 @@ func AWSAMIPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -156,7 +156,7 @@ func AWSAMIPrompt() {
 			"\nto support each created instance will be deleted once that instance is terminated.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete_on_termination")
@@ -167,7 +167,7 @@ func AWSAMIPrompt() {
 		Label: "Enter encrypted(true/false):\n(Optional) Boolean controlling whether the created EBS volumes will be encrypted. Can't be used with snapshot_id",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "encrypted")
@@ -325,7 +325,7 @@ func AWSAMICopyPrompt() {
 		Label: "Enter encrypted(true/false):\n(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "encrypted")
@@ -343,7 +343,7 @@ func AWSAMICopyPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -390,7 +390,7 @@ func AWSAMIFromInstancePrompt() {
 			"\nguarantees that no filesystem writes will be underway at the time of snapshot.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "snapshot_without_reboot")
@@ -399,7 +399,7 @@ func AWSAMIFromInstancePrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -582,7 +582,7 @@ func AWSEBSSnapshotPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the snapshot",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -643,7 +643,7 @@ func AWSEBSSnapshotCopyPrompt() {
 		Label: "Enter encrypted(true/false):\nWhether the snapshot is encrypted.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "encrypted")
@@ -720,7 +720,7 @@ func AWSEBSVolumePrompt() {
 			"\nMulti-Attach is supported exclusively on io1 volumes.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "multi_attach_enabled")
@@ -745,7 +745,7 @@ func AWSEBSVolumePrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -765,7 +765,7 @@ func AWSEBSVolumePrompt() {
 		Label: "Enter encrypted(true/false):\n(Optional) If true, the disk will be encrypted.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "encrypted")
@@ -774,7 +774,7 @@ func AWSEBSVolumePrompt() {
 		Label: "Enter size(true/false):\n(Optional) The size of the drive in GiBs",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "size")
@@ -859,7 +859,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter ebs_optimized(true/false):\n(Optional) Indicates whether the Capacity Reservation supports EBS-optimized instances.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ebs_optimized")
@@ -877,7 +877,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter ephemeral_storage(true/false):\n(Optional) Indicates whether the Capacity Reservation supports instances with temporary, block-level storage",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ephemeral_storage")
@@ -886,7 +886,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter instance_count:\n(Required) The number of instances for which to reserve capacity.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "instance_count")
@@ -903,7 +903,7 @@ func AWSEC2CapacityReservationPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1106,7 +1106,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 		Label: "Enter split_tunnel(true/false):\n(Optional) Indicates whether split-tunnel is enabled on VPN endpoint. Default value is false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "split_tunnel")
@@ -1115,7 +1115,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A mapping of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1186,7 +1186,7 @@ func AWSEC2ClientVPNEndpointPrompt() {
 		Label: "Enter enabled:(true/false):\n(Required) Indicates whether connection logging is enabled.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "enabled")
@@ -1332,7 +1332,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter terminate_instances(true/false):\n(Optional) Whether to terminate instances for an EC2 Fleet if it is deleted successfully. Defaults to false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "terminate_instances")
@@ -1341,7 +1341,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter terminate_instances_with_expiration(true/false):\n(Optional) Whether running instances should be terminated when the EC2 Fleet expires. Defaults to false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "terminate_instances_with_expiration")
@@ -1350,7 +1350,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Map of Fleet tags. To tag instances at launch, specify the tags in the Launch Template.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1359,7 +1359,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter replace_unhealthy_instances(true/false): (Optional) Whether EC2 Fleet should replace unhealthy instances. Defaults to false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "replace_unhealthy_instances")
@@ -1418,7 +1418,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter instance_pools_to_use_count:\n(Optional) Number of Spot pools across which to allocate your target Spot capacity. Valid only when Spot allocation_strategy is set to lowestPrice. Default: 1",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "instance_pools_to_use_count")
@@ -1479,7 +1479,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter total_target_capacity:\n(Required) The number of units to request, filled using default_target_capacity_type.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "total_target_capacity")
@@ -1488,7 +1488,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter on_demand_target_capacity:\n(Optional) The number of On-Demand units to request.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "on_demand_target_capacity")
@@ -1497,7 +1497,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter spot_target_capacity:\n(Optional) The number of Spot units to request.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "spot_target_capacity")
@@ -1566,7 +1566,7 @@ func AWSEC2FleetPrompt() {
 			"\nValid values are whole numbers starting at 0.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "priority")
@@ -1583,7 +1583,7 @@ func AWSEC2FleetPrompt() {
 		Label: "Enter weighted_capacity:\n(Optional) Number of units provided by the specified instance type.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "weighted_capacity")
@@ -1677,7 +1677,7 @@ func AWSEC2LocalGatewayRouteTableVPCAssociationPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1829,7 +1829,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 			"\nCheckout https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "protocol")
@@ -1839,7 +1839,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 			"\nMirror rule in a given direction. The rules are processed in ascending order by rule number.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "rule_number")
@@ -1885,7 +1885,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter from_port:\n(Optional) Starting port of the range",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "from_port")
@@ -1894,7 +1894,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter to_port:\n(Optional) Ending port of the range",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "to_port")
@@ -1911,7 +1911,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter from_port:\n(Optional) Starting port of the range",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 
@@ -1919,7 +1919,7 @@ func AWSEC2TrafficMirrorFilterRulePrompt() {
 		Label: "Enter to_port:\n(Optional) Ending port of the range",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 
@@ -1982,7 +1982,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 		Label: "Enter packet_length:\n(Required) ID of the traffic mirror target to be used",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "packet_length")
@@ -1992,7 +1992,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 			"\ninterface is used by multiple sessions. The first session with a matching filter is the one that mirrors the packets.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "session_number")
@@ -2010,7 +2010,7 @@ func AWSEC2TrafficMirrorSessionPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2066,7 +2066,7 @@ func AWSEC2TrafficMirrorTargetPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value map of resource tags.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2095,7 +2095,7 @@ func AWSEC2TransitGatewayPrompt() {
 			"\nThe range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs. Default value: 64512",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "amazon_side_asn")
@@ -2112,7 +2112,7 @@ func AWSEC2TransitGatewayPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2211,7 +2211,7 @@ func AWSEC2TransitGatewayPeeringAttachmentPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2247,7 +2247,7 @@ func AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Peering Attachment.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2291,7 +2291,7 @@ func AWSEC2TransitGatewayRoutePrompt() {
 		Label: "Enter blackhole(true/false):\n(Optional) Indicates whether to drop traffic that matches this route (default to false).",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "blackhole")
@@ -2335,7 +2335,7 @@ func AWSEC2TransitGatewayRouteTablePrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway Route Table.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2461,7 +2461,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nAvailability Zone for the VPC attachment for the lifetime of that flow.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "appliance_mode_support")
@@ -2470,7 +2470,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 		Label: "Enter dns_support(true/false):\n(Optional) Whether DNS support is enabled. Defaults to \"enable\"",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "dns_support")
@@ -2479,7 +2479,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 		Label: "Enter ipv6_support(true/false):\n(Optional) Whether IPv6 support is enabled. Defaults to \"disable\"",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ipv6_support")
@@ -2490,7 +2490,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nResource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "transit_gateway_default_route_table_association")
@@ -2501,7 +2501,7 @@ func AWSEC2TransitGatewayVPCAttachmentPrompt() {
 			"\nor perform drift detection with Resource Access Manager shared EC2 Transit Gateways. Defaults to \"true\"",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "transit_gateway_default_route_table_propagation")
@@ -2545,7 +2545,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 		Label: "Enter transit_gateway_default_route_table_association:\n(Optional) Boolean whether the VPC Attachment should be associated with the EC2 Transit Gateway association default route table.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "transit_gateway_default_route_table_association")
@@ -2554,7 +2554,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 		Label: "Enter transit_gateway_default_route_table_propagation:\n(Optional) Boolean whether the VPC Attachment should propagate routes with the EC2 Transit Gateway propagation default route table.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "transit_gateway_default_route_table_propagation")
@@ -2563,7 +2563,7 @@ func AWSEC2TransitGatewayVPCAttachmentAccepterPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) Key-value tags for the EC2 Transit Gateway VPC Attachment.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2599,7 +2599,7 @@ func AWSEIPPrompt() {
 		Label: "Enter vpc(true/false):\n(Optional) Boolean if the EIP is in a VPC or not.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "vpc")
@@ -2633,7 +2633,7 @@ func AWSEIPPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource. Tags can only be applied to EIPs in a VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -2700,7 +2700,7 @@ func AWSEIPAssociationPrompt() {
 		Label: "Enter allow_reassociation(true/false):\n(Optional, Boolean) Whether to allow an Elastic IP to be re-associated. Defaults to true in VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "allow_reassociation")
@@ -2783,7 +2783,7 @@ func AWSInstancePrompt() {
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#cpu-options-supported-instances-values for more info.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "cpu_core_count")
@@ -2794,7 +2794,7 @@ func AWSInstancePrompt() {
 			"Defaults to 2 if not set. See Optimizing CPU Options for more information.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "cpu_threads_per_core")
@@ -2807,7 +2807,7 @@ func AWSInstancePrompt() {
 			"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html of AWS User Guide for more information.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ebs_optimized")
@@ -2817,7 +2817,7 @@ func AWSInstancePrompt() {
 			"If true, the launched EC2 instance will have detailed monitoring enabled",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "monitoring")
@@ -2826,7 +2826,7 @@ func AWSInstancePrompt() {
 		Label: "Enter subnet_id:\n(Optional) The VPC Subnet ID to launch in.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.StringValidator,
+			Validate: validators.StringValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "subnet_id")
@@ -2835,7 +2835,7 @@ func AWSInstancePrompt() {
 		Label: "Enter private_ip:\n(Optional) Private IP address to associate with the instance in a VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.StringValidator,
+			Validate: validators.StringValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "private_ip")
@@ -2847,7 +2847,7 @@ func AWSInstancePrompt() {
 			"the instance profile according to the EC2 documentation, notably iam:PassRole",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.StringValidator,
+			Validate: validators.StringValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "iam_instance_profile")
@@ -2880,7 +2880,7 @@ func AWSInstancePrompt() {
 		Label: "Enter associate_public_ip_address(true/false):\n(Optional)Associate a public ip address with an instance in a VPC.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "associate_public_ip_address")
@@ -2889,7 +2889,7 @@ func AWSInstancePrompt() {
 		Label: "Enter hibernation(true/false).\n(Optional)If true, the launched EC2 instance will support hibernation.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "hibernation")
@@ -2954,7 +2954,7 @@ func AWSKeyPairPrompt() {
 		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) Key-value map of resource tags",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -3115,7 +3115,7 @@ func AWSSpotFleetRequestPrompt() {
 		Label: "Enter replace_unhealthy_instances(true/false):\n(Optional) Indicates whether Spot fleet should replace unhealthy instances. Defaults to \"false\"",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "replace_unhealthy_instances")
@@ -3134,7 +3134,7 @@ func AWSSpotFleetRequestPrompt() {
 			"\napplication workload, such as vCPUs, memory, or I/O.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "target_capacity")
@@ -3146,7 +3146,7 @@ func AWSSpotFleetRequestPrompt() {
 			"\nSpot capacity across the number of Spot pools that you specify.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "instance_pools_to_use_count")
@@ -3214,7 +3214,7 @@ func AWSSpotFleetRequestPrompt() {
 		Label: "Enter wait_for_fulfillment:\n(Optional; Default: false) If set, Terraform will wait for the Spot Request to be fulfilled, and will throw an error if the timeout of 10m is reached",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "wait_for_fulfillment")
@@ -3318,7 +3318,7 @@ func AWSSpotFleetRequestPrompt() {
 			"\nthe higher the priority. If no number is set, the launch template override has the lowest priority.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "priority")
@@ -3335,7 +3335,7 @@ func AWSSpotFleetRequestPrompt() {
 		Label: "Enter weighted_capacity:\n(Optional) The capacity added to the fleet by a fulfilled request.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "weighted_capacity")
@@ -3414,7 +3414,7 @@ func AWSSpotInstanceRequestPrompt() {
 		Label: "Enter wait_for_fulfillment(true/false):\n(Optional; Default: false) If set, Terraform will wait for the Spot Request to be fulfilled, and will throw an error if the timeout of 10m is reached.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "wait_for_fulfillment")
@@ -3436,7 +3436,7 @@ func AWSSpotInstanceRequestPrompt() {
 			"\nNote that you can't specify an Availability Zone group or a launch group if you specify a duration.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BlockDurationValidator,
+			Validate: validators.BlockDurationValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "block_duration_minutes")

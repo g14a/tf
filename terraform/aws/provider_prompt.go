@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -55,7 +55,7 @@ func ProviderPrompt() {
 			"increases exponentially. If omitted, the default value is 25.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "max_retries")
@@ -93,7 +93,7 @@ func ProviderPrompt() {
 			"requests(bool).If omitted, the default value is false",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "insecure")
@@ -103,7 +103,7 @@ func ProviderPrompt() {
 			"Useful for AWS API implementations that do not have STS available or implemented.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 
@@ -114,7 +114,7 @@ func ProviderPrompt() {
 			"Used by users that don't have ec2:DescribeAccountAttributes permissions.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "skip_get_ec2_platforms")
@@ -125,7 +125,7 @@ func ProviderPrompt() {
 			"API endpoint. Setting to true prevents Terraform from authenticating via the Metadata API.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "skip_metadata_api_check")
@@ -136,7 +136,7 @@ func ProviderPrompt() {
 			"have the IAM, STS API, or metadata API.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "skip_requesting_account_id")
@@ -147,7 +147,7 @@ func ProviderPrompt() {
 			"region names or to bypass the validation for regions \nthat aren't publicly available yet.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "skip_region_validation")
@@ -188,7 +188,7 @@ func ProviderPrompt() {
 		Label: "\nEnter duration_seconds:\n(Optional) Number of seconds to restrict the assume role session duration.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedOrder = append(nestedOrder, "duration_seconds")

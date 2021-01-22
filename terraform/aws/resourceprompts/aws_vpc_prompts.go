@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -26,7 +26,7 @@ func AWSCustomerGatewayPrompt() {
 			Field:     "bgp_asn",
 			Ex:        "10000",
 			Doc:       "(Required) The gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "ip_address",
@@ -44,7 +44,7 @@ func AWSCustomerGatewayPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) Tags to apply to the gateway.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -79,7 +79,7 @@ func AWSDefaultNetworkACLPrompt() {
 			Field:     "tags",
 			Ex:        "",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -109,19 +109,19 @@ func AWSDefaultNetworkACLPrompt() {
 			Field:     "from_port",
 			Ex:        "",
 			Doc:       "(Required) The from port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "",
 			Doc:       "(Required) The to port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "rule_no",
 			Ex:        "",
 			Doc:       "(Required) The rule number. Used for ordering.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "action",
@@ -147,13 +147,13 @@ func AWSDefaultNetworkACLPrompt() {
 			Field:     "icmp_type",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type to be used. Default 0.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "icmp_code",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type code to be used. Default 0.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -188,7 +188,7 @@ func AWSDefaultRouteTablePrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Field: "propagating_vgws",
@@ -295,38 +295,38 @@ func AWSVPCPrompt() {
 			Field:     "enable_dns_support",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults true.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "enable_dns_hostnames",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "enable_classiclink",
 			Ex:    "(true/false)",
 			Doc: "(Optional) A boolean flag to enable/disable ClassicLink for the VPC. Only valid in regions and accounts that support EC2 Classic. Defaults false." +
 				"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "enable_classiclink_dns_support",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) A boolean flag to enable/disable ClassicLink DNS Support for the VPC. Only valid in regions and accounts that support EC2 Classic.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "assign_generated_ipv6_cidr_block",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Type:  "select",
@@ -362,7 +362,7 @@ func AWSDefaultSecurityGroupPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -402,7 +402,7 @@ func AWSDefaultSecurityGroupPrompt() {
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "ipv6_cidr_blocks",
@@ -418,7 +418,7 @@ func AWSDefaultSecurityGroupPrompt() {
 			Field:     "protocol",
 			Ex:        "-1",
 			Doc:       "(Required) The protocol. If you select a protocol of \"-1\" (semantically equivalent to \"all\", which is not a valid value here), you must specify a \"from_port\" and \"to_port\" equal to 0. If not icmp, icmpv6, tcp, udp, or \"-1\" use the protocol number",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "security_groups",
@@ -429,13 +429,13 @@ func AWSDefaultSecurityGroupPrompt() {
 			Field:     "self",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Required) The end range port (or ICMP code if protocol is \"icmp\").",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -475,7 +475,7 @@ func AWSDefaultSubnetPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -500,13 +500,13 @@ func AWSDefaultVPCPrompt() {
 			Field:     "enable_dns_support",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults true.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "enable_dns_hostnames",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "enable_classiclink",
@@ -514,13 +514,13 @@ func AWSDefaultVPCPrompt() {
 			Doc: "(Optional) A boolean flag to enable/disable ClassicLink for the VPC. Only valid in regions " +
 				"\nand accounts that support EC2 Classic. Defaults false." +
 				"\nCheckout https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-classiclink.html",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -557,7 +557,7 @@ func AWSDefaultVPCDHCPOptionsPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -597,13 +597,13 @@ func AWSEC2ManagedPrefixListPrompt() {
 			Field:     "max_retries",
 			Ex:        "",
 			Doc:       "(Required, Forces new resource) The address family (IPv4 or IPv6) of this prefix list.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to this resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -664,7 +664,7 @@ func AWSEgressOnlyInternetGatewayPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -735,7 +735,7 @@ func AWSFlowLogPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) Key-value map of resource tags",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -765,7 +765,7 @@ func AWSInternetGatewayPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -829,7 +829,7 @@ func AWSNatGatewayPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -896,19 +896,19 @@ func AWSNetworkACLPrompt() {
 			Field:     "from_port",
 			Ex:        "",
 			Doc:       "(Required) The from port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "",
 			Doc:       "(Required) The to port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "rule_no",
 			Ex:        "",
 			Doc:       "(Required) The rule number. Used for ordering.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "action",
@@ -934,13 +934,13 @@ func AWSNetworkACLPrompt() {
 			Field:     "icmp_type",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type to be used. Default 0.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "icmp_code",
 			Ex:        "",
 			Doc:       "(Optional) The ICMP type code to be used. Default 0.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -975,19 +975,19 @@ func AWSNetworkACLRulePrompt() {
 			Field:     "role_number",
 			Ex:        "",
 			Doc:       "(Required) The rule number for the entry (for example, 100). ACL entries are processed in ascending order by rule number.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "egress",
 			Ex:        "(true/false)",
 			Doc:       "(Optional, bool) Indicates whether this is an egress rule (rule is applied to traffic leaving the subnet). Default false",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "protocol",
 			Ex:        "10",
 			Doc:       "(Required) The protocol. A value of -1 means all protocols.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "cidr_block",
@@ -1003,25 +1003,25 @@ func AWSNetworkACLRulePrompt() {
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Optional) The from port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Optional) The to port to match.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "icmp_type",
 			Ex:        "-1",
 			Doc:       "(Optional) ICMP protocol: The ICMP type. Required if specifying ICMP for the protocol. e.g. -1",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field:     "icmp_code",
 			Ex:        "-1",
 			Doc:       "(Optional) ICMP protocol: The ICMP code. Required if specifying ICMP for the protocol. e.g. -1",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "rule_action",
@@ -1068,7 +1068,7 @@ func AWSNetworkInterfacePrompt() {
 			Doc: "(Optional) Number of secondary private IPs to assign to the ENI. " +
 				"\nThe total number nof private IPs will be 1 + private_ips_count, " +
 				"\nas a primary private IP will be assiged to an ENI by default.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "ipv6_addresses",
@@ -1081,7 +1081,7 @@ func AWSNetworkInterfacePrompt() {
 			Ex:    "10",
 			Doc: "(Optional) One or more specific IPv6 addresses from the IPv6 CIDR block range of your subnet. " +
 				"\nYou can't use this option if you're specifying ipv6_address_count",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "security_groups",
@@ -1097,7 +1097,7 @@ func AWSNetworkInterfacePrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -1132,7 +1132,7 @@ func AWSNetworkInterfacePrompt() {
 			Field:     "device_index",
 			Ex:        "1",
 			Doc:       "(Required) Integer to define the devices index.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -1167,7 +1167,7 @@ func AWSNetworkInterfaceAttachmentPrompt() {
 			Field:     "device_index",
 			Ex:        "1",
 			Doc:       "(Required) Network interface index.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -1305,7 +1305,7 @@ func AWSRouteTablePrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Field: "propagating_vgws",
@@ -1471,7 +1471,7 @@ func AWSSecurityGroupPrompt() {
 				"\nto security groups used with the service, and those rules may contain a cyclic " +
 				"\ndependency that prevent the security groups from being destroyed without removing " +
 				"\nthe dependency first. Default false",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "vpc_id",
@@ -1482,7 +1482,7 @@ func AWSSecurityGroupPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -1527,7 +1527,7 @@ func AWSSecurityGroupPrompt() {
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\")",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "protocol",
@@ -1539,7 +1539,7 @@ func AWSSecurityGroupPrompt() {
 				"\nthe AWS API requirement when using with Terraform 0.12.x and above, please make sure " +
 				"\nthat the value of the protocol is specified as lowercase when using with older " +
 				"\nversion of Terraform to avoid an issue during upgrade.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "security_groups",
@@ -1550,13 +1550,13 @@ func AWSSecurityGroupPrompt() {
 			Field:     "self",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) If true, the security group itself will be added as a source to this ingress/egress rule.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Required) The end range port (or ICMP code if protocol is \"icmp\").",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "description",
@@ -1606,7 +1606,7 @@ func AWSSecurityGroupRulePrompt() {
 			Field:     "from_port",
 			Ex:        "443",
 			Doc:       "(Required) The start port (or ICMP type number if protocol is \"icmp\" or \"icmpv6\").",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "protocol",
@@ -1630,13 +1630,13 @@ func AWSSecurityGroupRulePrompt() {
 			Ex:    "(true/false)",
 			Doc: "(Optional) If true, the security group itself will be added as a source to this ingress rule. " +
 				"\nCannot be specified with source_security_group_id",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "to_port",
 			Ex:        "443",
 			Doc:       "(Required) The end port (or ICMP code if protocol is \"icmp\").",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "description",
@@ -1693,7 +1693,7 @@ func AWSSubnetPrompt() {
 			Ex: "(true/false)",
 			Doc: "(Optional) Specify true to indicate that instances launched " +
 				"\ninto the subnet should be assigned a public IP address. Default is false",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "outpost_arn",
@@ -1705,7 +1705,7 @@ func AWSSubnetPrompt() {
 			Ex:    "(true/false)",
 			Doc: "(Optional) Specify true to indicate that network interfaces created " +
 				"\nin the specified subnet should be assigned an IPv6 address. Default is false",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "vpc_id",
@@ -1716,7 +1716,7 @@ func AWSSubnetPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k1=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -1766,7 +1766,7 @@ func AWSVPCDHCPOptionsPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -1830,7 +1830,7 @@ func AWSVPCEndpointPrompt() {
 			Field:     "auto_accept",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Accept the VPC endpoint (the VPC endpoint and service need to be in the same AWS account).",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "policy",
@@ -1846,7 +1846,7 @@ func AWSVPCEndpointPrompt() {
 			Doc: "(Optional) AWS services and AWS Marketplace partner services only) Whether " +
 				"\nor not to associate a private hosted zone with the specified VPC. " +
 				"\nApplicable for endpoints of type Interface. Defaults to false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "route_table_ids",
@@ -1869,7 +1869,7 @@ func AWSVPCEndpointPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Type:  "select",
@@ -1990,7 +1990,7 @@ func AWSVPCEndpointServicePrompt() {
 			Field:     "acceptance_required",
 			Ex:        "(true/false)",
 			Doc:       "(Required) Whether or not VPC endpoint connection requests to the service must be accepted by the service owner - true or false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "allowed_principals",
@@ -2011,7 +2011,7 @@ func AWSVPCEndpointServicePrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Field: "private_dns_name",
@@ -2188,7 +2188,7 @@ func AWSVPCPeeringConnectionPrompt() {
 			Field:     "auto_accept",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Accept the peering (both VPCs need to be in the same AWS account).",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "peer_region",
@@ -2235,7 +2235,7 @@ func AWSVPCPeeringConnectionPrompt() {
 			Doc: "(Optional) Allow a local VPC to resolve public DNS hostnames to private IP " +
 				"\naddresses when queried from instances in the peer VPC. This is not supported " +
 				"\nfor inter-region VPC peering.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "allow_classic_link_to_remote_vpc",
@@ -2243,7 +2243,7 @@ func AWSVPCPeeringConnectionPrompt() {
 			Doc: "(Optional) Allow a local linked EC2-Classic instance to communicate with " +
 				"\ninstances in a peer VPC. This enables an outbound communication from " +
 				"\nthe local ClassicLink connection to the remote VPC.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "allow_vpc_to_remote_classic_link",
@@ -2251,7 +2251,7 @@ func AWSVPCPeeringConnectionPrompt() {
 			Doc: "(Optional) Allow a local VPC to communicate with a linked EC2-Classic instance in a " +
 				"\bpeer VPC. This enables an outbound communication from the local VPC to the remote " +
 				"\nClassicLink connection.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -2311,13 +2311,13 @@ func AWSVPCPeeringConnectionAccepterPrompt() {
 			Field:     "auto_accept",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Whether or not to accept the peering request. Defaults to false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -2375,7 +2375,7 @@ func AWSVPCPeeringConnectionOptionsPrompt() {
 			Ex:    "(true/false)",
 			Doc: "(Optional) Allow a local VPC to resolve public DNS hostnames to " +
 				"\nprivate IP addresses when queried from instances in the peer VPC.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "allow_classic_link_to_remote_vpc",
@@ -2384,7 +2384,7 @@ func AWSVPCPeeringConnectionOptionsPrompt() {
 				"\nwith instances in a peer VPC. This enables an outbound communication " +
 				"\nfrom the local ClassicLink connection to the remote VPC. This option " +
 				"\nis not supported for inter-region VPC peering.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "allow_vpc_to_remote_classic_link",
@@ -2393,7 +2393,7 @@ func AWSVPCPeeringConnectionOptionsPrompt() {
 				"\ninstance in a peer VPC. This enables an outbound communication from " +
 				"\nthe local VPC to the remote ClassicLink connection. This option is not " +
 				"\nsupported for inter-region VPC peering.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -2507,7 +2507,7 @@ func AWSVPNGatewayPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the resource.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 		{
 			Field: "amazon_side_asn",

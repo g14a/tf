@@ -5,7 +5,7 @@ import (
 
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
@@ -63,7 +63,7 @@ func AWSAPIGatewayApiKeyPrompt() {
 			Field:     "enabled",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Specifies whether the API key can be used by callers. Defaults to true.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "value",
@@ -131,7 +131,7 @@ func AWSAPIGatewayAuthorizerPrompt() {
 			Field:     "authorizer_result_ttl_in_seconds",
 			Ex:        "300",
 			Doc:       "(Optional) The TTL of cached authorizer results in seconds. Defaults to 300",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "identity_validation_expression",

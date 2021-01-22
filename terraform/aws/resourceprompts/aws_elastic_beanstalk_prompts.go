@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -45,7 +45,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		Label: "Enter tags: e.g.k1=v1,k2=v2:\n(Optional) Key-value map of tags for the Elastic Beanstalk Application.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 
@@ -72,7 +72,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		Label: "Enter max_count:\n(Optional) The maximum number of application versions to retain ('max_age_in_days' and 'max_count' cannot be enabled simultaneously.).",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "max_count")
@@ -81,7 +81,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		Label: "Enter max_age_in_days:\n(Optional) The number of days to retain an application version ('max_age_in_days' and 'max_count' cannot be enabled simultaneously.).",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "max_age_in_days")
@@ -90,7 +90,7 @@ func AWSElasticBeanstalkApplicationPrompt() {
 		Label: "Enter delete_source_from_s3:(true/false)\n(Optional) Set to true to delete a version's source bundle from S3 when the application version is deleted.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "delete_source_from_s3")
@@ -161,7 +161,7 @@ func AWSElasticBeanstalkApplicationVersionPrompt() {
 			"\nwhen it may be in use by multiple Elastic Beanstalk Environments.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "force_delete")
@@ -170,7 +170,7 @@ func AWSElasticBeanstalkApplicationVersionPrompt() {
 		Label: "Enter tags: e.g.k1=v1,k2=v2\nKey-value map of tags for the Elastic Beanstalk Application Version.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")

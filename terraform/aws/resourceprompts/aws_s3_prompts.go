@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -72,7 +72,7 @@ func AWSS3AccessPointPrompt() {
 				"PUT Bucket acl and PUT Object acl calls fail if the specified ACL is public.\n    " +
 				"PUT Object calls fail if the request includes a public ACL.\n    " +
 				"PUT Bucket calls fail if the request includes a public ACL.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "block_public_policy",
@@ -81,7 +81,7 @@ func AWSS3AccessPointPrompt() {
 				"\nDefaults to true. Enabling this setting does not affect existing bucket policies. " +
 				"\nWhen set to true causes Amazon S3 to:\n\n    " +
 				"Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "ignore_public_acls",
@@ -90,7 +90,7 @@ func AWSS3AccessPointPrompt() {
 				"\nDefaults to true. Enabling this setting does not affect the persistence of any existing " +
 				"\nACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:\n\n    " +
 				"Ignore all public ACLs on buckets in this account and any objects that they contain.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "restrict_public_buckets",
@@ -100,7 +100,7 @@ func AWSS3AccessPointPrompt() {
 				"\nbucket policies, except that public and cross-account access within any public bucket policy, " +
 				"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    " +
 				"Only the bucket owner and AWS Services can access buckets with public policies.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -144,7 +144,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 				"\nWhen set to true causes the following behavior:\n\n    " +
 				"PUT Bucket acl and PUT Object acl calls will fail if the specified ACL allows public access.\n    " +
 				"PUT Object calls will fail if the request includes an object ACL.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "block_public_policy",
@@ -153,7 +153,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 				"\nDefaults to true. Enabling this setting does not affect existing bucket policies. " +
 				"\nWhen set to true causes Amazon S3 to:\n\n    " +
 				"Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "ignore_public_acls",
@@ -162,7 +162,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 				"\nDefaults to true. Enabling this setting does not affect the persistence of any existing " +
 				"\nACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:\n\n    " +
 				"Ignore all public ACLs on buckets in this account and any objects that they contain.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "restrict_public_buckets",
@@ -172,7 +172,7 @@ func AWSS3AccountPublicAccessBlockPrompt() {
 				"\nbucket policies, except that public and cross-account access within any public bucket policy, " +
 				"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    " +
 				"Only the bucket owner and AWS Services can access buckets with public policies.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -214,7 +214,7 @@ func AWSS3BucketPrompt() {
 			Field:     "force_destroy",
 			Ex:        "(true/false)",
 			Doc:       "(Optional, Default:false) A boolean that indicates all objects (including any locked objects) should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Type:  "select",
@@ -270,7 +270,7 @@ func AWSS3BucketPrompt() {
 			Field:     "max_age_seconds",
 			Ex:        "30",
 			Doc:       "(Optional) Specifies time in seconds that browser can cache the response for a preflight request.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 	}
 
@@ -309,13 +309,13 @@ func AWSS3BucketPrompt() {
 			Field:     "enabled",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Enable versioning. Once you version-enable a bucket, it can never return to an unversioned state. You can, however, suspend versioning on that bucket.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field:     "mfa_delete",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Enable MFA delete for either Change the versioning state of your bucket or Permanently delete an object version. Default is false. This cannot be used to toggle this setting but is available to allow managed buckets to reflect the state in AWS",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 	}
 
@@ -766,7 +766,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter metadata: e.g.k1=v1,k2=v2\n(Optional) A map of keys/values to provision metadata (will be automatically prefixed by x-amz-meta-).",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "metadata")
@@ -775,7 +775,7 @@ func AWSS3BucketObjectPrompt() {
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the object.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -785,7 +785,7 @@ func AWSS3BucketObjectPrompt() {
 			"\nDefault is false. This value should be set to true only if the bucket has S3 object lock enabled.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "force_destroy")
@@ -795,7 +795,7 @@ func AWSS3BucketObjectPrompt() {
 			"\nCheckout https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock-overview.html#object-lock-retention-periods",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "object_lock_retain_until_date")
@@ -923,7 +923,7 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 			"PUT Bucket calls fail if the request includes a public ACL.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "block_public_acls")
@@ -934,7 +934,7 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 			"\nWhen set to true causes Amazon S3 to:\n\n    Reject calls to PUT Bucket policy if the specified bucket policy allows public access.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "block_public_policy")
@@ -945,7 +945,7 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 			"\nexisting ACLs and doesn't prevent new public ACLs from being set. When set to true causes Amazon S3 to:\n\n    Ignore all public ACLs on buckets in this account and any objects that they contain.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "ignore_public_acls")
@@ -957,7 +957,7 @@ func AWSS3BucketPublicAccessBlockPrompt() {
 			"\nincluding non-public delegation to specific accounts, is blocked. When set to true:\n\n    Only the bucket owner and AWS Services can access buckets with public policies.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "restrict_public_buckets")

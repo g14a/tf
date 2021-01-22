@@ -323,6 +323,13 @@ func resources() []string {
 		"aws_spot_datafeed_subscription",
 		"aws_spot_fleet_request",
 		"aws_spot_instance_request",
+		"aws_route53_delegation_set",
+		"aws_route53_health_check",
+		"aws_route53_query_log",
+		"aws_route53_record",
+		"aws_route53_vpc_association_authorization",
+		"aws_route53_zone",
+		"aws_route53_zone_association",
 	}
 }
 
@@ -573,7 +580,7 @@ func ResourcePrompt(resource string, boilerplate bool) {
 	case "aws_acm_certificate":
 		resourceprompts.AWSACMCertificatePrompt()
 	case "aws_acmpca_certificate_authority":
-		resourceprompts.AWSACMPCACertificatePrompt()
+		resourceprompts.AWSACMPCACertificateAuthorityPrompt()
 	case "aws_api_gateway_account":
 		resourceprompts.AWSAPIGatewayAccountPrompt()
 	case "aws_api_gateway_api_key":
@@ -616,6 +623,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSElasticBeanstalkApplicationVersionPrompt()
 	case "aws_elastic_beanstalk_configuration_template":
 		resourceprompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
+	case "aws_route53_delegation_set":
+		resourceprompts.AWSRoute53DelegationSetPrompt()
+	case "aws_route53_health_check":
+		resourceprompts.AWSRoute53HealthCheckPrompt()
 	default:
 		color.Red("No support added yet for your resource! Coming soon...")
 		color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")

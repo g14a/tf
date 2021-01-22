@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -162,7 +162,7 @@ func AWSDBClusterSnapshotPrompt() {
 		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the DB cluster.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -236,7 +236,7 @@ func AWSDBEventSubscriptionPrompt() {
 		Label: "Enter enabled:\n(Optional) A boolean flag to enable/disable the subscription. Defaults to true.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "enabled")
@@ -407,7 +407,7 @@ func AWSDBOptionGroupPrompt() {
 		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -448,7 +448,7 @@ func AWSDBOptionGroupPrompt() {
 		Label: "Enter port:\n(Optional) The Port number when connecting to the Option (e.g. 11211).",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "port")
@@ -536,7 +536,7 @@ func AWSDBParameterGroupPrompt() {
 		Label: "Enter tags:\n (Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -634,7 +634,7 @@ func AWSDbProxyPrompt() {
 		Label: "Enter idle_client_timeout:\n(Optional) The number of seconds that a connection to the proxy can be inactive before the proxy disconnects it. You can set this value higher or lower than the connection timeout limit for the associated database.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "idle_client_timeout")
@@ -646,7 +646,7 @@ func AWSDbProxyPrompt() {
 			"\nassociated database.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "require_tls")
@@ -655,7 +655,7 @@ func AWSDbProxyPrompt() {
 		Label: "Enter role_arn(true/false):\n(Required) The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access secrets in AWS Secrets Manager.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.BoolValidator,
+			Validate: validators.BoolValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "role_arn")
@@ -680,7 +680,7 @@ func AWSDbProxyPrompt() {
 		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A mapping of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -806,7 +806,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\nopened its maximum number of connections and all connections are busy with client sessions.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "connection_borrow_timeout")
@@ -830,7 +830,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\ninstance or Aurora DB cluster used by the target group.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "max_connections_percent")
@@ -842,7 +842,7 @@ func AWSDBProxyDefaultTargetGroupPrompt() {
 			"\ninstance or Aurora DB cluster used by the target group.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.IntValidator,
+			Validate: validators.IntValidator,
 		},
 	}
 	nestedPromptOrder = append(nestedPromptOrder, "max_idle_connections_percent")
@@ -955,7 +955,7 @@ func AWSDBSecurityGroupPrompt() {
 		Label: "Enter tags: e.g.k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1043,7 +1043,7 @@ func AWSDBSnapshotPrompt() {
 		Label: "Enter tags:\n(Optional) Key-value map of resource tags",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")
@@ -1107,7 +1107,7 @@ func AWSDBSubnetGroupPrompt() {
 		Label: "Enter tags: e.g. k1=v1,k2=v2\n(Optional) A map of tags to assign to the resource.",
 		Prompt: promptui.Prompt{
 			Label:    "",
-			Validate: utils.RCValidator,
+			Validate: validators.RCValidator,
 		},
 	}
 	promptOrder = append(promptOrder, "tags")

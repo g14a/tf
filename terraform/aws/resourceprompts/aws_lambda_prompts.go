@@ -6,7 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -122,7 +122,7 @@ func AWSLambdaEventSourceMappingPrompt() {
 			Field:     "batch_size",
 			Ex:        "",
 			Doc:       "(Optional) The largest number of records that Lambda will retrieve from your event source at the time of invocation. Defaults to 100 for DynamoDB and Kinesis, 10 for SQS.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "maximum_batching_window_in_seconds",
@@ -133,7 +133,7 @@ func AWSLambdaEventSourceMappingPrompt() {
 				"\nbatch_size has been met. For streaming event sources, defaults to as soon as records are " +
 				"\navailable in the stream. If the batch it reads from the stream/queue only has one record in " +
 				"\nit, Lambda only sends one record to the function.",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "event_source_arn",
@@ -144,7 +144,7 @@ func AWSLambdaEventSourceMappingPrompt() {
 			Field:     "enabled",
 			Ex:        "",
 			Doc:       "(Optional) Determines if the mapping will be enabled on creation. Defaults to true",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "function_name",
@@ -156,27 +156,27 @@ func AWSLambdaEventSourceMappingPrompt() {
 			Ex:    "",
 			Doc: "(Optional) The number of batches to process from each shard concurrently. " +
 				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum and default of 1, maximum of 10.",
-			Validator: utils.MinMaxIntValidator(1, 10),
+			Validator: validators.MinMaxIntValidator(1, 10),
 		},
 		{
 			Field: "maximum_retry_attempts",
 			Ex:    "",
 			Doc: "(Optional) The maximum number of times to retry when the function returns an error. " +
 				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 0, maximum and default of 10000.",
-			Validator: utils.MinMaxIntValidator(0, 10000),
+			Validator: validators.MinMaxIntValidator(0, 10000),
 		},
 		{
 			Field: "maximum_record_age_in_seconds",
 			Ex:    "",
 			Doc: "(Optional) The maximum age of a record that Lambda sends to a function for processing. " +
 				"\nOnly available for stream sources (DynamoDB and Kinesis). Minimum of 60, maximum and default of 604800.",
-			Validator: utils.MinMaxIntValidator(60, 604800),
+			Validator: validators.MinMaxIntValidator(60, 604800),
 		},
 		{
 			Field:     "bisect_batch_on_function_error",
 			Ex:        "",
 			Doc:       "(Optional) If the function returns an error, split the batch in two and retry. Only available for stream sources (DynamoDB and Kinesis). Defaults to false.",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "starting_position_timestamp",
@@ -277,7 +277,7 @@ func AWSLambdaFunctionPrompt() {
 			Field:     "memory_size",
 			Ex:        "",
 			Doc:       "(Optional) Amount of memory in MB your Lambda Function can use at runtime. Defaults to 128",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "runtime",
@@ -288,7 +288,7 @@ func AWSLambdaFunctionPrompt() {
 			Field:     "timeout",
 			Ex:        "3",
 			Doc:       "(Optional) The amount of time your Lambda Function has to run in seconds. Defaults to 3",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "reserved_concurrent_executions",
@@ -299,7 +299,7 @@ func AWSLambdaFunctionPrompt() {
 			Field:     "publish",
 			Ex:        "(true/false)",
 			Doc:       "(Optional) Whether to publish creation/change as new Lambda Function Version. Defaults to false",
-			Validator: utils.BoolValidator,
+			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "kms_key_arn",
@@ -315,7 +315,7 @@ func AWSLambdaFunctionPrompt() {
 			Field:     "tags",
 			Ex:        "k1=v1,k2=v2",
 			Doc:       "(Optional) A map of tags to assign to the object.",
-			Validator: utils.RCValidator,
+			Validator: validators.RCValidator,
 		},
 	}
 
@@ -423,13 +423,13 @@ func AWSLambdaFunctionEventInvokeConfigPrompt() {
 			Field:     "maximum_event_age_in_seconds",
 			Ex:        "100",
 			Doc:       "(Optional) Maximum age of a request that Lambda sends to a function for processing in seconds. Valid values between 60 and 21600.",
-			Validator: utils.MinMaxIntValidator(60, 21600),
+			Validator: validators.MinMaxIntValidator(60, 21600),
 		},
 		{
 			Field:     "maximum_retry_attempts",
 			Ex:        "1",
 			Doc:       "(Optional) Maximum number of times to retry when the function returns an error. Valid values between 0 and 2. Defaults to 2.",
-			Validator: utils.MinMaxIntValidator(0, 2),
+			Validator: validators.MinMaxIntValidator(0, 2),
 		},
 		{
 			Field: "qualifier",
@@ -643,7 +643,7 @@ func AWSLambdaProvisionedConcurrencyConfigPrompt() {
 			Field:     "provisioned_concurrent_executions",
 			Ex:        "",
 			Doc:       "(Required) Amount of capacity to allocate. Must be greater than or equal to 1",
-			Validator: utils.IntValidator,
+			Validator: validators.IntValidator,
 		},
 		{
 			Field: "qualifier",

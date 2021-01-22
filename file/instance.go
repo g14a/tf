@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/g14a/tf/utils"
+	"github.com/g14a/tf/validators"
 	"github.com/manifoldco/promptui"
 )
 
@@ -38,7 +38,7 @@ func Prompt() {
 
 	filePrompt := promptui.Prompt{
 		Label:    "",
-		Validate: utils.StringValidator,
+		Validate: validators.StringValidator,
 	}
 
 	fileName, err := filePrompt.Run()
