@@ -26,12 +26,16 @@ func ProviderPrompt() {
 		{
 			Field: "access_key",
 			Ex:    "",
-			Doc:   "(Optional) This is the AWS access key. It must be provided, but it can also be sourced from the AWS_ACCESS_KEY_ID environment variable, or via a shared credentials file if profile is specified.",
+			Doc: "(Optional) This is the AWS access key. It must be provided, but " +
+				"\nit can also be sourced from the AWS_ACCESS_KEY_ID environment variable, " +
+				"\nor via a shared credentials file if profile is specified.",
 		},
 		{
 			Field: "secret_key",
 			Ex:    "",
-			Doc:   "(Optional) This is the AWS secret key. It must be provided, but it can also be sourced from the AWS_SECRET_ACCESS_KEY environment variable, or via a shared credentials file if profile is specified.",
+			Doc: "(Optional) This is the AWS secret key. It must be provided, but it can " +
+				"\nalso be sourced from the AWS_SECRET_ACCESS_KEY environment variable, " +
+				"\nor via a shared credentials file if profile is specified.",
 		},
 		{
 			Field: "profile",
@@ -41,51 +45,68 @@ func ProviderPrompt() {
 		{
 			Field: "shared_credentials_file",
 			Ex:    "",
-			Doc:   "(Optional) This is the path to the shared credentials file. If this is not set and a profile is specified, ~/.aws/credentials will be used.",
+			Doc: "(Optional) This is the path to the shared credentials file. If this is " +
+				"\nnot set and a profile is specified, ~/.aws/credentials will be used.",
 		},
 		{
-			Field:     "max_retries",
-			Ex:        "25",
-			Doc:       "(Optional) This is the maximum number of times an API call is retried, in the case where requests are being throttled or experiencing transient failures. The delay between the subsequent API calls increases exponentially. If omitted, the default value is 25",
+			Field: "max_retries",
+			Ex:    "25",
+			Doc: "(Optional) This is the maximum number of times an API call is retried, " +
+				"\nin the case where requests are being throttled or experiencing transient failures. " +
+				"\nThe delay between the subsequent API calls increases exponentially. If omitted, " +
+				"\nthe default value is 25",
 			Validator: validators.IntValidator,
 		},
 		{
 			Field: "allowed_account_ids",
 			Ex:    "[\"id1\",\"id2\"]",
-			Doc:   "(Optional) List of allowed AWS account IDs to prevent you from mistakenly using an incorrect one (and potentially end up destroying a live environment). Conflicts with forbidden_account_ids",
+			Doc: "(Optional) List of allowed AWS account IDs to prevent you from mistakenly using an " +
+				"\nincorrect one (and potentially end up destroying a live environment). " +
+				"\nConflicts with forbidden_account_ids",
 		},
 		{
 			Field: "forbidden_account_ids",
 			Ex:    "[\"id1\",\"id2\"]",
-			Doc:   "(Optional) List of forbidden AWS account IDs to prevent you from mistakenly using the wrong one (and potentially end up destroying a live environment). Conflicts with allowed_account_ids",
+			Doc: "(Optional) List of forbidden AWS account IDs to prevent you from mistakenly " +
+				"\nusing the wrong one (and potentially end up destroying a live environment). " +
+				"\nConflicts with allowed_account_ids",
 		},
 		{
 			Field: "token",
 			Ex:    "",
-			Doc:   "(Optional) Session token for validating temporary credentials. Typically provided after successful identity federation or Multi-Factor Authentication (MFA) login. With MFA login, this is the session token provided afterward, not the 6 digit MFA code used to get temporary credentials. It can also be sourced from the AWS_SESSION_TOKEN environment variable.",
+			Doc: "(Optional) Session token for validating temporary credentials. Typically " +
+				"\nprovided after successful identity federation or Multi-Factor Authentication (MFA) login. " +
+				"\nWith MFA login, this is the session token provided afterward, not the 6 digit MFA " +
+				"\ncode used to get temporary credentials. It can also be sourced from the AWS_SESSION_TOKEN " +
+				"\nenvironment variable.",
 		},
 		{
-			Field:     "insecure",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Explicitly allow the provider to perform \"insecure\" SSL requests. If omitted, the default value is false.",
+			Field: "insecure",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Explicitly allow the provider to perform \"insecure\" SSL requests. " +
+				"\nIf omitted, the default value is false.",
 			Validator: validators.BoolValidator,
 		},
 		{
-			Field:     "skip_credentials_validation",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Skip the credentials validation via the STS API. Useful for AWS API implementations that do not have STS available or implemented.",
+			Field: "skip_credentials_validation",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Skip the credentials validation via the STS API. Useful for AWS API " +
+				"\nimplementations that do not have STS available or implemented.",
 			Validator: validators.BoolValidator,
 		},
 		{
-			Field:     "skip_get_ec2_platforms",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Skip getting the supported EC2 platforms. Used by users that don't have ec2:DescribeAccountAttributes permissions.",
+			Field: "skip_get_ec2_platforms",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Skip getting the supported EC2 platforms. Used by users that don't " +
+				"\nhave ec2:DescribeAccountAttributes permissions.",
 			Validator: validators.BoolValidator,
 		},
 		{
-			Field:     "skip_region_validation",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Skip validation of provided region name. Useful for AWS-like implementations that use their own region names or to bypass the validation for regions that aren't publicly available yet.",
+			Field: "skip_region_validation",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Skip validation of provided region name. Useful for AWS-like " +
+				"\nimplementations that use their own region names or to bypass the validation for " +
+				"\nregions that aren't publicly available yet.",
 			Validator: validators.BoolValidator,
 		},
 		{
@@ -141,7 +162,8 @@ func ProviderPrompt() {
 		{
 			Field: "policy_arns",
 			Ex:    "",
-			Doc:   "(Optional) Set of Amazon Resource Names (ARNs) of IAM Policies describing further restricting permissions for the IAM Role being assumed.",
+			Doc: "(Optional) Set of Amazon Resource Names (ARNs) of IAM Policies describing " +
+				"\nfurther restricting permissions for the IAM Role being assumed.",
 		},
 		{
 			Field: "session_name",
@@ -170,12 +192,24 @@ func ProviderPrompt() {
 		{
 			Field: "keys",
 			Ex:    "[\"a\",\"b\",\"c\"]",
-			Doc:   "(Optional) List of exact resource tag keys to ignore across all resources handled by this provider. This configuration prevents Terraform from returning the tag in any tags attributes and displaying any configuration difference for the tag value. If any resource configuration still has this tag key configured in the tags argument, it will display a perpetual difference until the tag is removed from the argument or ignore_changes is also used.",
+			Doc: "(Optional) List of exact resource tag keys to ignore across all resources " +
+				"\nhandled by this provider. This configuration prevents Terraform from returning " +
+				"\nthe tag in any tags attributes and displaying any configuration difference for " +
+				"\nthe tag value. If any resource configuration still has this tag key configured " +
+				"\nin the tags argument, it will display a perpetual difference until the tag is " +
+				"\nremoved from the argument or ignore_changes is also used.",
 		},
 		{
 			Field: "key_prefixes",
 			Ex:    "",
-			Doc:   "(Optional) List of resource tag key prefixes to ignore across all resources handled by this provider. This configuration prevents Terraform from returning any tag key matching the prefixes in any tags attributes and displaying any configuration difference for those tag values. If any resource configuration still has a tag matching one of the prefixes configured in the tags argument, it will display a perpetual difference until the tag is removed from the argument or ignore_changes is also used.",
+			Doc: "(Optional) List of resource tag key prefixes to ignore across all " +
+				"\nresources handled by this provider. This configuration prevents " +
+				"\nTerraform from returning any tag key matching the prefixes in any " +
+				"\ntags attributes and displaying any configuration difference for " +
+				"\nthose tag values. If any resource configuration still has a tag " +
+				"\nmatching one of the prefixes configured in the tags argument, " +
+				"\nit will display a perpetual difference until the tag is removed " +
+				"\nfrom the argument or ignore_changes is also used.",
 		},
 	}
 
