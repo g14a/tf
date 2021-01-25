@@ -239,62 +239,42 @@ func AWSAMICopyPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Required) A region-unique name for the AMI.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) A region-unique name for the AMI.",
+		},
+		{
+			Field: "source_ami_id",
+			Ex:    "",
+			Doc:   "(Required) The id of the AMI to copy. This id must be valid in the region given by source_ami_region",
+		},
+		{
+			Field: "source_ami_region",
+			Ex:    "",
+			Doc:   "(Required) The region from which the AMI will be copied. This may be the same as the AWS provider region in order to create a copy within the same region.",
+		},
+		{
+			Field:     "encrypted",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field: "kms_key_id",
+			Ex:    "",
+			Doc:   "(Optional) The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "name")
 
-	prompts["source_ami_id"] = types.TfPrompt{
-		Label: "Enter source_ami_id:\n(Required) The id of the AMI to copy. This id must be valid in the region given by source_ami_region",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_ami_id")
-
-	prompts["source_ami_region"] = types.TfPrompt{
-		Label: "Enter source_ami_region:\n(Required) The region from which the AMI will be copied. " +
-			"\nThis may be the same as the AWS provider region in order to create a copy within the same region.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_ami_region")
-
-	prompts["encrypted"] = types.TfPrompt{
-		Label: "Enter encrypted(true/false):\n(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "encrypted")
-
-	prompts["kms_key_id"] = types.TfPrompt{
-		Label: "Enter kms_key_id:\n(Optional) The full ARN of the KMS Key to use when encrypting the snapshots " +
-			"\nof an image during a copy operation. If not specified, then the default AWS KMS Key will be used",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "kms_key_id")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ami_copy", blockName, resourceBlock)
 
