@@ -627,6 +627,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSRoute53DelegationSetPrompt()
 	case "aws_route53_health_check":
 		resourceprompts.AWSRoute53HealthCheckPrompt()
+	case "aws_route53_query_log":
+		resourceprompts.AWSRoute53QueryLogPrompt()
+	case "aws_route53_record":
+		resourceprompts.AWSRoute53RecordPrompt()
 	default:
 		color.Red("No support added yet for your resource! Coming soon...")
 		color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")
