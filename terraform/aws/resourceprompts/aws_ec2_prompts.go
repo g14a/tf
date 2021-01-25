@@ -276,6 +276,30 @@ func AWSAMICopyPrompt() {
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
+	color.Green("\nEnter timeouts block:\n" +
+		"The timeout block supports the following arguments:" +
+		"\n1.create\n2.delete\n3.update")
+
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating the AMI",
+		},
+		{
+			Field: "update",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for updating the AMI",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for deregistering the AMI",
+		},
+	}
+
+	resourceBlock["timeouts"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
+
 	builder.ResourceBuilder("aws_ami_copy", blockName, resourceBlock)
 
 }
