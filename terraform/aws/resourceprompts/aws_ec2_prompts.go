@@ -315,46 +315,36 @@ func AWSAMIFromInstancePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Required) A region-unique name for the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) A region-unique name for the AMI.",
+		},
+		{
+			Field: "source_instance_id",
+			Ex:    "",
+			Doc:   "(Required) The id of the instance to use as the basis of the AMI.",
+		},
+		{
+			Field: "snapshot_without_reboot",
+			Ex:    "",
+			Doc: "(Optional) Boolean that overrides the behavior of stopping the instance " +
+				"\nbefore snapshotting. This is risky since it may cause a snapshot of an " +
+				"\ninconsistent filesystem state, but can be used to avoid downtime if the " +
+				"\nuser otherwise guarantees that no filesystem writes will be underway at " +
+				"\nthe time of snapshot.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "name")
 
-	prompts["source_instance_id"] = types.TfPrompt{
-		Label: "Enter source_instance_id:\n(Required) The id of the instance to use as the basis of the AMI.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_instance_id")
-
-	prompts["snapshot_without_reboot"] = types.TfPrompt{
-		Label: "Enter snapshot_without_reboot(true/false):\n(Optional) Boolean that overrides the behavior of stopping the instance before snapshotting. " +
-			"\nThis is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise " +
-			"\nguarantees that no filesystem writes will be underway at the time of snapshot.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "snapshot_without_reboot")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like timeouts etc [y/n]?\n\n", "text")
 
@@ -376,34 +366,25 @@ func AWSAMIFromInstancePrompt() {
 		"The timeout block supports the following arguments:" +
 		"\n1.create\n2.delete\n3.update")
 
-	timeoutsPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	timeoutsPrompt["create"] = types.TfPrompt{
-		Label: "Enter create: e.g. 40m\n(Defaults to 40 mins) Used when creating the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating the AMI",
+		},
+		{
+			Field: "update",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for updating the AMI",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for deregistering the AMI",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "create")
 
-	timeoutsPrompt["update"] = types.TfPrompt{
-		Label: "Enter update: e.g. 40m\n(Defaults to 40 mins) Used when updating the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "update")
-
-	timeoutsPrompt["delete"] = types.TfPrompt{
-		Label: "Enter delete: e.g. 40m\n(Defaults to 90 mins) Used when deregistering the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "delete")
-
-	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder[len(nestedPromptOrder)-3:], nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
 
 	builder.ResourceBuilder("aws_ami_from_instance", blockName, resourceBlock)
 
@@ -420,26 +401,20 @@ func AWSAMILaunchPermissionPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["image_id"] = types.TfPrompt{
-		Label: "Enter image_id:\n(Required) A region-unique name for the AMI.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "image_id",
+			Ex:    "",
+			Doc:   "(required) A region-unique name for the AMI.",
+		},
+		{
+			Field: "account_id",
+			Ex:    "",
+			Doc:   "(required) An AWS Account ID to add launch permissions.",
 		},
 	}
-	promptOrder = append(promptOrder, "image_id")
 
-	prompts["account_id"] = types.TfPrompt{
-		Label: "Enter account_id:\n(required) An AWS Account ID to add launch permissions.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "account_id")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ami_launch_permission", blockName, resourceBlock)
 }
