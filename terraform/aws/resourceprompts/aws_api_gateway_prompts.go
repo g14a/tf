@@ -439,6 +439,12 @@ func AWSAPIGatewayDomainNamePrompt() {
 			Doc:   "(Optional) The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are TLS_1_0 and TLS_1_2. Must be configured to perform drift detection.",
 			Items: []string{"TLS_1_0", "TLS_1_2"},
 		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
+		},
 	}
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
@@ -487,53 +493,37 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["rest_api_id"] = types.TfPrompt{
-		Label: "Enter rest_api_id:\n(Required) The string identifier of the associated REST API.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The string identifier of the associated REST API.",
+		},
+		{
+			Field: "response_type",
+			Ex:    "",
+			Doc:   "(Required) The response type of the associated GatewayResponse.",
+		},
+		{
+			Field: "status_code",
+			Ex:    "",
+			Doc:   "(Optional) The HTTP status code of the Gateway Response.",
 		},
 	}
-	promptOrder = append(promptOrder, "rest_api_id")
 
-	prompts["response_type"] = types.TfPrompt{
-		Label: "Enter response_type:\n(Required) The response type of the associated GatewayResponse.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "response_type")
-
-	prompts["status_code"] = types.TfPrompt{
-		Label: "Enter status_code:\n(Optional) The HTTP status code of the Gateway Response.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "status_code")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Green("\nEnter response_templates:\n(Optional) A map specifying the templates used to transform the response body.")
 
-	responseTemplatesPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	responseTemplatesPrompt["application/json"] = types.TfPrompt{
-		Label: "Enter application/json:\nCheck https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_gateway_response",
-		Prompt: promptui.Prompt{
-			Label: "",
+	responseTemplatesSchema := []types.Schema{
+		{
+			Field: "application/json",
+			Ex:    "",
+			Doc:   "Check https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_gateway_response",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "application/json")
 
-	resourceBlock["response_templates"] = builder.PSOrder(nestedPromptOrder, nil, responseTemplatesPrompt, nil)
+	resourceBlock["response_templates"] = builder.PSOrder(types.ProvidePS(responseTemplatesSchema))
 
 	builder.ResourceBuilder("aws_api_gateway_account", blockName, resourceBlock)
-}
-
-func AWSAPIGatewayIntegration() {
-
 }
