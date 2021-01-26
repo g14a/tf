@@ -383,102 +383,65 @@ func AWSAPIGatewayDomainNamePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	selects := map[string]types.TfSelect{}
-
-	var promptOrder, selectOrder, nestedSelectOrder []string
-
-	prompts["domain_name"] = types.TfPrompt{
-		Label: "Enter domain_name:\n(Required) The fully-qualified domain name to register",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "domain_name",
+			Ex:    "",
+			Doc:   "(Required) The fully-qualified domain name to register",
 		},
-	}
-	promptOrder = append(promptOrder, "domain_name")
-
-	prompts["certificate_arn"] = types.TfPrompt{
-		Label: "Enter certificate_arn:\n(Optional) The ARN for an AWS-managed certificate. \n" +
-			"AWS Certificate Manager is the only supported source. Used when an edge-optimized domain name is desired. \n" +
-			"Conflicts with certificate_name, certificate_body, certificate_chain, certificate_private_key, \nregional_certificate_arn, and regional_certificate_name",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "certificate_arn",
+			Ex:    "",
+			Doc: "(Optional) The ARN for an AWS-managed certificate. " +
+				"\nAWS Certificate Manager is the only supported source. " +
+				"\nUsed when an edge-optimized domain name is desired. " +
+				"\nConflicts with certificate_name, certificate_body, " +
+				"\ncertificate_chain, certificate_private_key, regional_certificate_arn," +
+				"\nand regional_certificate_name.",
 		},
-	}
-	promptOrder = append(promptOrder, "certificate_arn")
-
-	prompts["regional_certificate_arn"] = types.TfPrompt{
-		Label: "Enter regional_certificate_arn:\n(Optional) The unique name to use when registering this \n" +
-			"certificate as an IAM server certificate. \n" +
-			"Conflicts with certificate_arn, regional_certificate_arn, and \n" +
-			"regional_certificate_name. Required if certificate_arn is not set.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "regional_certificate_arn",
+			Ex:    "",
+			Doc: "(Optional) The ARN for an AWS-managed certificate. " +
+				"\nAWS Certificate Manager is the only supported source. " +
+				"\nUsed when a regional domain name is desired. Conflicts " +
+				"\nwith certificate_arn, certificate_name, certificate_body, " +
+				"\ncertificate_chain, and certificate_private_key",
 		},
-	}
-	promptOrder = append(promptOrder, "regional_certificate_arn")
-
-	prompts["certificate_name"] = types.TfPrompt{
-		Label: "Enter certificate_name:\n(Optional) The unique name to use when registering this certificate as an IAM server certificate. \n" +
-			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name. \n" +
-			"Required if certificate_arn is not set.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "certificate_name",
+			Ex:    "",
+			Doc:   "(Optional) The unique name to use when registering this certificate as an IAM server certificate. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name. Required if certificate_arn is not set.",
 		},
-	}
-	promptOrder = append(promptOrder, "certificate_name")
-
-	prompts["certificate_body"] = types.TfPrompt{
-		Label: "Enter certificate_body:\n(Optional) The certificate issued for the domain name \n" +
-			"being registered, in PEM format. Only valid for EDGE endpoint configuration type. \n" +
-			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "certificate_body",
+			Ex:    "",
+			Doc:   "(Optional) The certificate issued for the domain name being registered, in PEM format. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
 		},
-	}
-	promptOrder = append(promptOrder, "certificate_body")
-
-	prompts["certificate_chain"] = types.TfPrompt{
-		Label: "Enter certificate_chain:\n(Optional) The certificate for the CA that issued the \n" +
-			"certificate, along with any intermediate CA certificates required to create an \n" +
-			"unbroken chain to a certificate trusted by the intended API clients. \n" +
-			"Only valid for EDGE endpoint configuration type. \n" +
-			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "certificate_chain",
+			Ex:    "",
+			Doc:   "(Optional) The certificate for the CA that issued the certificate, along with any intermediate CA certificates required to create an unbroken chain to a certificate trusted by the intended API clients. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
 		},
-	}
-	promptOrder = append(promptOrder, "certificate_chain")
-
-	prompts["certificate_private_key"] = types.TfPrompt{
-		Label: "Enter certificate_private_key:\n(Optional) The private key associated with the domain \n" +
-			"certificate given in certificate_body. Only valid for EDGE endpoint configuration type. \n" +
-			"Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "certificate_private_key",
+			Ex:    "",
+			Doc:   "(Optional) The private key associated with the domain certificate given in certificate_body. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
 		},
-	}
-	promptOrder = append(promptOrder, "certificate_private_key")
-
-	prompts["regional_certificate_name"] = types.TfPrompt{
-		Label: "Enter regional_certificate_name:\n(Optional) The user-friendly name of the certificate that will be used by \n" +
-			"regional endpoint for this domain name. \n" +
-			"Conflicts with certificate_arn, certificate_name, certificate_body, certificate_chain, and certificate_private_key",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "regional_certificate_name",
+			Ex:    "",
+			Doc:   "(Optional) The user-friendly name of the certificate that will be used by regional endpoint for this domain name. Conflicts with certificate_arn, certificate_name, certificate_body, certificate_chain, and certificate_private_key.",
 		},
-	}
-	promptOrder = append(promptOrder, "regional_certificate_name")
-
-	selects["security_policy"] = types.TfSelect{
-		Label: "Enter domain_name:\n(Optional) The Transport Layer Security (TLS) version + cipher suite for this DomainName.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "security_policy",
+			Doc:   "(Optional) The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are TLS_1_0 and TLS_1_2. Must be configured to perform drift detection.",
 			Items: []string{"TLS_1_0", "TLS_1_2"},
 		},
 	}
-	selectOrder = append(selectOrder, "security_policy")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
 
@@ -496,21 +459,20 @@ func AWSAPIGatewayDomainNamePrompt() {
 		return
 	}
 
-	endpointConfigSelect := map[string]types.TfSelect{}
-	endpointConfigSelect["types"] = types.TfSelect{
-		Label: "Enter types: [\"t1\",\"t2\"]\n(Required) A list of endpoint types. This resource currently only supports managing a single value. \n" +
-			"Valid values: EDGE or REGIONAL. If unspecified, defaults to EDGE. \n" +
-			"Must be declared as REGIONAL in non-Commercial partitions. \n" +
-			"Refer to https://docs.aws.amazon.com/apigateway/latest/developerguide/create-regional-api.html \n" +
-			"for more information on the difference between edge-optimized and regional APIs.",
-		Select: promptui.Select{
-			Label: "",
+	endpointConfigSchema := []types.Schema{
+		{
+			Field: "types",
+			Ex:    "",
+			Doc: "(Required) A list of endpoint types. This resource currently only supports " +
+				"\nmanaging a single value. Valid values: EDGE or REGIONAL. If unspecified, " +
+				"\ndefaults to EDGE. Must be declared as REGIONAL in non-Commercial partitions. " +
+				"\nRefer to the documentation for more information on the difference between " +
+				"\nedge-optimized and regional APIs.",
 			Items: []string{"EDGE", "REGIONAL"},
 		},
 	}
-	nestedSelectOrder = append(nestedSelectOrder, "types")
 
-	resourceBlock["endpoint_configuration"] = builder.PSOrder(nil, nestedSelectOrder, nil, endpointConfigSelect)
+	resourceBlock["endpoint_configuration"] = builder.PSOrder(types.ProvidePS(endpointConfigSchema))
 	builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, resourceBlock)
 }
 
