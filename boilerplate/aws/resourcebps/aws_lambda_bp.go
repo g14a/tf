@@ -45,7 +45,7 @@ func AWSLambdaPermissionBP() {
 }
 
 // AWSLambdaProvisionedConcurrencyConfig provides the boilerplate for aws_lambda_provisioned_concurrency_config
-func AWSLambdaProvisionedConcurrencyConfig() {
+func AWSLambdaProvisionedConcurrencyConfigBP() {
 	color.Green("\nresource \"aws_lambda_provisioned_concurrency_config\" \"example\" {\n  function_name                     = aws_lambda_alias.example.function_name\n  provisioned_concurrent_executions = 1\n  qualifier                         = aws_lambda_alias.example.name\n}")
 	color.Yellow("\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_provisioned_concurrency_config\n\n")
 }

@@ -236,7 +236,7 @@ func ResourceBP(resource string) {
 	case "aws_elastic_beanstalk_application":
 		resourcebps.AWSElasticBeanstalkApplication()
 	case "aws_cloudfront_distribution":
-		resourcebps.AWSCloudFrontDistributionPrompt()
+		resourcebps.AWSCloudFrontDistributionBP()
 	case "aws_lambda_function":
 		resourcebps.AWSLambdaFunctionBP()
 	case "aws_lambda_code_signing_config":
@@ -248,6 +248,20 @@ func ResourceBP(resource string) {
 	case "aws_lambda_function_event_invoke_config":
 		resourcebps.AWSLambdaFunctionEventInvokeConfigBP()
 	case "aws_lambda_provisioned_concurrency_config":
-		resourcebps.AWSLambdaProvisionedConcurrencyConfig()
+		resourcebps.AWSLambdaProvisionedConcurrencyConfigBP()
+	case "aws_route53_delegation_set":
+		resourcebps.AWSRoute53DelegationSetBP()
+	case "aws_route53_health_check":
+		resourcebps.AWSRoute53HealthCheckBP()
+	case "aws_route53_query_log":
+		resourcebps.AWSRoute53QueryLogBP()
+	case "aws_route53_record":
+		resourcebps.AWSRoute53RecordBP()
+	case "aws_route53_vpc_association_authorization":
+		resourcebps.AWSRoute53VPCAssociationAuthorizationBP()
+	case "aws_route53_zone":
+		resourcebps.AWSRoute53ZoneBP()
+	case "aws_route53_zone_association":
+		resourcebps.AWSRoute53ZoneAssociationBP()
 	}
 }
