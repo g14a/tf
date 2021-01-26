@@ -165,44 +165,30 @@ func AWSAPIGatewayBasePathMappingPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["api_id"] = types.TfPrompt{
-		Label: "Enter api_id:\n(Required) The id of the API to connect.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "domain_name",
+			Ex:    "",
+			Doc:   "(Required) The already-registered domain name to connect the API to.",
+		},
+		{
+			Field: "api_id",
+			Ex:    "",
+			Doc:   "(Required) The id of the API to connect.",
+		},
+		{
+			Field: "stage_name",
+			Ex:    "",
+			Doc:   "(Optional) The name of a specific deployment stage to expose at the given path. If omitted, callers may select any stage by including its name as a path element after the base path.",
+		},
+		{
+			Field: "base_path",
+			Ex:    "",
+			Doc:   "(Optional) Path segment that must be prepended to the path when accessing the API via this mapping. If omitted, the API is exposed at the root of the given domain.",
 		},
 	}
-	promptOrder = append(promptOrder, "api_id")
 
-	prompts["domain_name"] = types.TfPrompt{
-		Label: "Enter domain_name:\n(Required) The already-registered domain name to connect the API to.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "domain_name")
-
-	prompts["stage_name"] = types.TfPrompt{
-		Label: "Enter stage_name:\n(Optional) The name of a specific deployment stage to expose at the given path. \n" +
-			"If omitted, callers may select any stage by including its name as a path element after the base path.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "stage_name")
-
-	prompts["base_path"] = types.TfPrompt{
-		Label: "Enter base_path:\n(Optional) Path segment that must be prepended to the path when accessing \n" +
-			"the API via this mapping. If omitted, the API is exposed at the root of the given domain.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "base_path")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_api_gateway_base_path_mapping", blockName, resourceBlock)
 }
@@ -218,32 +204,21 @@ func AWSAPIGatewayClientCertificatePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, nestedOrder []string
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) The description of the client certificate.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the client certificate.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "description")
 
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
-
-	color.Green("\nEnter tags:\n")
-
-	tagsPrompt := map[string]types.TfPrompt{}
-
-	tagsPrompt["Name"] = types.TfPrompt{
-		Label: "Enter Name:\n",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "Name")
-
-	resourceBlock["tags"] = builder.PSOrder(nestedOrder, nil, tagsPrompt, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_api_gateway_client_certificate", blockName, resourceBlock)
 }
@@ -259,102 +234,42 @@ func AWSAPIGatewayDeploymentPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["rest_api_id"] = types.TfPrompt{
-		Label: "Enter rest_api_id:\n(Required) The ID of the associated REST API",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "stage_name",
+			Ex:    "",
+			Doc:   "(Optional) The name of the stage. If the specified stage already exists, it will be updated to point to the new deployment. If the stage does not exist, a new one will be created and point to this deployment.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the deployment",
+		},
+		{
+			Field: "stage_description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the stage",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field:     "variables",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map that defines variables for the stage",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "rest_api_id")
 
-	prompts["stage_name"] = types.TfPrompt{
-		Label: "Enter stage_name:\n(Optional) The name of the stage. If the specified stage already exists, \n" +
-			"it will be updated to point to the new deployment. If the stage does not exist, \n" +
-			"a new one will be created and point to this deployment.\n",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "stage_name")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) The description of the deployment",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["stage_description"] = types.TfPrompt{
-		Label: "Enter stage_description:\n(Optional) The description of the stage",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "stage_description")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n For e.g. k1=v1,k2=v2",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	prompts["variables"] = types.TfPrompt{
-		Label: "Enter variables: For e.g. k1=v1,k2=v2\n(Optional) A map that defines variables for the stage",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "variables")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
-
-	lifecyclePrompt := map[string]types.TfPrompt{}
-	var nestedOrder []string
-
-	color.Green("\nEnter lifecycle block(Recommended):\n")
-
-	lifecyclePrompt["create_before_destroy"] = types.TfPrompt{
-		Label: "Enter create_before_destroy:(true/false)\nBy default, when Terraform must change a resource argument \n" +
-			"that cannot be updated in-place due to remote API limitations, \n" +
-			"Terraform will instead destroy the existing object and then \n" +
-			"create a new replacement object with the new configured arguments.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#create_before_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "create_before_destroy")
-
-	lifecyclePrompt["prevent_destroy"] = types.TfPrompt{
-		Label: "Enter prevent_destroy:(true/false)\nThis meta-argument, when set to true, will cause Terraform to \n" +
-			"reject with an error any plan that would destroy the infrastructure \n" +
-			"object associated with the resource, as long as the argument \n" +
-			"remains present in the configuration.\n" +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#prevent_destroy",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "prevent_destroy")
-
-	lifecyclePrompt["ignore_changes"] = types.TfPrompt{
-		Label: "Enter ignore_changes: e.g.[\"c1\",\"c2\"]\nBy default, Terraform detects any difference in the " +
-			"current settings of a real infrastructure object and plans to " +
-			"update the remote object to match configuration." +
-			"Check https://www.terraform.io/docs/configuration/meta-arguments/lifecycle.html#ignore_changes",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedOrder = append(nestedOrder, "ignore_changes")
-
-	resourceBlock["lifecycle"] = builder.PSOrder(nestedOrder, selectOrder, lifecyclePrompt, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_api_gateway_deployment", blockName, resourceBlock)
 }
@@ -370,80 +285,55 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, nestedPromptOrder, nestedSelectOrder []string
-
-	prompts["properties"] = types.TfPrompt{
-		Label: "Enter properties:\n(Required) A content map of API-specific key-value pairs describing \n" +
-			"the targeted API entity. The map must be encoded as a JSON string, \n" +
-			"e.g., \"{ \\\"description\\\": \\\"The API does …\\\" }\". \n" +
-			"Only Swagger-compliant key-value pairs can be exported and, hence, published.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "properties",
+			Ex:    "",
+			Doc:   "(Required) A content map of API-specific key-value pairs describing the targeted API entity. The map must be encoded as a JSON string, e.g., \"{ \\\"description\\\": \\\"The API does …\\\" }\". Only Swagger-compliant key-value pairs can be exported and, hence, published.",
+		},
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated Rest API",
 		},
 	}
-	promptOrder = append(promptOrder, "properties")
 
-	prompts["rest_api_id"] = types.TfPrompt{
-		Label: "Enter rest_api_id:\n(Required) The ID of the associated REST API",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "rest_api_id")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Green("\nEnter location:\n(Required) The location of the targeted API entity of the to-be-created documentation part.\n" +
 		"The location block supports:" +
 		"\n1.method\n2.name\n3.path\n4.status_code\n5.type")
 
-	locationPrompt := map[string]types.TfPrompt{}
-
-	locationPrompt["method"] = types.TfPrompt{
-		Label: "Enter method:\n(Optional) The HTTP verb of a method. The default value is * for any method.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	locationSchema := []types.Schema{
+		{
+			Field: "method",
+			Ex:    "",
+			Doc:   "(Optional) The HTTP verb of a method. The default value is * for any method.",
 		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "method")
-
-	locationPrompt["name"] = types.TfPrompt{
-		Label: "Enter name:\n(Optional) The name of the targeted API entity.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Optional) The name of the targeted API entity.",
 		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "name")
-
-	locationPrompt["path"] = types.TfPrompt{
-		Label: "Enter path:\n(Optional) The URL path of the target. The default value is / for the root resource.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "path",
+			Ex:    "",
+			Doc:   "(Optional) The URL path of the target. The default value is / for the root resource.",
 		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "path")
-
-	locationPrompt["status_code"] = types.TfPrompt{
-		Label: "Enter status_code:\n(Optional) The HTTP status code of a response. The default value is * for any status code.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "status_code",
+			Ex:    "",
+			Doc:   "(Optional) The HTTP status code of a response. The default value is * for any status code.",
 		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "status_code")
-
-	locationSelect := map[string]types.TfSelect{}
-
-	locationSelect["type"] = types.TfSelect{
-		Label: "Enter type:\n(Required) The type of API entity to which the documentation content applies",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "type",
+			Doc:   "(Required) The type of API entity to which the documentation content applies.",
 			Items: []string{"API", "METHOD", "REQUEST_BODY"},
 		},
 	}
-	nestedSelectOrder = append(nestedSelectOrder, "type")
 
-	resourceBlock["location"] = builder.PSOrder(nestedPromptOrder, nestedSelectOrder, locationPrompt, locationSelect)
+	resourceBlock["location"] = builder.PSOrder(types.ProvidePS(locationSchema))
 
 	builder.ResourceBuilder("aws_api_gateway_documentation_part", blockName, resourceBlock)
 }
@@ -459,36 +349,26 @@ func AWSAPIGatewayDocumentationVersionPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["version"] = types.TfPrompt{
-		Label: "Enter version:\n(Required) The version identifier of the API documentation snapshot.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "version",
+			Ex:    "",
+			Doc:   "(Required) The version identifier of the API documentation snapshot.",
+		},
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated Rest API",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the API documentation version.",
 		},
 	}
-	promptOrder = append(promptOrder, "version")
 
-	prompts["rest_api_id"] = types.TfPrompt{
-		Label: "Enter rest_api_id:\n(Required) The ID of the associated Rest API" +
-			"",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "rest_api_id")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) The description of the API documentation version." +
-			"",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	builder.ResourceBuilder("aws_api_gateway_documentation_version", blockName, builder.PSOrder(promptOrder, nil, prompts, nil))
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+	builder.ResourceBuilder("aws_api_gateway_documentation_version", blockName, resourceBlock)
 }
 
 // aws_api_gateway_domain_name
