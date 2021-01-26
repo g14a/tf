@@ -527,3 +527,115 @@ func AWSAPIGatewayGatewayResponsePrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_account", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayIntegrationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API.",
+		},
+		{
+			Field: "resource_id",
+			Ex:    "",
+			Doc:   "(Required) The API resource ID.",
+		},
+		{
+			Type:  "select",
+			Field: "http_method",
+			Doc:   "(Required) The HTTP method",
+			Items: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTION", "ANY"},
+		},
+		{
+			Type:  "select",
+			Field: "integration_http_method",
+			Doc: "(Optional) The integration HTTP method specifying how API Gateway will interact with the back end. " +
+				"\nRequired if type is AWS, AWS_PROXY, HTTP or HTTP_PROXY. Not all methods are compatible with all AWS integrations. " +
+				"\ne.g. Lambda function can only be invoked via POST." +
+				"\nCheckout https://github.com/awslabs/aws-apigateway-importer/issues/9#issuecomment-129651005",
+			Items: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONs", "ANY", "PATCH"},
+		},
+		{
+			Type:  "select",
+			Field: "type",
+			Doc: "(Required) The integration input's type. An HTTP or HTTP_PROXY integration with a connection_type " +
+				"\nof VPC_LINK is referred to as a private integration and uses a VpcLink to connect API Gateway to a network load balancer of a VPC." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/api-reference/resource/integration/",
+			Items: []string{"HTTP", "MOCK", "AWS", "AWS_PROXY", "HTTP_PROXY"},
+		},
+		{
+			Type:  "select",
+			Field: "connection_type",
+			Doc: "(Optional) The integration input's connectionType. Valid values are INTERNET (default for " +
+				"\nconnections through the public routable internet), and VPC_LINK (for private connections " +
+				"\nbetween API Gateway and a network load balancer in a VPC)." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/api-reference/resource/integration/#connectionType",
+			Items: []string{"INTERNET", "VPC_LINK"},
+		},
+		{
+			Field: "connection_id",
+			Ex:    "",
+			Doc:   "(Optional) The id of the VpcLink used for the integration. Required if connection_type is VPC_LINK",
+		},
+		{
+			Field: "uri",
+			Ex:    "",
+			Doc: "(Optional) The input's URI. Required if type is AWS, AWS_PROXY, HTTP or HTTP_PROXY. " +
+				"\nFor HTTP integrations, the URI must be a fully formed, encoded HTTP(S) URL according " +
+				"\nto the RFC-3986 specification." +
+				"\nCheckout https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_integration#uri",
+		},
+		{
+			Field: "credentials",
+			Ex:    "",
+			Doc: "(Optional) The credentials required for the integration. For AWS integrations, 2 options are available. " +
+				"\nTo specify an IAM Role for Amazon API Gateway to assume, use the role's ARN. To require that the " +
+				"\ncaller's identity be passed through from the request, specify the string arn:aws:iam::\\*:user/\\*",
+		},
+		{
+			Type:  "select",
+			Field: "passthrough_behavior",
+			Doc:   "(Optional) The integration passthrough behavior",
+			Items: []string{"WHEN_NO_MATCH", "WHEN_NO_TEMPLATES", "NEVER"},
+		},
+		{
+			Field: "cache_key_parameters",
+			Ex:    "",
+			Doc:   "(Optional) A list of cache key parameters for the integration.",
+		},
+		{
+			Field: "cache_namespace",
+			Ex:    "",
+			Doc:   "(Optional) The integration's cache namespace.",
+		},
+		{
+			Type:  "select",
+			Field: "content_handling",
+			Doc: "(Optional) Specifies how to handle request payload content type conversions. " +
+				"\nIf this property is not defined, the request payload will be passed through " +
+				"\nfrom the method request to integration request without modification, provided " +
+				"\nthat the passthroughBehaviors is configured to support payload pass-through.",
+			Items: []string{"CONVERT_TO_BINARY", "CONVERT_TO_TEXT"},
+		},
+		{
+			Field:     "timeout_milliseconds",
+			Ex:        "",
+			Doc:       "(Optional) Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds.",
+			Validator: validators.MinMaxIntValidator(50, 29000),
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_integration", blockName, resourceBlock)
+}
