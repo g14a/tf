@@ -455,3 +455,41 @@ func AWSRoute53ZonePrompt() {
 
 	builder.ResourceBuilder("aws_route53_zone", blockName, resourceBlock)
 }
+
+func AWSRoute53ZoneAssociationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	color.Yellow("\nUnless explicit association ordering is required (e.g. a separate cross-account association " +
+		"\nauthorization), usage of this resource is not recommended. Use the vpc configuration blocks available within " +
+		"\nthe aws_route53_zone resource instead.")
+
+	schema := []types.Schema{
+		{
+			Field: "zone_id",
+			Ex:    "",
+			Doc:   "(Required) The private hosted zone to associate.",
+		},
+		{
+			Field: "vpc_id",
+			Ex:    "",
+			Doc:   "(Required) The VPC to associate with the private hosted zone.",
+		},
+		{
+			Field: "vpc_region",
+			Ex:    "",
+			Doc:   "(Optional) The VPC's region. Defaults to the region of the AWS provider.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_route53_zone_association", blockName, resourceBlock)
+}
