@@ -631,6 +631,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSRoute53QueryLogPrompt()
 	case "aws_route53_record":
 		resourceprompts.AWSRoute53RecordPrompt()
+	case "aws_route53_vpc_association_authorization":
+		resourceprompts.AWSRoute53VPCAssociationAuthorizationPrompt()
+	case "aws_route53_zone":
+		resourceprompts.AWSRoute53ZonePrompt()
 	default:
 		color.Red("No support added yet for your resource! Coming soon...")
 		color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")

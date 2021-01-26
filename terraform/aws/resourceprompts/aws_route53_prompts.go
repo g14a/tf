@@ -353,3 +353,105 @@ func AWSRoute53RecordPrompt() {
 
 	builder.ResourceBuilder("aws_route53_record", blockName, resourceBlock)
 }
+
+func AWSRoute53VPCAssociationAuthorizationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "zone_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the private hosted zone that you want to authorize associating a VPC with.",
+		},
+		{
+			Field: "vpc_id",
+			Ex:    "",
+			Doc:   "(Required) The VPC to authorize for association with the private hosted zone.",
+		},
+		{
+			Field: "vpc_region",
+			Ex:    "",
+			Doc:   "(Optional) The VPC's region. Defaults to the region of the AWS provider.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_route53_vpc_association_authorization", blockName, resourceBlock)
+}
+
+func AWSRoute53ZonePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) This is the name of the hosted zone.",
+		},
+		{
+			Field: "comment",
+			Ex:    "",
+			Doc:   "(Optional) A comment for the hosted zone. Defaults to 'Managed by Terraform'.",
+		},
+		{
+			Field: "delegation_set_id",
+			Ex:    "",
+			Doc: "(Optional) The ID of the reusable delegation set whose NS records you " +
+				"\nwant to assign to the hosted zone. Conflicts with vpc as delegation " +
+				"\nsets can only be used for public zones.",
+		},
+		{
+			Field:     "force_destroy",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether to destroy all records (possibly managed outside of Terraform) in the zone when destroying the zone.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the zone.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Green("\nEnter vpc:\n(Optional) Configuration block(s) specifying VPC(s) to associate with a private hosted zone. " +
+		"\nConflicts with the delegation_set_id argument in this resource" +
+		"\nThe vpc block supports the following arguments:" +
+		"\n1.vpc_id\n2.vpc_region")
+
+	vpcSchema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex:    "",
+			Doc:   "(Required) ID of the VPC to associate.",
+		},
+		{
+			Field: "vpc_region",
+			Ex:    "",
+			Doc:   "(Optional) Region of the VPC to associate. Defaults to AWS provider region.",
+		},
+	}
+
+	resourceBlock["vpc"] = builder.PSOrder(types.ProvidePS(vpcSchema))
+
+	builder.ResourceBuilder("aws_route53_zone", blockName, resourceBlock)
+}
