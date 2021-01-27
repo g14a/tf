@@ -179,12 +179,14 @@ func AWSAPIGatewayBasePathMappingPrompt() {
 		{
 			Field: "stage_name",
 			Ex:    "",
-			Doc:   "(Optional) The name of a specific deployment stage to expose at the given path. If omitted, callers may select any stage by including its name as a path element after the base path.",
+			Doc: "(Optional) The name of a specific deployment stage to expose at the given path. " +
+				"\nIf omitted, callers may select any stage by including its name as a path element after the base path.",
 		},
 		{
 			Field: "base_path",
 			Ex:    "",
-			Doc:   "(Optional) Path segment that must be prepended to the path when accessing the API via this mapping. If omitted, the API is exposed at the root of the given domain.",
+			Doc: "(Optional) Path segment that must be prepended to the path when accessing the API via this mapping. " +
+				"\nIf omitted, the API is exposed at the root of the given domain.",
 		},
 	}
 
@@ -243,7 +245,9 @@ func AWSAPIGatewayDeploymentPrompt() {
 		{
 			Field: "stage_name",
 			Ex:    "",
-			Doc:   "(Optional) The name of the stage. If the specified stage already exists, it will be updated to point to the new deployment. If the stage does not exist, a new one will be created and point to this deployment.",
+			Doc: "(Optional) The name of the stage. If the specified stage already exists, it will be updated to " +
+				"\npoint to the new deployment. If the stage does not exist, a new one will be created " +
+				"\nand point to this deployment.",
 		},
 		{
 			Field: "description",
@@ -289,7 +293,9 @@ func AWSAPIGatewayDocumentationPartPrompt() {
 		{
 			Field: "properties",
 			Ex:    "",
-			Doc:   "(Required) A content map of API-specific key-value pairs describing the targeted API entity. The map must be encoded as a JSON string, e.g., \"{ \\\"description\\\": \\\"The API does …\\\" }\". Only Swagger-compliant key-value pairs can be exported and, hence, published.",
+			Doc: "(Required) A content map of API-specific key-value pairs describing the targeted API entity. " +
+				"\nThe map must be encoded as a JSON string, e.g., \"{ \\\"description\\\": \\\"The API does …\\\" }\". " +
+				"\nOnly Swagger-compliant key-value pairs can be exported and, hence, published.",
 		},
 		{
 			Field: "rest_api_id",
@@ -411,17 +417,23 @@ func AWSAPIGatewayDomainNamePrompt() {
 		{
 			Field: "certificate_name",
 			Ex:    "",
-			Doc:   "(Optional) The unique name to use when registering this certificate as an IAM server certificate. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name. Required if certificate_arn is not set.",
+			Doc: "(Optional) The unique name to use when registering this certificate as an IAM server certificate. " +
+				"\nConflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name. Required if certificate_arn is not set.",
 		},
 		{
 			Field: "certificate_body",
 			Ex:    "",
-			Doc:   "(Optional) The certificate issued for the domain name being registered, in PEM format. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
+			Doc: "(Optional) The certificate issued for the domain name being registered, in PEM format. " +
+				"\nOnly valid for EDGE endpoint configuration type. Conflicts with certificate_arn, " +
+				"\nregional_certificate_arn, and regional_certificate_name",
 		},
 		{
 			Field: "certificate_chain",
 			Ex:    "",
-			Doc:   "(Optional) The certificate for the CA that issued the certificate, along with any intermediate CA certificates required to create an unbroken chain to a certificate trusted by the intended API clients. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, regional_certificate_arn, and regional_certificate_name",
+			Doc: "(Optional) The certificate for the CA that issued the certificate, along with any intermediate " +
+				"\nCA certificates required to create an unbroken chain to a certificate trusted by the intended " +
+				"\nAPI clients. Only valid for EDGE endpoint configuration type. Conflicts with certificate_arn, " +
+				"\nregional_certificate_arn, and regional_certificate_name",
 		},
 		{
 			Field: "certificate_private_key",
@@ -630,7 +642,7 @@ func AWSAPIGatewayIntegrationPrompt() {
 		{
 			Field:     "timeout_milliseconds",
 			Ex:        "",
-			Doc:       "(Optional) Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds.",
+			Doc:       "(Optional) Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 ms.",
 			Validator: validators.MinMaxIntValidator(50, 29000),
 		},
 	}
@@ -693,15 +705,16 @@ func AWSAPIGatewayIntegrationResponsePrompt() {
 			Items: []string{"CONVERT_TO_BINARY", "CONVERT_TO_TEXT"},
 		},
 		{
-			Field: "response_templates",
-			Ex:    "k1=v1,k2=v2",
-			Doc:   "(Optional) A map specifying the templates used to transform the integration response body",
+			Field:     "response_templates",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map specifying the templates used to transform the integration response body",
 			Validator: validators.RCValidator,
 		},
 		{
 			Field: "response_parameters",
 			Ex:    "k1=v1,k2=v2",
-			Doc:   "(Optional) A map of response parameters that can be read from the backend response. For example: response_parameters = { \"method.response.header.X-Some-Header\" = \"integration.response.header.X-Some-Other-Header\" }",
+			Doc: "(Optional) A map of response parameters that can be read from the backend response. " +
+				"\nFor example: response_parameters = { \"method.response.header.X-Some-Header\" = \"integration.response.header.X-Some-Other-Header\" }",
 			Validator: validators.RCValidator,
 		},
 	}
@@ -709,4 +722,82 @@ func AWSAPIGatewayIntegrationResponsePrompt() {
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_api_gateway_integration_response", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayMethodPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "resource_id",
+			Ex:    "",
+			Doc:   "(Required) The API resource ID",
+		},
+		{
+			Type:  "select",
+			Field: "http_method",
+			Doc:   "(Required) The HTTP method",
+			Items: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "ANY"},
+		},
+		{
+			Type:  "select",
+			Field: "authorization",
+			Doc:   "(Required) The type of authorization used for the method",
+			Items: []string{"NONE", "CUSTOM", "AWS_IAM", "COGNITO_USER_POOLS"},
+		},
+		{
+			Field: "authorizer_id",
+			Ex:    "",
+			Doc:   "(Optional) The authorizer id to be used when the authorization is CUSTOM or COGNITO_USER_POOLS",
+		},
+		{
+			Field: "authorization_scopes",
+			Ex:    "",
+			Doc:   "(Optional) The authorization scopes used when the authorization is COGNITO_USER_POOLS",
+		},
+		{
+			Field: "api_key_required",
+			Ex:    "",
+			Doc:   "(Optional) Specify if the method requires an API key",
+		},
+		{
+			Field: "operation_name",
+			Ex:    "",
+			Doc: "(Optional) The function name that will be given to the method when generating an " +
+				"\nSDK through API Gateway. If omitted, API Gateway will generate a function name " +
+				"\nbased on the resource path and HTTP verb.",
+		},
+		{
+			Field: "request_validator_id",
+			Ex:    "",
+			Doc:   "(Optional) The ID of a aws_api_gateway_request_validator",
+		},
+		{
+			Field: "request_parameters",
+			Ex:    "",
+			Doc: "(Optional) A map of request parameters (from the path, query string and headers) " +
+				"\nthat should be passed to the integration. The boolean value indicates whether the " +
+				"\nparameter is required (true) or optional (false). For example: request_parameters = " +
+				"\n{\"method.request.header.X-Some-Header\" = true \"method.request.querystring.some-query-param\" = true} " +
+				"\nwould define that the header X-Some-Header and the query string some-query-param " +
+				"\nmust be provided in the request.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_method", blockName, resourceBlock)
 }
