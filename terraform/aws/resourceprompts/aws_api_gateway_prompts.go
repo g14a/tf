@@ -639,3 +639,74 @@ func AWSAPIGatewayIntegrationPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_integration", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayIntegrationResponsePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "resource_id",
+			Ex:    "",
+			Doc:   "(Required) The API resource ID",
+		},
+		{
+			Type:  "select",
+			Field: "http_method",
+			Doc:   "(Required) The HTTP method",
+			Items: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "ANY"},
+		},
+		{
+			Field: "status_code",
+			Ex:    "",
+			Doc:   "(Required) The HTTP status code",
+		},
+		{
+			Field: "selection_pattern",
+			Ex:    "",
+			Doc: "(Optional) Specifies the regular expression pattern used to choose " +
+				"\nan integration response based on the response from the backend. " +
+				"\nOmit configuring this to make the integration the default one. " +
+				"\nIf the backend is an AWS Lambda function, the AWS Lambda function " +
+				"\nerror header is matched. For all other HTTP and AWS backends, " +
+				"\nthe HTTP status code is matched.",
+		},
+		{
+			Type:  "select",
+			Field: "content_handling",
+			Doc: "(Optional) Specifies how to handle request payload content type conversions. " +
+				"\nSupported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT. If this property " +
+				"\nis not defined, the response payload will be passed through from the integration " +
+				"\nresponse to the method response without modification.",
+			Items: []string{"CONVERT_TO_BINARY", "CONVERT_TO_TEXT"},
+		},
+		{
+			Field: "response_templates",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A map specifying the templates used to transform the integration response body",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field: "response_parameters",
+			Ex:    "k1=v1,k2=v2",
+			Doc:   "(Optional) A map of response parameters that can be read from the backend response. For example: response_parameters = { \"method.response.header.X-Some-Header\" = \"integration.response.header.X-Some-Other-Header\" }",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_integration_response", blockName, resourceBlock)
+}
