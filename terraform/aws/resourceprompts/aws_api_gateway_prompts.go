@@ -1182,7 +1182,7 @@ func AWSAPIGatewayRestAPIPrompt() {
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
-	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
+	color.Yellow("\nConfigure nested settings like endpoint_configuration [y/n]?\n\n", "text")
 
 	ynPrompt := promptui.Prompt{
 		Label: "",
@@ -1251,9 +1251,9 @@ func AWSAPIGatewayStagePrompt() {
 			Doc:   "(Required) The ID of the deployment that the stage points to",
 		},
 		{
-			Field: "cache_cluster_enabled",
-			Ex:    "(true/false)",
-			Doc:   "(Optional) Specifies whether a cache cluster is enabled for the stage",
+			Field:     "cache_cluster_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether a cache cluster is enabled for the stage",
 			Validator: validators.BoolValidator,
 		},
 		{
@@ -1299,7 +1299,7 @@ func AWSAPIGatewayStagePrompt() {
 
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
-	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
+	color.Yellow("\nConfigure nested settings like access_log_settings [y/n]?\n\n", "text")
 
 	ynPrompt := promptui.Prompt{
 		Label: "",
@@ -1332,4 +1332,127 @@ func AWSAPIGatewayStagePrompt() {
 	resourceBlock["access_log_settings"] = builder.PSOrder(types.ProvidePS(accessLogSettingsSchema))
 
 	builder.ResourceBuilder("aws_api_gateway_stage", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayUsagePlanPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) The name of the usage plan.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of a usage plan.",
+		},
+		{
+			Field: "product_code",
+			Ex:    "",
+			Doc:   "(Optional) The AWS Marketplace product identifier to associate with the usage plan as a SaaS product on AWS Marketplace.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like quota_settings/throttle_settings [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_api_gateway_usage_plan", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter api_stages:\n(Optional) The associated API stages of the usage plan." +
+		"\nThe api_stages block supports the following:" +
+		"\n1.api_id\n2.stage\n")
+
+	apiStagesSchema := []types.Schema{
+		{
+			Field: "api_id",
+			Ex:    "",
+			Doc:   "(Required) - API Id of the associated API stage in a usage plan.",
+		},
+		{
+			Field: "stages",
+			Ex:    "",
+			Doc:   "(Required) - API stage name of the associated API stage in a usage plan.",
+		},
+	}
+
+	resourceBlock["api_stages"] = builder.PSOrder(types.ProvidePS(apiStagesSchema))
+
+	color.Green("\nEnter quota_settings:\n(Optional) The quota settings of the usage plan." +
+		"\nThe quota_settings block supports the following:" +
+		"\n1.limit\n2.offset\n3.period:\n")
+
+	quotaSettingsSchema := []types.Schema{
+		{
+			Field:     "limit",
+			Ex:        "100",
+			Doc:       "(Optional) - The maximum number of requests that can be made in a given time period.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field:     "offset",
+			Ex:        "100",
+			Doc:       "(Optional) - The number of requests subtracted from the given limit in the initial time period.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Type:  "select",
+			Field: "period",
+			Doc:   "(Optional) - The time period in which the limit applies.",
+			Items: []string{"DAY", "WEEK", "MONTH"},
+		},
+	}
+
+	resourceBlock["quota_settings"] = builder.PSOrder(types.ProvidePS(quotaSettingsSchema))
+
+	color.Green("\nEnter throttle_settings:\n(Optional) The throttling limits of the usage plan." +
+		"\nThe quota_settings block supports the following:" +
+		"\n1.burst_limit\n2.rate_limit\n")
+
+	throttleSettingsSchema := []types.Schema{
+		{
+			Field:     "burst_limit",
+			Ex:        "100",
+			Doc:       "(Optional) - The API request burst limit, the maximum rate limit over a time ranging from one to a few seconds, depending upon whether the underlying token bucket is at its full capacity.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field:     "rate_limit",
+			Ex:        "100",
+			Doc:       "(Optional) - The API request steady-state rate limit.",
+			Validator: validators.IntValidator,
+		},
+	}
+
+	resourceBlock["throttle_settings"] = builder.PSOrder(types.ProvidePS(throttleSettingsSchema))
+
+	builder.ResourceBuilder("aws_api_gateway_usage_plan", blockName, resourceBlock)
 }

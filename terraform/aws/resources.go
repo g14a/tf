@@ -621,6 +621,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSAPIGatewayRestAPIPrompt()
 	case "aws_api_gateway_stage":
 		resourceprompts.AWSAPIGatewayStagePrompt()
+	case "aws_api_gateway_usage_plan":
+		resourceprompts.AWSAPIGatewayUsagePlanPrompt()
 	case "aws_lambda_alias":
 		resourceprompts.AWSLambdaAliasPrompt()
 	case "aws_lambda_code_signing_config":
