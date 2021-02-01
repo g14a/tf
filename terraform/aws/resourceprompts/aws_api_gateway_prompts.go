@@ -473,7 +473,7 @@ func AWSAPIGatewayDomainNamePrompt() {
 	}
 
 	if yn == "n" || yn == "" {
-		builder.ProviderBuilder("aws_api_gateway_domain_name", resourceBlock)
+		builder.ResourceBuilder("aws_api_gateway_domain_name", blockName, resourceBlock)
 		return
 	}
 
@@ -1083,4 +1083,139 @@ func AWSAPIGatewayResourcePrompt() {
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_api_gateway_resource", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayRestAPIPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc: "(Required) Name of the REST API. If importing an OpenAPI specification via the body argument, " +
+				"\nthis corresponds to the info.title field. If the argument value is different than the OpenAPI " +
+				"\nvalue, the argument value will override the OpenAPI value.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc: "(Optional) Description of the REST API. If importing an OpenAPI specification via the body argument," +
+				"\nthis corresponds to the info.description field. If the argument value is provided and is different" +
+				"\nthan the OpenAPI value, the argument value will override the OpenAPI value.",
+		},
+		{
+			Field: "binary_media_types",
+			Ex:    "[\"t1\",\"t2\"]",
+			Doc: "(Optional) List of binary media types supported by the REST API. By default, the REST API supports " +
+				"\nonly UTF-8-encoded text payloads. If importing an OpenAPI specification via the body argument, " +
+				"\nthis corresponds to the x-amazon-apigateway-binary-media-types extension. If the argument value " +
+				"\nis provided and is different than the OpenAPI value, the argument value will override the OpenAPI value.",
+		},
+		{
+			Field: "minimum_compression_size",
+			Ex:    "",
+			Doc: "(Optional) Minimum response size to compress for the REST API. Integer between -1 and 10485760 (10MB). " +
+				"\nSetting a value greater than -1 will enable compression, -1 disables compression (default). " +
+				"\nIf importing an OpenAPI specification via the body argument, this corresponds to the x-amazon-apigateway-minimum-compression-size " +
+				"\nextension. If the argument value (except -1) is provided and is different than the OpenAPI value, " +
+				"\nthe argument value will override the OpenAPI value.",
+			Validator: validators.MinMaxIntValidator(-1, 10485760),
+		},
+		{
+			Field: "body",
+			Ex:    "",
+			Doc: "(Optional) OpenAPI specification that defines the set of routes and integrations to create " +
+				"\nas part of the REST API. This configuration, and any updates to it, will replace all REST" +
+				"\nAPI configuration except values overridden in this resource configuration and other " +
+				"\nresource updates applied after this resource but before any aws_api_gateway_deployment creation." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html",
+		},
+		{
+			Field: "parameters",
+			Ex:    "",
+			Doc: "(Optional) Map of customizations for importing the specification in the body argument. " +
+				"\nFor example, to exclude DocumentationParts from an imported API, set ignore equal to documentation." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html",
+		},
+		{
+			Field: "policy",
+			Ex:    "",
+			Doc: "(Optional) JSON formatted policy document that controls access to the API Gateway. " +
+				"\nFor more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide. Terraform will only perform drift detection of its value when present in a configuration. It is recommended to use the aws_api_gateway_rest_api_policy resource instead. If importing an OpenAPI specification via the body argument, this corresponds to the x-amazon-apigateway-policy extension. If the argument value is provided and is different than the OpenAPI value, the argument value will override the OpenAPI value.",
+		},
+		{
+			Type:  "select",
+			Field: "api_key_source",
+			Doc: "(Optional) Source of the API key for requests. If importing an OpenAPI specification " +
+				"\nvia the body argument, this corresponds to the x-amazon-apigateway-api-key-source extension. " +
+				"\nIf the argument value is provided and is different than the OpenAPI value, the argument " +
+				"\nvalue will override the OpenAPI value.",
+			Items: []string{"HEADER", "AUTHORIZER"},
+		},
+		{
+			Field: "disable_executable_api_endpoint",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specifies whether clients can invoke your API by using the default " +
+				"\nexecute-api endpoint. By default, clients can invoke your API with the default " +
+				"\nhttps://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients " +
+				"\nuse a custom domain name to invoke your API, disable the default endpoint. " +
+				"\nDefaults to false. If importing an OpenAPI specification via the body argument, " +
+				"\nthis corresponds to the x-amazon-apigateway-endpoint-configuration extension " +
+				"\ndisableExecuteApiEndpoint property. If the argument value is true and is different " +
+				"\nthan the OpenAPI value, the argument value will override the OpenAPI value.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_api_gateway_rest_api", blockName, resourceBlock)
+		return
+	}
+
+	endpointConfigurationSchema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "types",
+			Doc: "(Required) A list of endpoint types. This resource currently only supports managing a single value. If unspecified, defaults to EDGE. Must be declared as REGIONAL in non-Commercial partitions. Refer to the documentation for more information on the difference between edge-optimized and regional APIs." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/create-regional-api.html",
+			Items: []string{"EDGE", "RELATIONAL", "PRIVATE"},
+		},
+		{
+			Field: "vpc_endpoint_ids",
+			Ex:    "",
+			Doc: "(Optional) Set of VPC Endpoint identifiers. It is only supported for PRIVATE endpoint type. If importing an OpenAPI specification via the body argument, this corresponds to the x-amazon-apigateway-endpoint-configuration extension vpcEndpointIds property. If the argument value is provided and is different than the OpenAPI value, the argument value will override the OpenAPI value." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions-endpoint-configuration.html",
+		},
+	}
+
+	resourceBlock["endpoint_configuration"] = builder.PSOrder(types.ProvidePS(endpointConfigurationSchema))
+
+	builder.ResourceBuilder("aws_api_gateway_rest_api", blockName, resourceBlock)
 }
