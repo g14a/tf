@@ -1050,3 +1050,37 @@ func AWSAPIGatewayRequestValidatorPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_request_validator", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayResourcePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "parent_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the parent API resource",
+		},
+		{
+			Field: "path_part",
+			Ex:    "",
+			Doc:   "(Required) The last path segment of this API resource.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_resource", blockName, resourceBlock)
+}
