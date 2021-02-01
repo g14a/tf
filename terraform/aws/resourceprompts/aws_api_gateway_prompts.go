@@ -1009,3 +1009,44 @@ func AWSAPIGatewayModelPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_model", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayRequestValidatorPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) The name of the request validator",
+		},
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated Rest API",
+		},
+		{
+			Field:     "validate_request_body",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Boolean whether to validate request body. Defaults to false.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "validate_request_parameters",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Boolean whether to validate request parameters. Defaults to false",
+			Validator: validators.BoolValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_request_validator", blockName, resourceBlock)
+}

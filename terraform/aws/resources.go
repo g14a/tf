@@ -613,6 +613,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSAPIGatewayMethodSettingsPrompt()
 	case "aws_api_gateway_model":
 		resourceprompts.AWSAPIGatewayModelPrompt()
+	case "aws_api_gateway_request_validator":
+		resourceprompts.AWSAPIGatewayRequestValidatorPrompt()
 	case "aws_lambda_alias":
 		resourceprompts.AWSLambdaAliasPrompt()
 	case "aws_lambda_code_signing_config":
