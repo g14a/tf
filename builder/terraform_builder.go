@@ -165,6 +165,9 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 				strBuilder.WriteString(fmt.Sprintf("%s = %t\n", k, v.MapIndex(k)))
 			case strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]"):
 				strBuilder.WriteString(fmt.Sprintf("%s = %s\n", k, v.MapIndex(k)))
+			case strings.HasPrefix(s, "{") && strings.HasSuffix(s, "}"):
+				strBuilder.WriteString(fmt.Sprintf("%s = <<EOF\n%s\nEOF\n", k, v.MapIndex(k)))
+
 			default:
 				strBuilder.WriteString(fmt.Sprintf("%s = \"%s\"\n", k, v.MapIndex(k)))
 			}

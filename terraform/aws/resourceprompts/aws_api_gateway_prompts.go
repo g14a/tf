@@ -965,3 +965,47 @@ func AWSAPIGatewayMethodSettingsPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_method_settings", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayModelPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) The name of the model",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the model",
+		},
+		{
+			Field: "content_type",
+			Ex:    "",
+			Doc:   "(Required) The content type of the model",
+		},
+		{
+			Field: "schema",
+			Ex:    "",
+			Doc:   "(Required) The schema of the model in a JSON form",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_model", blockName, resourceBlock)
+}
