@@ -122,6 +122,7 @@ func resources() []string {
 		"aws_api_gateway_request_validator",
 		"aws_api_gateway_resource",
 		"aws_api_gateway_rest_api",
+		"aws_api_gateway_rest_api_policy",
 		"aws_api_gateway_stage",
 		"aws_api_gateway_usage_plan",
 		"aws_api_gateway_usage_plan_key",
@@ -625,6 +626,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSAPIGatewayUsagePlanPrompt()
 	case "aws_api_gateway_usage_plan_key":
 		resourceprompts.AWSAPIGatewayUsagePlanKeyPrompt()
+	case "aws_api_gateway_vpc_link":
+		resourceprompts.AWSAPIGatewayVPCLinkPrompt()
 	case "aws_lambda_alias":
 		resourceprompts.AWSLambdaAliasPrompt()
 	case "aws_lambda_code_signing_config":

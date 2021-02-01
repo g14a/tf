@@ -1491,3 +1491,43 @@ func AWSAPIGatewayUsagePlanKeyPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_usage_plan_key", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayVPCLinkPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Ex:    "",
+			Doc:   "(Required) The name used to label and identify the VPC link.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the VPC link.",
+		},
+		{
+			Field: "target_arns",
+			Ex:    "",
+			Doc:   "(Required, ForceNew) The list of network load balancer arns in the VPC targeted by the VPC link. Currently AWS only supports 1 target.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_vpc_link", blockName, resourceBlock)
+}
