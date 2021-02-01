@@ -1456,3 +1456,38 @@ func AWSAPIGatewayUsagePlanPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_usage_plan", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayUsagePlanKeyPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "key_id",
+			Ex:    "",
+			Doc:   "(Required) The identifier of the API key resource.",
+		},
+		{
+			Type:  "select",
+			Field: "key_type",
+			Doc:   "(Required) The type of the API key resource. Currently, the valid key type is API_KEY.",
+			Items: []string{"API_KEY"},
+		},
+		{
+			Field: "usage_plan_id",
+			Ex:    "",
+			Doc:   "(Required) The Id of the usage plan resource representing to associate the key to.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_usage_plan_key", blockName, resourceBlock)
+}
