@@ -801,3 +801,167 @@ func AWSAPIGatewayMethodPrompt() {
 
 	builder.ResourceBuilder("aws_api_gateway_method", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayMethodResponsePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "resource_id",
+			Ex:    "",
+			Doc:   "(Required) The API resource ID",
+		},
+		{
+			Type:  "select",
+			Field: "http_method",
+			Doc:   "(Required) The HTTP Method",
+			Items: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "ANY"},
+		},
+		{
+			Field: "status_code",
+			Ex:    "",
+			Doc:   "(Required) The HTTP status code",
+		},
+		{},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_api_gateway_method_response", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayMethodSettingsPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the REST API",
+		},
+		{
+			Field: "stage_name",
+			Ex:    "",
+			Doc:   "(Required) The name of the stage",
+		},
+		{
+			Field: "method_path",
+			Ex:    "",
+			Doc:   "(Required) Method path defined as {resource_path}/{http_method} for an individual method override, or */* for overriding all methods in the stage.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like settings [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_api_gateway_method_settings", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("\nEnter settings:\n(Required) The settings block:\n" +
+		"\nThe settings block supports the following:\n" +
+		"\n1.metrics_enabled\n2.logging_level\n3.data_trace_enabled\n4.throttling_burst_limit\n5.throttling_late_limit" +
+		"\n6.caching_enabled\n7.caching_ttl_in_seconds\n8.cache_data_encrypted\n9.require_authorization_for_cache_control\n10.unauthorized_cache_control_header_strategy")
+
+	settingsSchema := []types.Schema{
+		{
+			Field:     "metrics_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether Amazon CloudWatch metrics are enabled for this method.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Type:  "select",
+			Field: "logging_level",
+			Doc:   "(Optional) Specifies the logging level for this method, which effects the log entries pushed to Amazon CloudWatch Logs.",
+			Items: []string{"OFF", "ERROR", "INFO"},
+		},
+		{
+			Field: "data_trace_enabled",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specifies whether data trace logging is enabled for this method, " +
+				"\nwhich effects the log entries pushed to Amazon CloudWatch Logs.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "throttling_burst_limit",
+			Ex:        "1",
+			Doc:       "(Optional) Specifies the throttling burst limit. Default: -1 (throttling disabled)",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field:     "throttling_rate_limit",
+			Ex:        "1",
+			Doc:       "(Optional) Specifies the throttling rate limit. Default: -1 (throttling disabled)",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field: "caching_enabled",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specifies whether responses should be cached and returned for requests. " +
+				"\nA cache cluster must be enabled on the stage for responses to be cached.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field: "caching_ttl_in_seconds",
+			Ex:    "10",
+			Doc: "(Optional) Specifies the time to live (TTL), in seconds, for cached responses. " +
+				"\nThe higher the TTL, the longer the response will be cached.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field:     "cache_data_encrypted",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether the cached responses are encrypted.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "require_authorization_for_cache_control",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether authorization is required for a cache invalidation request.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Type:  "select",
+			Field: "unauthorized_cache_control_header_strategy",
+			Doc:   "(Optional) Specifies how to handle unauthorized requests for cache invalidation.",
+			Items: []string{"FAIL_WITH_403", "SUCCEED_WITH_RESPONSE_HEADER", "SUCCEED_WITHOUT_RESPONSE_HEADER"},
+		},
+	}
+
+	resourceBlock["settings"] = builder.PSOrder(types.ProvidePS(settingsSchema))
+
+	builder.ResourceBuilder("aws_api_gateway_method_settings", blockName, resourceBlock)
+}

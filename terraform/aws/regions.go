@@ -1,8 +1,9 @@
 package aws
 
 import (
-	"github.com/fatih/color"
 	"strings"
+
+	"github.com/fatih/color"
 
 	"github.com/g14a/tf/types"
 	"github.com/manifoldco/promptui"
