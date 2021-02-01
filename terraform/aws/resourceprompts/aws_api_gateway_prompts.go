@@ -2,7 +2,6 @@ package resourceprompts
 
 import (
 	"fmt"
-
 	"github.com/g14a/tf/builder"
 	"github.com/g14a/tf/types"
 	"github.com/g14a/tf/validators"
@@ -1218,4 +1217,119 @@ func AWSAPIGatewayRestAPIPrompt() {
 	resourceBlock["endpoint_configuration"] = builder.PSOrder(types.ProvidePS(endpointConfigurationSchema))
 
 	builder.ResourceBuilder("aws_api_gateway_rest_api", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayRestAPIPolicyPrompt() {
+
+}
+
+func AWSAPIGatewayStagePrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "rest_api_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the associated REST API",
+		},
+		{
+			Field: "stage_name",
+			Ex:    "",
+			Doc:   "(Required) The name of the stage",
+		},
+		{
+			Field: "deployment_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the deployment that the stage points to",
+		},
+		{
+			Field: "cache_cluster_enabled",
+			Ex:    "(true/false)",
+			Doc:   "(Optional) Specifies whether a cache cluster is enabled for the stage",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Type:  "select",
+			Field: "cache_cluster_size",
+			Doc:   "(Optional) The size of the cache cluster for the stage, if enabled.",
+			Items: []string{"0.5", "1.6", "6.1", "13.5", "28.4", "58.2", "118", "237"},
+		},
+		{
+			Field: "client_certificate_id",
+			Ex:    "",
+			Doc:   "(Optional) The identifier of a client certificate for the stage.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) The description of the stage",
+		},
+		{
+			Field: "documentation_version",
+			Ex:    "",
+			Doc:   "(Optional) The version of the associated API documentation",
+		},
+		{
+			Field:     "variable",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map that defines the stage variables",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field:     "xray_tracing_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether active tracing with X-ray is enabled. Defaults to false.",
+			Validator: validators.BoolValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like endpoint_configuration/tags [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_api_gateway_stage", blockName, resourceBlock)
+		return
+	}
+
+	accessLogSettingsSchema := []types.Schema{
+		{
+			Field: "destination_arn",
+			Ex:    "",
+			Doc:   "(Required) The Amazon Resource Name (ARN) of the CloudWatch Logs log group or Kinesis Data Firehose delivery stream to receive access logs. If you specify a Kinesis Data Firehose delivery stream, the stream name must begin with amazon-apigateway-. Automatically removes trailing :* if present.",
+		},
+		{
+			Field: "format",
+			Ex:    "",
+			Doc: "(Required) The formatting and values recorded in the logs. " +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html",
+		},
+	}
+
+	resourceBlock["access_log_settings"] = builder.PSOrder(types.ProvidePS(accessLogSettingsSchema))
+
+	builder.ResourceBuilder("aws_api_gateway_stage", blockName, resourceBlock)
 }
