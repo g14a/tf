@@ -673,29 +673,21 @@ func AWSEC2AvailabilityZoneGroupPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["group_name"] = types.TfPrompt{
-		Label: "Enter group_name:\n:(Required) Name of the Availability Zone Group.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "group_name",
+			Ex:    "",
+			Doc:   "(Required) Name of the Availability Zone Group.",
 		},
-	}
-	promptOrder = append(promptOrder, "group_name")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["opt_in_status"] = types.TfSelect{
-		Label: "Enter opt_in_status:\n(Required) Indicates whether to enable or disable Availability Zone Group. Valid values: opted-in or not-opted-in",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "opt_in_status",
+			Doc:   "(Required) Indicates whether to enable or disable Availability Zone Group.",
 			Items: []string{"opted-in", "not-opted-in"},
 		},
 	}
-	selectOrder = append(selectOrder, "opt_in_status")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ec2_availability_zone_group", blockName, resourceBlock)
 }
@@ -711,109 +703,73 @@ func AWSEC2CapacityReservationPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["availability_zone"] = types.TfPrompt{
-		Label: "Enter availability_zone:\n(Required) The Availability Zone in which to create the Capacity Reservation.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "availability_zone",
+			Ex:    "",
+			Doc:   "(Required) The Availability Zone in which to create the Capacity Reservation.",
 		},
-	}
-	promptOrder = append(promptOrder, "availability_zone")
-
-	prompts["ebs_optimized"] = types.TfPrompt{
-		Label: "Enter ebs_optimized(true/false):\n(Optional) Indicates whether the Capacity Reservation supports EBS-optimized instances.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
+		{
+			Field:     "ebs_optimized",
+			Ex:        "",
+			Doc:       "(Optional) Indicates whether the Capacity Reservation supports EBS-optimized instances.",
+			Validator: validators.BoolValidator,
 		},
-	}
-	promptOrder = append(promptOrder, "ebs_optimized")
-
-	prompts["end_date"] = types.TfPrompt{
-		Label: "Enter end_date:\n(Optional) The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, " +
-			"\nthe reserved capacity is released and you can no longer launch instances into it.",
-		Prompt: promptui.Prompt{
-			Label: "",
+		{
+			Field: "end_date",
+			Ex:    "",
+			Doc:   "(Optional) The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. Valid values: RFC3339 time string (YYYY-MM-DDTHH:MM:SSZ)",
 		},
-	}
-	promptOrder = append(promptOrder, "end_date")
-
-	prompts["ephemeral_storage"] = types.TfPrompt{
-		Label: "Enter ephemeral_storage(true/false):\n(Optional) Indicates whether the Capacity Reservation supports instances with temporary, block-level storage",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "ephemeral_storage")
-
-	prompts["instance_count"] = types.TfPrompt{
-		Label: "Enter instance_count:\n(Required) The number of instances for which to reserve capacity.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.IntValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "instance_count")
-
-	prompts["instance_type"] = types.TfPrompt{
-		Label: "Enter instance_type:\n(Required) The instance type for which to reserve capacity.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "instance_type")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["end_date_type"] = types.TfSelect{
-		Label: "Enter end_date_type:\n(Optional) Indicates the way in which the Capacity Reservation ends.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "end_date_type",
+			Doc:   "(Optional) Indicates the way in which the Capacity Reservation ends.",
 			Items: []string{"unlimited", "limited"},
 		},
-	}
-	selectOrder = append(selectOrder, "end_date_type")
-
-	selects["instance_match_criteria"] = types.TfSelect{
-		Label: "Enter instance_match_criteria:\n(Optional) Indicates the type of instance launches that the Capacity Reservation accepts.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Field:     "ephemeral_storage",
+			Ex:        "",
+			Doc:       "(Optional) Indicates whether the Capacity Reservation supports instances with temporary, block-level storage.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "instance_count",
+			Ex:        "2",
+			Doc:       "(Required) The number of instances for which to reserve capacity.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Type:  "select",
+			Field: "instance_match_criteria",
+			Doc:   "(Optional) Indicates the type of instance launches that the Capacity Reservation accepts",
 			Items: []string{"open", "targeted"},
 		},
-	}
-	selectOrder = append(selectOrder, "instance_match_criteria")
-
-	selects["instance_platform"] = types.TfSelect{
-		Label: "Enter instance_platform:\n(Required) The type of operating system for which to reserve capacity.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Type:  "select",
+			Field: "instance_platform",
+			Doc:   "(Required) The type of operating system for which to reserve capacity.",
 			Items: []string{"Linux/Unix", "Red Hat Enterprise Linux", "SUSE Linux", "Windows", "Windows with SQL Server", "Windows with SQL Server Enterprise", "Windows with SQL Server Standard", "Windows with SQL Server Web"},
 		},
-	}
-	selectOrder = append(selectOrder, "instance_platform")
-
-	selects["tenancy"] = types.TfSelect{
-		Label: "Enter tenancy:\n(Required) The type of operating system for which to reserve capacity.",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Field: "instance_type",
+			Ex:    "",
+			Doc:   "(Required) The instance type for which to reserve capacity.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
+		},
+		{
+			Type:  "select",
+			Field: "tenancy",
+			Doc:   "(Optional) Indicates the tenancy of the Capacity Reservation.",
 			Items: []string{"default", "dedicated"},
 		},
 	}
-	selectOrder = append(selectOrder, "tenancy")
 
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ec2_capacity_reservation", blockName, resourceBlock)
 }
@@ -829,26 +785,21 @@ func AWSEC2CarrierGatewayPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["vpc_id"] = types.TfPrompt{
-		Label: "Enter vpc_id:\n(Required) The ID of the VPC to associate with the carrier gateway.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "vpc_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the VPC to associate with the carrier gateway.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "vpc_id")
 
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ec2_carrier_gateway", blockName, resourceBlock)
 
@@ -865,54 +816,36 @@ func AWSEC2ClientVPNAuthorizationRulePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["client_vpn_endpoint_id"] = types.TfPrompt{
-		Label: "Enter client_vpn_endpoint_id:\n(Required) The ID of the Client VPN endpoint.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "client_vpn_endpoint_id",
+			Ex:    "",
+			Doc:   "(Required) The ID of the Client VPN endpoint.",
+		},
+		{
+			Field:     "target_network_cidr",
+			Ex:        "",
+			Doc:       "(Required) The IPv4 address range, in CIDR notation, of the network to which the authorization rule applies.",
+			Validator: validators.CIDRValidator,
+		},
+		{
+			Field: "access_group_id",
+			Ex:    "",
+			Doc:   "(Optional) The ID of the group to which the authorization rule grants access.",
+		},
+		{
+			Field: "authorize_all_groups",
+			Ex:    "",
+			Doc:   "(Optional) Indicates whether the authorization rule grants access to all clients.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) A brief description of the authorization rule.",
 		},
 	}
-	promptOrder = append(promptOrder, "client_vpn_endpoint_id")
 
-	prompts["target_network_cidr"] = types.TfPrompt{
-		Label: "Enter target_network_cidr:\n(Required) The IPv4 address range, in CIDR notation, of the network to which the authorization rule applies.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "target_network_cidr")
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) A brief description of the authorization rule.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["access_group_id"] = types.TfSelect{
-		Label: "Enter access_group_id:\n(Optional) The ID of the group to which the authorization rule grants access.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"access_group_id", "authorize_all_groups"},
-		},
-	}
-	selectOrder = append(selectOrder, "access_group_id")
-
-	selects["authorize_all_groups"] = types.TfSelect{
-		Label: "Enter authorize_all_groups:\n(Optional) Indicates whether the authorization rule grants access to all clients.",
-		Select: promptui.Select{
-			Label: "",
-			Items: []string{"access_group_id", "authorize_all_groups"},
-		},
-	}
-	selectOrder = append(selectOrder, "authorize_all_groups")
-
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ec2_client_vpn_authorization_rule", blockName, resourceBlock)
 }
@@ -928,74 +861,48 @@ func AWSEC2ClientVPNEndpointPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) Name of the repository.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) Name of the repository.",
+		},
+		{
+			Field: "server_certificate_arn",
+			Ex:    "",
+			Doc:   "(Required) The ARN of the ACM server certificate.",
+		},
+		{
+			Field:     "client_cidr_block",
+			Ex:        "",
+			Doc:       "(Required) The IPv4 address range, in CIDR notation, from which to assign client IP addresses. The address range cannot overlap with the local CIDR of the VPC in which the associated subnet is located, or the routes that you add manually. The address range cannot be changed after the Client VPN endpoint has been created. The CIDR block should be /22 or greater.",
+			Validator: validators.Ipv4CIDRBlockValidator,
+		},
+		{
+			Field: "dns_servers",
+			Ex:    "",
+			Doc:   "(Optional) Information about the DNS servers to be used for DNS resolution. A Client VPN endpoint can have up to two DNS servers. If no DNS server is specified, the DNS address of the VPC that is to be associated with Client VPN endpoint is used as the DNS server.",
+		},
+		{
+			Field:     "split_tunnel",
+			Ex:        "",
+			Doc:       "Optional) Indicates whether split-tunnel is enabled on VPN endpoint. Default value is false",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A mapping of tags to assign to the resource.",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field: "transport_protocol",
+			Ex:    "",
+			Doc:   "(Optional) The transport protocol to be used by the VPN session. Default value is udp",
 		},
 	}
-	promptOrder = append(promptOrder, "description")
 
-	prompts["server_certificate_arn"] = types.TfPrompt{
-		Label: "Enter server_certificate_arn:\n(Required) The ARN of the ACM server certificate.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "server_certificate_arn")
-
-	prompts["client_cidr_block"] = types.TfPrompt{
-		Label: "Enter client_cidr_block:\n(Required) The IPv4 address range, in CIDR notation, from which to assign " +
-			"\nclient IP addresses. The address range cannot overlap with the local CIDR of the " +
-			"\nVPC in which the associated subnet is located, or the routes that you add manually. " +
-			"\nThe address range cannot be changed after the Client VPN endpoint has been created. " +
-			"\nThe CIDR block should be /22 or greater.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "client_cidr_block")
-
-	prompts["dns_servers"] = types.TfPrompt{
-		Label: "Enter dns_servers e.g.[\"s1\",\"s2\"]:\n(Optional) Information about the DNS servers to be used for DNS resolution. " +
-			"\nA Client VPN endpoint can have up to two DNS servers. If no DNS server is specified, the DNS address " +
-			"\nof the VPC that is to be associated with Client VPN endpoint is used as the DNS server.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "dns_servers")
-
-	prompts["split_tunnel"] = types.TfPrompt{
-		Label: "Enter split_tunnel(true/false):\n(Optional) Indicates whether split-tunnel is enabled on VPN endpoint. Default value is false",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "split_tunnel")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A mapping of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	prompts["transport_protocol"] = types.TfPrompt{
-		Label: "Enter transport_protocol:\n(Optional) The transport protocol to be used by the VPN session. Default value is udp",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "transport_protocol")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Green("\nEnter authentication_options:\n(Required) Information about the authentication method to be used to authenticate clients." +
 		"\nauthentication_options supports the following arguments:" +
