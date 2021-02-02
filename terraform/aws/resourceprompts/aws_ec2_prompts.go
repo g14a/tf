@@ -248,23 +248,29 @@ func AWSAMICopyPrompt() {
 		{
 			Field: "source_ami_id",
 			Ex:    "",
-			Doc:   "(Required) The id of the AMI to copy. This id must be valid in the region given by source_ami_region",
+			Doc: "(Required) The id of the AMI to copy. " +
+				"\nThis id must be valid in the region given by source_ami_region",
 		},
 		{
 			Field: "source_ami_region",
 			Ex:    "",
-			Doc:   "(Required) The region from which the AMI will be copied. This may be the same as the AWS provider region in order to create a copy within the same region.",
+			Doc: "(Required) The region from which the AMI will be copied. " +
+				"\nThis may be the same as the AWS provider region in order " +
+				"\nto create a copy within the same region.",
 		},
 		{
-			Field:     "encrypted",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Specifies whether the destination snapshots of the copied image should be encrypted. Defaults to false",
+			Field: "encrypted",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specifies whether the destination snapshots of " +
+				"\nthe copied image should be encrypted. Defaults to false",
 			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "kms_key_id",
 			Ex:    "",
-			Doc:   "(Optional) The full ARN of the KMS Key to use when encrypting the snapshots of an image during a copy operation. If not specified, then the default AWS KMS Key will be used",
+			Doc: "(Optional) The full ARN of the KMS Key to use when encrypting " +
+				"\nthe snapshots of an image during a copy operation. If not specified, " +
+				"\nthen the default AWS KMS Key will be used",
 		},
 		{
 			Field:     "tags",
@@ -460,9 +466,10 @@ func AWSEBSEncryptionByDefaultPrompt() {
 
 	schema := []types.Schema{
 		{
-			Field:     "enabled",
-			Ex:        "(true/false)",
-			Doc:       " (Optional) Whether or not default EBS encryption is enabled. Valid values are true or false. Defaults to true.",
+			Field: "enabled",
+			Ex:    "(true/false)",
+			Doc: " (Optional) Whether or not default EBS encryption is enabled. " +
+				"\nDefaults to true.",
 			Validator: validators.BoolValidator,
 		},
 	}
@@ -588,7 +595,8 @@ func AWSEBSVolumePrompt() {
 		fmt.Println(err)
 	}
 
-	color.Yellow("\nWhen changing the size, iops or type of an instance, there are considerations to be aware of that Amazon have written about this." +
+	color.Yellow("\nWhen changing the size, iops or type of an instance, " +
+		"\nthere are considerations to be aware of that Amazon have written about this." +
 		"\nCheckout http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/considerations.html\n")
 
 	schema := []types.Schema{
@@ -605,12 +613,14 @@ func AWSEBSVolumePrompt() {
 		{
 			Field: "iops",
 			Ex:    "",
-			Doc:   "(Optional) The amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3",
+			Doc: "(Optional) The amount of IOPS to provision for the disk. " +
+				"\nOnly valid for type of io1, io2 or gp3",
 		},
 		{
-			Field:     "multi_attach_enabled",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported exclusively on io1 volumes.",
+			Field: "multi_attach_enabled",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Specifies whether to enable Amazon EBS Multi-Attach. " +
+				"\nMulti-Attach is supported exclusively on io1 volumes.",
 			Validator: validators.BoolValidator,
 		},
 		{
