@@ -430,18 +430,19 @@ func AWSEBSDefaultKMSKeyPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
+	color.Yellow("\nCreating an aws_ebs_default_kms_key resource does not enable " +
+		"\ndefault EBS encryption. Use the `aws_ebs_encryption_by_default` to enable default EBS encryption.")
 
-	prompts["key_arn"] = types.TfPrompt{
-		Label: "Enter key_arn:\n(Required, ForceNew) The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "key_arn",
+			Ex:    "",
+			Doc: "(Required, ForceNew) The ARN of the AWS Key Management Service " +
+				"\n(AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.",
 		},
 	}
-	promptOrder = append(promptOrder, "key_arn")
 
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ebs_default_kms_key", blockName, resourceBlock)
 }
@@ -457,18 +458,16 @@ func AWSEBSEncryptionByDefaultPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["enabled"] = types.TfPrompt{
-		Label: "Enter enabled(true/false):\n(Required, ForceNew) The ARN of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use to encrypt the EBS volume.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field:     "enabled",
+			Ex:        "(true/false)",
+			Doc:       " (Optional) Whether or not default EBS encryption is enabled. Valid values are true or false. Defaults to true.",
+			Validator: validators.BoolValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "enabled")
 
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ebs_encryption_by_default", blockName, resourceBlock)
 }
@@ -484,60 +483,45 @@ func AWSEBSSnapshotPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["volume_id"] = types.TfPrompt{
-		Label: "Enter volume_id(true/false):\n(Required) The Volume ID of which to make a snapshot.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "volume_id",
+			Ex:    "",
+			Doc:   "(Required) The Volume ID of which to make a snapshot.",
+		},
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) A description of what the snapshot is.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the snapshot",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "volume_id")
 
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) A description of what the snapshot is.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "description")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g. k1=v1,k2=v2:\n(Optional) A map of tags to assign to the snapshot",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	color.Green("\nEnter timeouts block:\n" +
 		"The timeout block supports the following arguments:" +
 		"\n1.create\n2.delete\n")
 
-	timeoutsPrompt := map[string]types.TfPrompt{}
-	var nestedPromptOrder []string
-
-	timeoutsPrompt["create"] = types.TfPrompt{
-		Label: "Enter create: e.g. 40m\n(Defaults to 40 mins) Used when creating the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
+	timeoutSchema := []types.Schema{
+		{
+			Field: "create",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for creating the AMI",
+		},
+		{
+			Field: "delete",
+			Ex:    "60s | 10m | 2h",
+			Doc:   "Used for deregistering the AMI",
 		},
 	}
-	nestedPromptOrder = append(nestedPromptOrder, "create")
 
-	timeoutsPrompt["delete"] = types.TfPrompt{
-		Label: "Enter delete: e.g. 40m\n(Defaults to 90 mins) Used when deregistering the AMI",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	nestedPromptOrder = append(nestedPromptOrder, "delete")
-
-	resourceBlock["timeouts"] = builder.PSOrder(nestedPromptOrder, nil, timeoutsPrompt, nil)
+	resourceBlock["timeouts"] = builder.PSOrder(types.ProvidePS(timeoutSchema))
 
 	builder.ResourceBuilder("aws_ebs_snapshot", blockName, resourceBlock)
 }
@@ -553,59 +537,42 @@ func AWSEBSSnapshotCopyPrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder []string
-
-	prompts["description"] = types.TfPrompt{
-		Label: "Enter description:\n(Optional) A description of what the snapshot is.",
-		Prompt: promptui.Prompt{
-			Label: "",
+	schema := []types.Schema{
+		{
+			Field: "description",
+			Ex:    "",
+			Doc:   "(Optional) A description of what the snapshot is.",
+		},
+		{
+			Field:     "encrypted",
+			Ex:        "(true/false)",
+			Doc:       "Whether the snapshot is encrypted.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field: "kms_key_id",
+			Ex:    "",
+			Doc:   "The ARN for the KMS encryption key.",
+		},
+		{
+			Field: "source_snapshot_id",
+			Ex:    "",
+			Doc:   "The ARN for the snapshot to be copied.",
+		},
+		{
+			Field: "source_region",
+			Ex:    "",
+			Doc:   "The region of the source snapshot.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "A map of tags for the snapshot.",
+			Validator: validators.RCValidator,
 		},
 	}
-	promptOrder = append(promptOrder, "description")
 
-	prompts["encrypted"] = types.TfPrompt{
-		Label: "Enter encrypted(true/false):\nWhether the snapshot is encrypted.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "encrypted")
-
-	prompts["kms_key_id"] = types.TfPrompt{
-		Label: "Enter kms_key_id:\nThe ARN for the KMS encryption key.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "kms_key_id")
-
-	prompts["source_snapshot_id"] = types.TfPrompt{
-		Label: "Enter source_snapshot_id:\nThe ARN for the snapshot to be copied.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_snapshot_id")
-
-	prompts["source_region"] = types.TfPrompt{
-		Label: "Enter source_region:\nThe region of the source snapshot.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "source_region")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\nA map of tags for the snapshot.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	resourceBlock := builder.PSOrder(promptOrder, nil, prompts, nil)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ebs_snapshot_copy", blockName, resourceBlock)
 }
@@ -621,101 +588,66 @@ func AWSEBSVolumePrompt() {
 		fmt.Println(err)
 	}
 
-	prompts := map[string]types.TfPrompt{}
-	var promptOrder, selectOrder []string
-
-	prompts["availability_zone"] = types.TfPrompt{
-		Label: "Enter availability_zone:\n(Required) The AZ where the EBS volume will exist.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "availability_zone")
-
-	prompts["iops"] = types.TfPrompt{
-		Label: "Enter iops:\n(Optional) The amount of IOPS to provision for the disk. Only valid for type of io1 or io2",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "iops")
-
-	prompts["multi_attach_enabled"] = types.TfPrompt{
-		Label: "Enter multi_attach_enabled(true/false):\n(Optional) Specifies whether to enable Amazon EBS Multi-Attach. " +
-			"\nMulti-Attach is supported exclusively on io1 volumes.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "multi_attach_enabled")
-
-	prompts["snapshot_id"] = types.TfPrompt{
-		Label: "Enter snapshot_id:\n(Optional) A snapshot to base the EBS volume off of.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "snapshot_id")
-
-	prompts["outpost_arn"] = types.TfPrompt{
-		Label: "Enter outpost_arn:\n(Optional) The Amazon Resource Name (ARN) of the Outpost.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "outpost_arn")
-
-	prompts["tags"] = types.TfPrompt{
-		Label: "Enter tags e.g.k1=v1,k2=v2:\n(Optional) A map of tags to assign to the resource.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.RCValidator,
-		},
-	}
-	promptOrder = append(promptOrder, "tags")
-
-	prompts["kms_key_id"] = types.TfPrompt{
-		Label: "Enter kms_key_id:\n(Optional) The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.",
-		Prompt: promptui.Prompt{
-			Label: "",
-		},
-	}
-	promptOrder = append(promptOrder, "kms_key_id")
-
 	color.Yellow("\nWhen changing the size, iops or type of an instance, there are considerations to be aware of that Amazon have written about this." +
 		"\nCheckout http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/considerations.html\n")
 
-	prompts["encrypted"] = types.TfPrompt{
-		Label: "Enter encrypted(true/false):\n(Optional) If true, the disk will be encrypted.",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
+	schema := []types.Schema{
+		{
+			Field: "availability_zone",
+			Ex:    "",
+			Doc:   "(Required) The AZ where the EBS volume will exist.",
 		},
-	}
-	promptOrder = append(promptOrder, "encrypted")
-
-	prompts["size"] = types.TfPrompt{
-		Label: "Enter size(true/false):\n(Optional) The size of the drive in GiBs",
-		Prompt: promptui.Prompt{
-			Label:    "",
-			Validate: validators.BoolValidator,
+		{
+			Field: "encrypted",
+			Ex:    "(true/false)",
+			Doc:   "(Optional) If true, the disk will be encrypted.",
 		},
-	}
-	promptOrder = append(promptOrder, "size")
-
-	selects := map[string]types.TfSelect{}
-
-	selects["type"] = types.TfSelect{
-		Label: "Enter type:\n(Optional) The type of EBS volume. Defaults to gp2",
-		Select: promptui.Select{
-			Label: "",
+		{
+			Field: "iops",
+			Ex:    "",
+			Doc:   "(Optional) The amount of IOPS to provision for the disk. Only valid for type of io1, io2 or gp3",
+		},
+		{
+			Field:     "multi_attach_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported exclusively on io1 volumes.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "size",
+			Ex:        "10",
+			Doc:       "(Optional) The size of the drive in GiBs.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field: "snapshot_id",
+			Ex:    "",
+			Doc:   "(Optional) A snapshot to base the EBS volume off of.",
+		},
+		{
+			Field: "outpost_arn",
+			Ex:    "",
+			Doc:   "(Optional) The Amazon Resource Name (ARN) of the Outpost.",
+		},
+		{
+			Type:  "select",
+			Field: "type",
+			Doc:   "(Optional) The type of EBS volume.",
 			Items: []string{"standard", "gp2", "io1", "io2", "sc1", "st1"},
 		},
+		{
+			Field: "kms_key_id",
+			Ex:    "",
+			Doc:   "(Optional) The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
+		},
 	}
-	selectOrder = append(selectOrder, "type")
-
-	resourceBlock := builder.PSOrder(promptOrder, selectOrder, prompts, selects)
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_ebs_volume", blockName, resourceBlock)
 }
