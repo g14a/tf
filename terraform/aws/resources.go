@@ -628,6 +628,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSAPIGatewayUsagePlanKeyPrompt()
 	case "aws_api_gateway_vpc_link":
 		resourceprompts.AWSAPIGatewayVPCLinkPrompt()
+	case "aws_apigatewayv2_api":
+		resourceprompts.AWSAPIGatewayV2APIPrompt()
 	case "aws_lambda_alias":
 		resourceprompts.AWSLambdaAliasPrompt()
 	case "aws_lambda_code_signing_config":
