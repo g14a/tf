@@ -116,3 +116,39 @@ func AWSAPIGatewayV2APIPrompt() {
 
 	builder.ResourceBuilder("aws_apigatewayv2_api", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayV2APIMappingPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "domain_name",
+			Doc:   "(Required) The domain name. Use the aws_apigatewayv2_domain_name resource to configure a domain name.",
+		},
+		{
+			Field: "stage",
+			Doc:   "(Required) The API stage. Use the aws_apigatewayv2_stage resource to configure an API stage.",
+		},
+		{
+			Field: "api_mapping_key",
+			Doc: "(Optional) The API mapping key." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-mapping-template-reference.html",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_api_mapping", blockName, resourceBlock)
+}
