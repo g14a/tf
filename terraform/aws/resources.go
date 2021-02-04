@@ -632,6 +632,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		resourceprompts.AWSAPIGatewayV2APIPrompt()
 	case "aws_apigatewayv2_api_mapping":
 		resourceprompts.AWSAPIGatewayV2APIMappingPrompt()
+	case "aws_apigatewayv2_api_authorizer":
+		resourceprompts.AWSAPIGatewayV2AuthorizerPrompt()
+	case "aws_apigatewayv2_deployment":
+		resourceprompts.AWSAPIGatewayV2DeploymentPrompt()
 	case "aws_lambda_alias":
 		resourceprompts.AWSLambdaAliasPrompt()
 	case "aws_lambda_code_signing_config":

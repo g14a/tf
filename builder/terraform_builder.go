@@ -152,6 +152,7 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 			case k.String() == "tags" ||
 				k.String() == "variables" ||
 				k.String() == "metadata" ||
+				k.String() == "triggers" ||
 				k.String() == "response_parameters" ||
 				k.String() == "response_templates":
 				temp := fmt.Sprintf("%s = %s", k, "{\n")
