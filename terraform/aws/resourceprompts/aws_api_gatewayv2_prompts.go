@@ -172,7 +172,9 @@ func AWSAPIGatewayV2AuthorizerPrompt() {
 		{
 			Type:  "select",
 			Field: "authorizer_type",
-			Doc:   "(Required) The authorizer type. Valid values: JWT, REQUEST. Specify REQUEST for a Lambda function using incoming request parameters. For HTTP APIs, specify JWT to use JSON Web Tokens.",
+			Doc: "(Required) The authorizer type. Valid values: JWT, REQUEST. " +
+				"\nSpecify REQUEST for a Lambda function using incoming request parameters. " +
+				"\nFor HTTP APIs, specify JWT to use JSON Web Tokens.",
 			Items: []string{"JWT", "REQUEST"},
 		},
 		{
@@ -181,32 +183,46 @@ func AWSAPIGatewayV2AuthorizerPrompt() {
 		},
 		{
 			Field: "authorizer_credentials_arn",
-			Doc:   "(Optional) The required credentials as an IAM role for API Gateway to invoke the authorizer. Supported only for REQUEST authorizers.",
+			Doc: "(Optional) The required credentials as an IAM role for API " +
+				"\nGateway to invoke the authorizer. Supported only for REQUEST authorizers.",
 		},
 		{
 			Type:  "select",
 			Field: "authorizer_payload_format_version",
-			Doc:   " (Optional) The format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers.",
+			Doc: " (Optional) The format of the payload sent to an HTTP API " +
+				"\nLambda authorizer. Required for HTTP API Lambda authorizers.",
 			Items: []string{"1.0", "2.0"},
 		},
 		{
-			Field:     "authorizer_request_ttl_in_seconds",
-			Doc:       "(Optional) The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Defaults to 300. Supported only for HTTP API Lambda authorizers.",
+			Field: "authorizer_request_ttl_in_seconds",
+			Doc: "(Optional) The time to live (TTL) for cached authorizer results, " +
+				"\nin seconds. If it equals 0, authorization caching is disabled. If it " +
+				"\nis greater than 0, API Gateway caches authorizer responses. The maximum " +
+				"\nvalue is 3600, or 1 hour. Defaults to 300. Supported only for HTTP API Lambda authorizers.",
 			Validator: validators.MinMaxIntValidator(0, 3600),
 		},
 		{
 			Field: "authorizer_uri",
-			Doc:   "(Optional) The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers this must be a well-formed Lambda function URI, such as the invoke_arn attribute of the aws_lambda_function resource. Supported only for REQUEST authorizers. Must be between 1 and 2048 characters in length.",
+			Doc: "(Optional) The authorizer's Uniform Resource Identifier (URI). " +
+				"\nFor REQUEST authorizers this must be a well-formed Lambda function " +
+				"\nURI, such as the invoke_arn attribute of the aws_lambda_function " +
+				"\nresource. Supported only for REQUEST authorizers. Must be between " +
+				"\n1 and 2048 characters in length.",
 		},
 		{
-			Field:     "enable_simple_responses",
-			Ex:        "(true/false)",
-			Doc:       "(Optional) Whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs.",
+			Field: "enable_simple_responses",
+			Ex:    "(true/false)",
+			Doc: "(Optional) Whether a Lambda authorizer returns a response " +
+				"\nin a simple format. If enabled, the Lambda authorizer can return " +
+				"\na boolean value instead of an IAM policy. Supported only for HTTP APIs.",
 			Validator: validators.BoolValidator,
 		},
 		{
 			Field: "identity_sources",
-			Doc:   "(Optional) The identity sources for which authorization is requested. For REQUEST authorizers the value is a list of one or more mapping expressions of the specified request parameters. For JWT authorizers the single entry specifies where to extract the JSON Web Token (JWT) from inbound requests.",
+			Doc: "(Optional) The identity sources for which authorization is requested. " +
+				"\nFor REQUEST authorizers the value is a list of one or more mapping " +
+				"\nexpressions of the specified request parameters. For JWT authorizers " +
+				"\nthe single entry specifies where to extract the JSON Web Token (JWT) from inbound requests.",
 		},
 	}
 
@@ -215,11 +231,13 @@ func AWSAPIGatewayV2AuthorizerPrompt() {
 	jwtConfigurationSchema := []types.Schema{
 		{
 			Field: "audience",
-			Doc:   "(Optional) A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list.",
+			Doc: "(Optional) A list of the intended recipients of the JWT. " +
+				"\nA valid JWT must provide an aud that matches at least one entry in this list.",
 		},
 		{
 			Field: "issuer",
-			Doc:   "(Optional) The base domain of the identity provider that issues JSON Web Tokens, such as the endpoint attribute of the aws_cognito_user_pool resource.",
+			Doc: "(Optional) The base domain of the identity provider that issues " +
+				"\nJSON Web Tokens, such as the endpoint attribute of the aws_cognito_user_pool resource.",
 		},
 	}
 
@@ -256,11 +274,14 @@ func AWSAPIGatewayV2DeploymentPrompt() {
 		},
 		{
 			Field: "description",
-			Doc:   "(Optional) The description for the deployment resource. Must be less than or equal to 1024 characters in length.",
+			Doc: "(Optional) The description for the deployment resource. " +
+				"\nMust be less than or equal to 1024 characters in length.",
 		},
 		{
-			Field:     "triggers",
-			Doc:       "(Optional) A map of arbitrary keys and values that, when changed, will trigger a redeployment. To force a redeployment without changing these keys/values, use the terraform taint command.",
+			Field: "triggers",
+			Doc: "(Optional) A map of arbitrary keys and values that, when changed," +
+				"\n will trigger a redeployment. To force a redeployment without changing" +
+				"\n these keys/values, use the terraform taint command.",
 			Validator: validators.RCValidator,
 		},
 	}
@@ -268,4 +289,298 @@ func AWSAPIGatewayV2DeploymentPrompt() {
 	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
 
 	builder.ResourceBuilder("aws_apigatewayv2_deployment", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayV2DomainNamePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "domain_name",
+			Doc:   "(Required) The domain name. Must be between 1 and 512 characters in length.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the domain name.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Green("Enter domain_name_configuration:\n(Required) The domain name configuration." +
+		"\nThe domain_name_configuration supports the following arguments:" +
+		"\n1.certificate_arn\n2.endpoint_type\n3.security_policy\n")
+
+	domainNameConfigurationSchema := []types.Schema{
+		{
+			Field: "certificate_arn",
+			Doc: "(Required) The ARN of an AWS-managed certificate that will be " +
+				"\nused by the endpoint for the domain name. AWS Certificate Manager " +
+				"\nis the only supported source. Use the aws_acm_certificate resource " +
+				"\nto configure an ACM certificate.",
+		},
+		{
+			Type:  "select",
+			Field: "endpoint_type",
+			Doc:   "(Required) The endpoint type.",
+			Items: []string{"REGIONAL"},
+		},
+		{
+			Type:  "select",
+			Field: "security_policy",
+			Doc: "(Required) The Transport Layer Security (TLS) version of the security " +
+				"\npolicy for the domain name.",
+			Items: []string{"TLS_1_2"},
+		},
+	}
+
+	resourceBlock["domain_name_configuration"] = builder.PSOrder(types.ProvidePS(domainNameConfigurationSchema))
+
+	color.Yellow("\nConfigure nested settings like mutual_tls_configuration [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_apigatewayv2_domain_name", blockName, resourceBlock)
+		return
+	}
+
+	mutualTLSAuthenticationSchema := []types.Schema{
+		{
+			Field: "truststore_uri",
+			Doc: "(Required) An Amazon S3 URL that specifies the truststore for " +
+				"\nmutual TLS authentication, for example, s3://bucket-name/key-name. " +
+				"\nThe truststore can contain certificates from public or private " +
+				"\ncertificate authorities. To update the truststore, upload a new " +
+				"\nversion to S3, and then update your custom domain name to use the new version.",
+		},
+		{
+			Field: "truststore_version",
+			Doc: "(Optional) The version of the S3 object that contains the truststore. " +
+				"\nTo specify a version, you must have versioning enabled for the S3 bucket.",
+		},
+	}
+
+	resourceBlock["mutual_tls_authentication"] = builder.PSOrder(types.ProvidePS(mutualTLSAuthenticationSchema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_domain_name", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayV2IntegrationPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Type:  "select",
+			Field: "integration_type",
+			Doc:   "(Required) The integration type of an integration.",
+			Items: []string{"AWS", "AWS_PROXY", "HTTP", "HTTP_PROXY", "MOCK"},
+		},
+		{
+			Field: "connection_id",
+			Doc: "(Optional) The ID of the VPC link for a private integration. " +
+				"\nSupported only for HTTP APIs. Must be between 1 and 1024 characters in length.",
+		},
+		{
+			Type:  "select",
+			Field: "connection_type",
+			Doc:   "(Optional) The type of the network connection to the integration endpoint. Default is INTERNET.",
+			Items: []string{"INTERNET", "VPC_LINK"},
+		},
+		{
+			Type:  "select",
+			Field: "content_handling_strategy",
+			Doc: "(Optional) How to handle response payload content type conversions. " +
+				"\nSupported only for WebSocket APIs.",
+			Items: []string{"CONVERT_TO_BINARY", "CONVERT_TO_TEXT"},
+		},
+		{
+			Field: "credentials_arn",
+			Doc:   "(Optional) The credentials required for the integration, if any.",
+		},
+		{
+			Field: "description",
+			Doc:   "(Optional) The description of the integration.",
+		},
+		{
+			Field: "integration_method",
+			Doc:   "(Optional) The integration's HTTP method. Must be specified if integration_type is not MOCK.",
+		},
+		{
+			Field: "integration_subtype",
+			Doc: "(Optional) Specifies the AWS service action to invoke. Supported " +
+				"\nonly for HTTP APIs when integration_type is AWS_PROXY. See the " +
+				"\nAWS service integration reference documentation for supported values. " +
+				"\nMust be between 1 and 128 characters in length.",
+		},
+		{
+			Field: "integration_uri",
+			Doc: "(Optional) The URI of the Lambda function for a Lambda proxy integration, " +
+				"\nwhen integration_type is AWS_PROXY. For an HTTP integration, specify a " +
+				"\nfully-qualified URL. For an HTTP API private integration, specify the " +
+				"\nARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service.",
+		},
+		{
+			Type:  "select",
+			Field: "passthrough_behavior",
+			Doc: "(Optional) The pass-through behavior for incoming requests based on " +
+				"\nthe Content-Type header in the request, and the available mapping " +
+				"\ntemplates specified as the request_templates attribute. " +
+				"\nDefault is WHEN_NO_MATCH. Supported only for WebSocket APIs.",
+			Items: []string{"WHEN_NO_MATCH", "WHEN_NO_TEMPLATES", "NEVER"},
+		},
+		{
+			Type:  "select",
+			Field: "payload_format_version",
+			Doc:   "(Optional) The format of the payload sent to an integration.",
+			Items: []string{"1.0", "2.0"},
+		},
+		{
+			Field: "request_parameters",
+			Doc: "(Optional) For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. For HTTP APIs with a specified integration_subtype, a key-value map specifying parameters that are passed to AWS_PROXY integrations. For HTTP APIs without a specified integration_subtype, a key-value map specifying how to transform HTTP requests before sending them to the backend." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html",
+		},
+		{
+			Field: "request_templates",
+			Doc: "(Optional) A map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. Supported only for WebSocket APIs." +
+				"\nCheckout https://velocity.apache.org/",
+		},
+		{
+			Field: "template_selection_expression",
+			Doc: "(Optional) The template selection expression for the integration." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-template-selection-expressions",
+		},
+		{
+			Field:     "timeout_milliseconds",
+			Doc:       "(Optional) Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs. Terraform will only perform drift detection of its value when present in a configuration.",
+			Validator: validators.MinMaxIntValidator(50, 29000),
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	tlsConfigSchema := []types.Schema{
+		{
+			Field: "server_name_to_verify",
+			Doc:   "(Optional) If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
+		},
+	}
+
+	resourceBlock["tls_config"] = builder.PSOrder(types.ProvidePS(tlsConfigSchema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_integration", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayV2IntegrationResponsePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "integration_id",
+			Doc:   "(Required) The identifier of the aws_apigatewayv2_integration.",
+		},
+		{
+			Field: "integration_response_key",
+			Doc:   "(Required) The integration response key.",
+		},
+		{
+			Type:  "select",
+			Field: "content_handling_strategy",
+			Doc:   "(Optional) How to handle response payload content type conversions.",
+			Items: []string{"CONVERT_TO_BINARY", "CONVERT_TO_TEXT"},
+		},
+		{
+			Field: "response_templates",
+			Doc:   "(Optional) A map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client.",
+		},
+		{
+			Field: "template_selection_expression",
+			Doc:   "(Optional) The template selection expression for the integration response.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_integration_response", blockName, resourceBlock)
+}
+
+func AWSAPIGatewayV2ModelPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "content_type",
+			Ex:    "application/json",
+			Doc:   "(Required) The content-type for the model. Must be between 1 and 256 characters in length.",
+		},
+		{
+			Field: "name",
+			Doc:   "(Required) The name of the model. Must be alphanumeric. Must be between 1 and 128 characters in length.",
+		},
+		{
+			Field: "schema",
+			Doc:   "(Required) The schema for the model. This should be a JSON schema draft 4 model. Must be less than or equal to 32768 characters in length.",
+		},
+		{
+			Field: "description",
+			Doc:   "(Optional) The description of the model. Must be between 1 and 128 characters in length.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_model", blockName, resourceBlock)
 }

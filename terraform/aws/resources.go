@@ -2,11 +2,11 @@ package aws
 
 import (
 	"fmt"
+	"github.com/g14a/tf/terraform/aws/resourceprompts"
 	"strings"
 
 	"github.com/fatih/color"
 	boilerplate2 "github.com/g14a/tf/boilerplate"
-	"github.com/g14a/tf/terraform/aws/resourceprompts"
 	"github.com/manifoldco/promptui"
 )
 
@@ -365,315 +365,325 @@ func ResourcePrompt(resource string, boilerplate bool) {
 		}
 	}
 
-	switch resource {
-	case "aws_vpc":
-		resourceprompts.AWSVPCPrompt()
-	case "aws_default_network_acl":
-		resourceprompts.AWSDefaultNetworkACLPrompt()
-	case "aws_default_security_group":
-		resourceprompts.AWSDefaultSecurityGroupPrompt()
-	case "aws_default_subnet":
-		resourceprompts.AWSDefaultSubnetPrompt()
-	case "aws_default_vpc_dhcp_options":
-		resourceprompts.AWSDefaultVPCDHCPOptionsPrompt()
-	case "aws_default_vpc":
-		resourceprompts.AWSDefaultVPCPrompt()
-	case "aws_ec2_managed_prefix_list":
-		resourceprompts.AWSEC2ManagedPrefixListPrompt()
-	case "aws_egress_only_internet_gateway":
-		resourceprompts.AWSEgressOnlyInternetGatewayPrompt()
-	case "aws_customer_gateway":
-		resourceprompts.AWSCustomerGatewayPrompt()
-	case "aws_flow_log":
-		resourceprompts.AWSFlowLogPrompt()
-	case "aws_nat_gateway":
-		resourceprompts.AWSNatGatewayPrompt()
-	case "aws_network_acl":
-		resourceprompts.AWSNetworkACLPrompt()
-	case "aws_network_acl_rule":
-		resourceprompts.AWSNetworkACLRulePrompt()
-	case "aws_network_interface":
-		resourceprompts.AWSNetworkInterfacePrompt()
-	case "aws_internet_gateway":
-		resourceprompts.AWSInternetGatewayPrompt()
-	case "aws_main_route_table_association":
-		resourceprompts.AWSMainRouteTableAssociationPrompt()
-	case "aws_default_route_table":
-		resourceprompts.AWSDefaultRouteTablePrompt()
-	case "aws_network_interface_attachment":
-		resourceprompts.AWSNetworkInterfaceAttachmentPrompt()
-	case "aws_network_interface_sg_attachment":
-		resourceprompts.AWSNetworkInterfaceSGAttachmentPrompt()
-	case "aws_route":
-		resourceprompts.AWSRoutePrompt()
-	case "aws_route_table":
-		resourceprompts.AWSRouteTablePrompt()
-	case "aws_route_table_association":
-		resourceprompts.AWSRouteTableAssociationPrompt()
-	case "aws_security_group":
-		resourceprompts.AWSSecurityGroupPrompt()
-	case "aws_security_group_rule":
-		resourceprompts.AWSSecurityGroupRulePrompt()
-	case "aws_subnet":
-		resourceprompts.AWSSubnetPrompt()
-	case "aws_vpc_dhcp_options":
-		resourceprompts.AWSVPCDHCPOptionsPrompt()
-	case "aws_vpc_dhcp_options_association":
-		resourceprompts.AWSVPCDHCPOptionsAssociationPrompt()
-	case "aws_vpc_endpoint":
-		resourceprompts.AWSVPCEndpointPrompt()
-	case "aws_vpc_endpoint_connection_notification":
-		resourceprompts.AWSVPCEndpointConnectionNotificationPrompt()
-	case "aws_vpc_endpoint_route_table_association":
-		resourceprompts.AWSVPCEndpointRouteTableAssociationPrompt()
-	case "aws_vpc_endpoint_service":
-		resourceprompts.AWSVPCEndpointServicePrompt()
-	case "aws_caller_identity":
-		resourceprompts.AWSCallerIdentityPrompt()
-	case "aws_vpc_endpoint_subnet_association":
-		resourceprompts.AWSVPCEndpointSubnetAssociationPrompt()
-	case "aws_vpc_ipv4_cidr_block_association":
-		resourceprompts.AWSVPCIPV4CIDRBlockAssociationPrompt()
-	case "aws_vpc_peering_connection":
-		resourceprompts.AWSVPCPeeringConnectionPrompt()
-	case "aws_vpc_peering_connection_accepter":
-		resourceprompts.AWSVPCPeeringConnectionAccepterPrompt()
-	case "aws_vpc_peering_connection_options":
-		resourceprompts.AWSVPCPeeringConnectionOptionsPrompt()
-	case "aws_vpn_connection":
-		resourceprompts.AWSVPCConnectionPrompt()
-	case "aws_vpn_connection_route":
-		resourceprompts.AWSVPNConnectionRoutePrompt()
-	case "aws_vpn_gateway":
-		resourceprompts.AWSVPNGatewayPrompt()
-	case "aws_vpn_gateway_route_propagation":
-		resourceprompts.AWSVPNGatewayRoutePropagationPrompt()
-	case "aws_vpn_gateway_attachment":
-		resourceprompts.AWSVPNGatewayAttachmentPrompt()
-	case "aws_s3_bucket":
-		resourceprompts.AWSS3BucketPrompt()
-	case "aws_s3_access_point":
-		resourceprompts.AWSS3AccessPointPrompt()
-	case "aws_s3_account_public_access_block":
-		resourceprompts.AWSS3AccountPublicAccessBlockPrompt()
-	case "aws_s3_bucket_analytics_configuration":
-		resourceprompts.AWSS3BucketAnalyticsConfigurationPrompt()
-	case "aws_s3_bucket_metric":
-		resourceprompts.AWSS3BucketMetricPrompt()
-	case "aws_s3_bucket_notification":
-		resourceprompts.AWSS3BucketNotificationPrompt()
-	case "aws_s3_bucket_object":
-		resourceprompts.AWSS3BucketObjectPrompt()
-	case "aws_s3_bucket_ownership_controls":
-		resourceprompts.AWSS3BucketOwnershipControlsPrompt()
-	case "aws_s3_bucket_public_access_block":
-		resourceprompts.AWSS3BucketPublicAccessBlockPrompt()
-	case "aws_ami":
-		resourceprompts.AWSAMIPrompt()
-	case "aws_ami_copy":
-		resourceprompts.AWSAMICopyPrompt()
-	case "aws_ebs_snapshot":
-		resourceprompts.AWSEBSSnapshotPrompt()
-	case "aws_ebs_snapshot_copy":
-		resourceprompts.AWSEBSSnapshotCopyPrompt()
-	case "aws_ebs_default_kms_key":
-		resourceprompts.AWSEBSDefaultKMSKeyPrompt()
-	case "aws_ebs_encryption_by_default":
-		resourceprompts.AWSEBSEncryptionByDefaultPrompt()
-	case "aws_ami_from_instance":
-		resourceprompts.AWSAMIFromInstancePrompt()
-	case "aws_ami_launch_permission":
-		resourceprompts.AWSAMILaunchPermissionPrompt()
-	case "aws_elb":
-		resourceprompts.AWSELBPrompt()
-	case "aws_db_instance":
-		resourceprompts.AWSDBInstancePrompt()
-	case "aws_db_cluster_snapshot":
-		resourceprompts.AWSDBClusterSnapshotPrompt()
-	case "aws_db_event_subscription":
-		resourceprompts.AWSDBEventSubscriptionPrompt()
-	case "aws_db_instance_role_association":
-		resourceprompts.AWSDBInstanceRoleAssociationPrompt()
-	case "aws_db_option_group":
-		resourceprompts.AWSDBOptionGroupPrompt()
-	case "aws_ebs_volume":
-		resourceprompts.AWSEBSVolumePrompt()
-	case "aws_ec2_availability_zone_group":
-		resourceprompts.AWSEC2AvailabilityZoneGroupPrompt()
-	case "aws_ec2_capacity_reservation":
-		resourceprompts.AWSEC2CapacityReservationPrompt()
-	case "aws_ec2_carrier_gateway":
-		resourceprompts.AWSEC2CarrierGatewayPrompt()
-	case "aws_ec2_client_vpn_authorization_rule":
-		resourceprompts.AWSEC2ClientVPNAuthorizationRulePrompt()
-	case "aws_ec2_client_vpn_route":
-		resourceprompts.AWSEC2ClientVPNRoutePrompt()
-	case "aws_ec2_local_gateway_route_table_vpc_association":
-		resourceprompts.AWSEC2LocalGatewayRouteTableVPCAssociationPrompt()
-	case "aws_ec2_tag":
-		resourceprompts.AWSEC2TagPrompt()
-	case "aws_ec2_fleet":
-		resourceprompts.AWSEC2FleetPrompt()
-	case "aws_ec2_local_gateway_route":
-		resourceprompts.AWSEC2LocalGatewayRoutePrompt()
-	case "aws_ec2_client_vpn_endpoint":
-		resourceprompts.AWSEC2ClientVPNEndpointPrompt()
-	case "aws_ec2_client_vpn_network_association":
-		resourceprompts.AWSEC2ClientVPNNetworkAssociationPrompt()
-	case "aws_ec2_traffic_mirror_filter":
-		resourceprompts.AWSEC2TrafficMirrorFilterPrompt()
-	case "aws_ec2_traffic_mirror_filter_rule":
-		resourceprompts.AWSEC2TrafficMirrorFilterRulePrompt()
-	case "aws_ec2_traffic_mirror_session":
-		resourceprompts.AWSEC2TrafficMirrorSessionPrompt()
-	case "aws_ec2_traffic_mirror_target":
-		resourceprompts.AWSEC2TrafficMirrorTargetPrompt()
-	case "aws_ec2_transit_gateway":
-		resourceprompts.AWSEC2TransitGatewayPrompt()
-	case "aws_ec2_transit_gateway_peering_attachment":
-		resourceprompts.AWSEC2TransitGatewayPeeringAttachmentPrompt()
-	case "aws_ec2_transit_gateway_peering_attachment_accepter":
-		resourceprompts.AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt()
-	case "aws_ec2_transit_gateway_route":
-		resourceprompts.AWSEC2TransitGatewayRoutePrompt()
-	case "aws_ec2_transit_gateway_route_table":
-		resourceprompts.AWSEC2TransitGatewayRouteTablePrompt()
-	case "aws_ec2_transit_gateway_route_table_association":
-		resourceprompts.AWSEC2TransitGatewayRouteTableAssociationPrompt()
-	case "aws_ec2_transit_gateway_route_table_propagation":
-		resourceprompts.AWSEC2TransitGatewayRouteTablePropagationPrompt()
-	case "aws_db_parameter_group":
-		resourceprompts.AWSDBParameterGroupPrompt()
-	case "aws_ec2_transit_gateway_vpc_attachment_accepter":
-		resourceprompts.AWSEC2TransitGatewayVPCAttachmentAccepterPrompt()
-	case "aws_eip":
-		resourceprompts.AWSEIPPrompt()
-	case "aws_eip_association":
-		resourceprompts.AWSEIPAssociationPrompt()
-	case "aws_ec2_transit_gateway_vpc_attachment":
-		resourceprompts.AWSEC2TransitGatewayVPCAttachmentPrompt()
-	case "aws_instance":
-		resourceprompts.AWSInstancePrompt()
-	case "aws_key_pair":
-		resourceprompts.AWSKeyPairPrompt()
-	case "aws_placement_group":
-		resourceprompts.AWSPlacementGroupPrompt()
-	case "aws_snapshot_create_volume_permission":
-		resourceprompts.AWSSnapshotCreateVolumePermissionPrompt()
-	case "aws_spot_datafeed_subscription":
-		resourceprompts.AWSSpotDatafeedSubscriptionPrompt()
-	case "aws_spot_fleet_request":
-		resourceprompts.AWSSpotFleetRequestPrompt()
-	case "aws_spot_instance_request":
-		resourceprompts.AWSSpotInstanceRequestPrompt()
-	case "aws_db_proxy":
-		resourceprompts.AWSDbProxyPrompt()
-	case "aws_db_proxy_default_target_group":
-		resourceprompts.AWSDBProxyDefaultTargetGroupPrompt()
-	case "aws_db_proxy_target":
-		resourceprompts.AWSDBProxyTargetPrompt()
-	case "aws_db_security_group":
-		resourceprompts.AWSDBSecurityGroupPrompt()
-	case "aws_db_snapshot":
-		resourceprompts.AWSDBSnapshotPrompt()
-	case "aws_db_subnet_group":
-		resourceprompts.AWSDBSubnetGroupPrompt()
-	case "aws_acm_certificate":
-		resourceprompts.AWSACMCertificatePrompt()
-	case "aws_acmpca_certificate_authority":
-		resourceprompts.AWSACMPCACertificateAuthorityPrompt()
-	case "aws_api_gateway_account":
-		resourceprompts.AWSAPIGatewayAccountPrompt()
-	case "aws_api_gateway_api_key":
-		resourceprompts.AWSAPIGatewayApiKeyPrompt()
-	case "aws_api_gateway_authorizer":
-		resourceprompts.AWSAPIGatewayAuthorizerPrompt()
-	case "aws_api_gateway_base_path_mapping":
-		resourceprompts.AWSAPIGatewayBasePathMappingPrompt()
-	case "aws_api_gateway_client_certificate":
-		resourceprompts.AWSAPIGatewayClientCertificatePrompt()
-	case "aws_api_gateway_deployment":
-		resourceprompts.AWSAPIGatewayDeploymentPrompt()
-	case "aws_api_gateway_documentation_part":
-		resourceprompts.AWSAPIGatewayDocumentationPartPrompt()
-	case "aws_api_gateway_documentation_version":
-		resourceprompts.AWSAPIGatewayDocumentationVersionPrompt()
-	case "aws_api_gateway_domain_name":
-		resourceprompts.AWSAPIGatewayDomainNamePrompt()
-	case "aws_api_gateway_gateway_response":
-		resourceprompts.AWSAPIGatewayGatewayResponsePrompt()
-	case "aws_api_gateway_integration":
-		resourceprompts.AWSAPIGatewayIntegrationPrompt()
-	case "aws_api_gateway_integration_response":
-		resourceprompts.AWSAPIGatewayIntegrationResponsePrompt()
-	case "aws_api_gateway_method":
-		resourceprompts.AWSAPIGatewayMethodPrompt()
-	case "aws_api_gateway_method_response":
-		resourceprompts.AWSAPIGatewayMethodResponsePrompt()
-	case "aws_api_gateway_method_settings":
-		resourceprompts.AWSAPIGatewayMethodSettingsPrompt()
-	case "aws_api_gateway_model":
-		resourceprompts.AWSAPIGatewayModelPrompt()
-	case "aws_api_gateway_request_validator":
-		resourceprompts.AWSAPIGatewayRequestValidatorPrompt()
-	case "aws_api_gateway_resource":
-		resourceprompts.AWSAPIGatewayResourcePrompt()
-	case "aws_api_gateway_rest_api":
-		resourceprompts.AWSAPIGatewayRestAPIPrompt()
-	case "aws_api_gateway_stage":
-		resourceprompts.AWSAPIGatewayStagePrompt()
-	case "aws_api_gateway_usage_plan":
-		resourceprompts.AWSAPIGatewayUsagePlanPrompt()
-	case "aws_api_gateway_usage_plan_key":
-		resourceprompts.AWSAPIGatewayUsagePlanKeyPrompt()
-	case "aws_api_gateway_vpc_link":
-		resourceprompts.AWSAPIGatewayVPCLinkPrompt()
-	case "aws_apigatewayv2_api":
-		resourceprompts.AWSAPIGatewayV2APIPrompt()
-	case "aws_apigatewayv2_api_mapping":
-		resourceprompts.AWSAPIGatewayV2APIMappingPrompt()
-	case "aws_apigatewayv2_api_authorizer":
-		resourceprompts.AWSAPIGatewayV2AuthorizerPrompt()
-	case "aws_apigatewayv2_deployment":
-		resourceprompts.AWSAPIGatewayV2DeploymentPrompt()
-	case "aws_lambda_alias":
-		resourceprompts.AWSLambdaAliasPrompt()
-	case "aws_lambda_code_signing_config":
-		resourceprompts.AWSLambdaCodeSigningConfigPrompt()
-	case "aws_lambda_event_source_mapping":
-		resourceprompts.AWSLambdaEventSourceMappingPrompt()
-	case "aws_lambda_function":
-		resourceprompts.AWSLambdaFunctionPrompt()
-	case "aws_lambda_function_event_invoke_config":
-		resourceprompts.AWSLambdaFunctionEventInvokeConfigPrompt()
-	case "aws_lambda_layer_version":
-		resourceprompts.AWSLambdaLayerVersionPrompt()
-	case "aws_lambda_permission":
-		resourceprompts.AWSLambdaPermissionPrompt()
-	case "aws_lambda_provisioned_concurrency_config":
-		resourceprompts.AWSLambdaProvisionedConcurrencyConfigPrompt()
-	case "aws_elastic_beanstalk_application":
-		resourceprompts.AWSElasticBeanstalkApplicationPrompt()
-	case "aws_elastic_beanstalk_application_version":
-		resourceprompts.AWSElasticBeanstalkApplicationVersionPrompt()
-	case "aws_elastic_beanstalk_configuration_template":
-		resourceprompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
-	case "aws_route53_delegation_set":
-		resourceprompts.AWSRoute53DelegationSetPrompt()
-	case "aws_route53_health_check":
-		resourceprompts.AWSRoute53HealthCheckPrompt()
-	case "aws_route53_query_log":
-		resourceprompts.AWSRoute53QueryLogPrompt()
-	case "aws_route53_record":
-		resourceprompts.AWSRoute53RecordPrompt()
-	case "aws_route53_vpc_association_authorization":
-		resourceprompts.AWSRoute53VPCAssociationAuthorizationPrompt()
-	case "aws_route53_zone":
-		resourceprompts.AWSRoute53ZonePrompt()
-	case "aws_route53_zone_association":
-		resourceprompts.AWSRoute53ZoneAssociationPrompt()
-	default:
-		color.Red("No support added yet for your resource! Coming soon...")
-		color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")
+	if resource != "" {
+		switch resource {
+		case "aws_vpc":
+			resourceprompts.AWSVPCPrompt()
+		case "aws_default_network_acl":
+			resourceprompts.AWSDefaultNetworkACLPrompt()
+		case "aws_default_security_group":
+			resourceprompts.AWSDefaultSecurityGroupPrompt()
+		case "aws_default_subnet":
+			resourceprompts.AWSDefaultSubnetPrompt()
+		case "aws_default_vpc_dhcp_options":
+			resourceprompts.AWSDefaultVPCDHCPOptionsPrompt()
+		case "aws_default_vpc":
+			resourceprompts.AWSDefaultVPCPrompt()
+		case "aws_ec2_managed_prefix_list":
+			resourceprompts.AWSEC2ManagedPrefixListPrompt()
+		case "aws_egress_only_internet_gateway":
+			resourceprompts.AWSEgressOnlyInternetGatewayPrompt()
+		case "aws_customer_gateway":
+			resourceprompts.AWSCustomerGatewayPrompt()
+		case "aws_flow_log":
+			resourceprompts.AWSFlowLogPrompt()
+		case "aws_nat_gateway":
+			resourceprompts.AWSNatGatewayPrompt()
+		case "aws_network_acl":
+			resourceprompts.AWSNetworkACLPrompt()
+		case "aws_network_acl_rule":
+			resourceprompts.AWSNetworkACLRulePrompt()
+		case "aws_network_interface":
+			resourceprompts.AWSNetworkInterfacePrompt()
+		case "aws_internet_gateway":
+			resourceprompts.AWSInternetGatewayPrompt()
+		case "aws_main_route_table_association":
+			resourceprompts.AWSMainRouteTableAssociationPrompt()
+		case "aws_default_route_table":
+			resourceprompts.AWSDefaultRouteTablePrompt()
+		case "aws_network_interface_attachment":
+			resourceprompts.AWSNetworkInterfaceAttachmentPrompt()
+		case "aws_network_interface_sg_attachment":
+			resourceprompts.AWSNetworkInterfaceSGAttachmentPrompt()
+		case "aws_route":
+			resourceprompts.AWSRoutePrompt()
+		case "aws_route_table":
+			resourceprompts.AWSRouteTablePrompt()
+		case "aws_route_table_association":
+			resourceprompts.AWSRouteTableAssociationPrompt()
+		case "aws_security_group":
+			resourceprompts.AWSSecurityGroupPrompt()
+		case "aws_security_group_rule":
+			resourceprompts.AWSSecurityGroupRulePrompt()
+		case "aws_subnet":
+			resourceprompts.AWSSubnetPrompt()
+		case "aws_vpc_dhcp_options":
+			resourceprompts.AWSVPCDHCPOptionsPrompt()
+		case "aws_vpc_dhcp_options_association":
+			resourceprompts.AWSVPCDHCPOptionsAssociationPrompt()
+		case "aws_vpc_endpoint":
+			resourceprompts.AWSVPCEndpointPrompt()
+		case "aws_vpc_endpoint_connection_notification":
+			resourceprompts.AWSVPCEndpointConnectionNotificationPrompt()
+		case "aws_vpc_endpoint_route_table_association":
+			resourceprompts.AWSVPCEndpointRouteTableAssociationPrompt()
+		case "aws_vpc_endpoint_service":
+			resourceprompts.AWSVPCEndpointServicePrompt()
+		case "aws_caller_identity":
+			resourceprompts.AWSCallerIdentityPrompt()
+		case "aws_vpc_endpoint_subnet_association":
+			resourceprompts.AWSVPCEndpointSubnetAssociationPrompt()
+		case "aws_vpc_ipv4_cidr_block_association":
+			resourceprompts.AWSVPCIPV4CIDRBlockAssociationPrompt()
+		case "aws_vpc_peering_connection":
+			resourceprompts.AWSVPCPeeringConnectionPrompt()
+		case "aws_vpc_peering_connection_accepter":
+			resourceprompts.AWSVPCPeeringConnectionAccepterPrompt()
+		case "aws_vpc_peering_connection_options":
+			resourceprompts.AWSVPCPeeringConnectionOptionsPrompt()
+		case "aws_vpn_connection":
+			resourceprompts.AWSVPCConnectionPrompt()
+		case "aws_vpn_connection_route":
+			resourceprompts.AWSVPNConnectionRoutePrompt()
+		case "aws_vpn_gateway":
+			resourceprompts.AWSVPNGatewayPrompt()
+		case "aws_vpn_gateway_route_propagation":
+			resourceprompts.AWSVPNGatewayRoutePropagationPrompt()
+		case "aws_vpn_gateway_attachment":
+			resourceprompts.AWSVPNGatewayAttachmentPrompt()
+		case "aws_s3_bucket":
+			resourceprompts.AWSS3BucketPrompt()
+		case "aws_s3_access_point":
+			resourceprompts.AWSS3AccessPointPrompt()
+		case "aws_s3_account_public_access_block":
+			resourceprompts.AWSS3AccountPublicAccessBlockPrompt()
+		case "aws_s3_bucket_analytics_configuration":
+			resourceprompts.AWSS3BucketAnalyticsConfigurationPrompt()
+		case "aws_s3_bucket_metric":
+			resourceprompts.AWSS3BucketMetricPrompt()
+		case "aws_s3_bucket_notification":
+			resourceprompts.AWSS3BucketNotificationPrompt()
+		case "aws_s3_bucket_object":
+			resourceprompts.AWSS3BucketObjectPrompt()
+		case "aws_s3_bucket_ownership_controls":
+			resourceprompts.AWSS3BucketOwnershipControlsPrompt()
+		case "aws_s3_bucket_public_access_block":
+			resourceprompts.AWSS3BucketPublicAccessBlockPrompt()
+		case "aws_ami":
+			resourceprompts.AWSAMIPrompt()
+		case "aws_ami_copy":
+			resourceprompts.AWSAMICopyPrompt()
+		case "aws_ebs_snapshot":
+			resourceprompts.AWSEBSSnapshotPrompt()
+		case "aws_ebs_snapshot_copy":
+			resourceprompts.AWSEBSSnapshotCopyPrompt()
+		case "aws_ebs_default_kms_key":
+			resourceprompts.AWSEBSDefaultKMSKeyPrompt()
+		case "aws_ebs_encryption_by_default":
+			resourceprompts.AWSEBSEncryptionByDefaultPrompt()
+		case "aws_ami_from_instance":
+			resourceprompts.AWSAMIFromInstancePrompt()
+		case "aws_ami_launch_permission":
+			resourceprompts.AWSAMILaunchPermissionPrompt()
+		case "aws_elb":
+			resourceprompts.AWSELBPrompt()
+		case "aws_db_instance":
+			resourceprompts.AWSDBInstancePrompt()
+		case "aws_db_cluster_snapshot":
+			resourceprompts.AWSDBClusterSnapshotPrompt()
+		case "aws_db_event_subscription":
+			resourceprompts.AWSDBEventSubscriptionPrompt()
+		case "aws_db_instance_role_association":
+			resourceprompts.AWSDBInstanceRoleAssociationPrompt()
+		case "aws_db_option_group":
+			resourceprompts.AWSDBOptionGroupPrompt()
+		case "aws_ebs_volume":
+			resourceprompts.AWSEBSVolumePrompt()
+		case "aws_ec2_availability_zone_group":
+			resourceprompts.AWSEC2AvailabilityZoneGroupPrompt()
+		case "aws_ec2_capacity_reservation":
+			resourceprompts.AWSEC2CapacityReservationPrompt()
+		case "aws_ec2_carrier_gateway":
+			resourceprompts.AWSEC2CarrierGatewayPrompt()
+		case "aws_ec2_client_vpn_authorization_rule":
+			resourceprompts.AWSEC2ClientVPNAuthorizationRulePrompt()
+		case "aws_ec2_client_vpn_route":
+			resourceprompts.AWSEC2ClientVPNRoutePrompt()
+		case "aws_ec2_local_gateway_route_table_vpc_association":
+			resourceprompts.AWSEC2LocalGatewayRouteTableVPCAssociationPrompt()
+		case "aws_ec2_tag":
+			resourceprompts.AWSEC2TagPrompt()
+		case "aws_ec2_fleet":
+			resourceprompts.AWSEC2FleetPrompt()
+		case "aws_ec2_local_gateway_route":
+			resourceprompts.AWSEC2LocalGatewayRoutePrompt()
+		case "aws_ec2_client_vpn_endpoint":
+			resourceprompts.AWSEC2ClientVPNEndpointPrompt()
+		case "aws_ec2_client_vpn_network_association":
+			resourceprompts.AWSEC2ClientVPNNetworkAssociationPrompt()
+		case "aws_ec2_traffic_mirror_filter":
+			resourceprompts.AWSEC2TrafficMirrorFilterPrompt()
+		case "aws_ec2_traffic_mirror_filter_rule":
+			resourceprompts.AWSEC2TrafficMirrorFilterRulePrompt()
+		case "aws_ec2_traffic_mirror_session":
+			resourceprompts.AWSEC2TrafficMirrorSessionPrompt()
+		case "aws_ec2_traffic_mirror_target":
+			resourceprompts.AWSEC2TrafficMirrorTargetPrompt()
+		case "aws_ec2_transit_gateway":
+			resourceprompts.AWSEC2TransitGatewayPrompt()
+		case "aws_ec2_transit_gateway_peering_attachment":
+			resourceprompts.AWSEC2TransitGatewayPeeringAttachmentPrompt()
+		case "aws_ec2_transit_gateway_peering_attachment_accepter":
+			resourceprompts.AWSEC2TransitGatewayPeeringAttachmentAccepterPrompt()
+		case "aws_ec2_transit_gateway_route":
+			resourceprompts.AWSEC2TransitGatewayRoutePrompt()
+		case "aws_ec2_transit_gateway_route_table":
+			resourceprompts.AWSEC2TransitGatewayRouteTablePrompt()
+		case "aws_ec2_transit_gateway_route_table_association":
+			resourceprompts.AWSEC2TransitGatewayRouteTableAssociationPrompt()
+		case "aws_ec2_transit_gateway_route_table_propagation":
+			resourceprompts.AWSEC2TransitGatewayRouteTablePropagationPrompt()
+		case "aws_db_parameter_group":
+			resourceprompts.AWSDBParameterGroupPrompt()
+		case "aws_ec2_transit_gateway_vpc_attachment_accepter":
+			resourceprompts.AWSEC2TransitGatewayVPCAttachmentAccepterPrompt()
+		case "aws_eip":
+			resourceprompts.AWSEIPPrompt()
+		case "aws_eip_association":
+			resourceprompts.AWSEIPAssociationPrompt()
+		case "aws_ec2_transit_gateway_vpc_attachment":
+			resourceprompts.AWSEC2TransitGatewayVPCAttachmentPrompt()
+		case "aws_instance":
+			resourceprompts.AWSInstancePrompt()
+		case "aws_key_pair":
+			resourceprompts.AWSKeyPairPrompt()
+		case "aws_placement_group":
+			resourceprompts.AWSPlacementGroupPrompt()
+		case "aws_snapshot_create_volume_permission":
+			resourceprompts.AWSSnapshotCreateVolumePermissionPrompt()
+		case "aws_spot_datafeed_subscription":
+			resourceprompts.AWSSpotDatafeedSubscriptionPrompt()
+		case "aws_spot_fleet_request":
+			resourceprompts.AWSSpotFleetRequestPrompt()
+		case "aws_spot_instance_request":
+			resourceprompts.AWSSpotInstanceRequestPrompt()
+		case "aws_db_proxy":
+			resourceprompts.AWSDbProxyPrompt()
+		case "aws_db_proxy_default_target_group":
+			resourceprompts.AWSDBProxyDefaultTargetGroupPrompt()
+		case "aws_db_proxy_target":
+			resourceprompts.AWSDBProxyTargetPrompt()
+		case "aws_db_security_group":
+			resourceprompts.AWSDBSecurityGroupPrompt()
+		case "aws_db_snapshot":
+			resourceprompts.AWSDBSnapshotPrompt()
+		case "aws_db_subnet_group":
+			resourceprompts.AWSDBSubnetGroupPrompt()
+		case "aws_acm_certificate":
+			resourceprompts.AWSACMCertificatePrompt()
+		case "aws_acmpca_certificate_authority":
+			resourceprompts.AWSACMPCACertificateAuthorityPrompt()
+		case "aws_api_gateway_account":
+			resourceprompts.AWSAPIGatewayAccountPrompt()
+		case "aws_api_gateway_api_key":
+			resourceprompts.AWSAPIGatewayApiKeyPrompt()
+		case "aws_api_gateway_authorizer":
+			resourceprompts.AWSAPIGatewayAuthorizerPrompt()
+		case "aws_api_gateway_base_path_mapping":
+			resourceprompts.AWSAPIGatewayBasePathMappingPrompt()
+		case "aws_api_gateway_client_certificate":
+			resourceprompts.AWSAPIGatewayClientCertificatePrompt()
+		case "aws_api_gateway_deployment":
+			resourceprompts.AWSAPIGatewayDeploymentPrompt()
+		case "aws_api_gateway_documentation_part":
+			resourceprompts.AWSAPIGatewayDocumentationPartPrompt()
+		case "aws_api_gateway_documentation_version":
+			resourceprompts.AWSAPIGatewayDocumentationVersionPrompt()
+		case "aws_api_gateway_domain_name":
+			resourceprompts.AWSAPIGatewayDomainNamePrompt()
+		case "aws_api_gateway_gateway_response":
+			resourceprompts.AWSAPIGatewayGatewayResponsePrompt()
+		case "aws_api_gateway_integration":
+			resourceprompts.AWSAPIGatewayIntegrationPrompt()
+		case "aws_api_gateway_integration_response":
+			resourceprompts.AWSAPIGatewayIntegrationResponsePrompt()
+		case "aws_api_gateway_method":
+			resourceprompts.AWSAPIGatewayMethodPrompt()
+		case "aws_api_gateway_method_response":
+			resourceprompts.AWSAPIGatewayMethodResponsePrompt()
+		case "aws_api_gateway_method_settings":
+			resourceprompts.AWSAPIGatewayMethodSettingsPrompt()
+		case "aws_api_gateway_model":
+			resourceprompts.AWSAPIGatewayModelPrompt()
+		case "aws_api_gateway_request_validator":
+			resourceprompts.AWSAPIGatewayRequestValidatorPrompt()
+		case "aws_api_gateway_resource":
+			resourceprompts.AWSAPIGatewayResourcePrompt()
+		case "aws_api_gateway_rest_api":
+			resourceprompts.AWSAPIGatewayRestAPIPrompt()
+		case "aws_api_gateway_stage":
+			resourceprompts.AWSAPIGatewayStagePrompt()
+		case "aws_api_gateway_usage_plan":
+			resourceprompts.AWSAPIGatewayUsagePlanPrompt()
+		case "aws_api_gateway_usage_plan_key":
+			resourceprompts.AWSAPIGatewayUsagePlanKeyPrompt()
+		case "aws_api_gateway_vpc_link":
+			resourceprompts.AWSAPIGatewayVPCLinkPrompt()
+		case "aws_apigatewayv2_api":
+			resourceprompts.AWSAPIGatewayV2APIPrompt()
+		case "aws_apigatewayv2_api_mapping":
+			resourceprompts.AWSAPIGatewayV2APIMappingPrompt()
+		case "aws_apigatewayv2_api_authorizer":
+			resourceprompts.AWSAPIGatewayV2AuthorizerPrompt()
+		case "aws_apigatewayv2_deployment":
+			resourceprompts.AWSAPIGatewayV2DeploymentPrompt()
+		case "aws_apigatewayv2_domain_name":
+			resourceprompts.AWSAPIGatewayV2DomainNamePrompt()
+		case "aws_apigatewayv2_integration":
+			resourceprompts.AWSAPIGatewayV2IntegrationPrompt()
+		case "aws_apigatewayv2_integration_response":
+			resourceprompts.AWSAPIGatewayV2IntegrationResponsePrompt()
+		case "aws_apigatewayv2_model":
+			resourceprompts.AWSAPIGatewayV2ModelPrompt()
+		case "aws_lambda_alias":
+			resourceprompts.AWSLambdaAliasPrompt()
+		case "aws_lambda_code_signing_config":
+			resourceprompts.AWSLambdaCodeSigningConfigPrompt()
+		case "aws_lambda_event_source_mapping":
+			resourceprompts.AWSLambdaEventSourceMappingPrompt()
+		case "aws_lambda_function":
+			resourceprompts.AWSLambdaFunctionPrompt()
+		case "aws_lambda_function_event_invoke_config":
+			resourceprompts.AWSLambdaFunctionEventInvokeConfigPrompt()
+		case "aws_lambda_layer_version":
+			resourceprompts.AWSLambdaLayerVersionPrompt()
+		case "aws_lambda_permission":
+			resourceprompts.AWSLambdaPermissionPrompt()
+		case "aws_lambda_provisioned_concurrency_config":
+			resourceprompts.AWSLambdaProvisionedConcurrencyConfigPrompt()
+		case "aws_elastic_beanstalk_application":
+			resourceprompts.AWSElasticBeanstalkApplicationPrompt()
+		case "aws_elastic_beanstalk_application_version":
+			resourceprompts.AWSElasticBeanstalkApplicationVersionPrompt()
+		case "aws_elastic_beanstalk_configuration_template":
+			resourceprompts.AWSElasticBeanstalkConfigurationTemplatePrompt()
+		case "aws_route53_delegation_set":
+			resourceprompts.AWSRoute53DelegationSetPrompt()
+		case "aws_route53_health_check":
+			resourceprompts.AWSRoute53HealthCheckPrompt()
+		case "aws_route53_query_log":
+			resourceprompts.AWSRoute53QueryLogPrompt()
+		case "aws_route53_record":
+			resourceprompts.AWSRoute53RecordPrompt()
+		case "aws_route53_vpc_association_authorization":
+			resourceprompts.AWSRoute53VPCAssociationAuthorizationPrompt()
+		case "aws_route53_zone":
+			resourceprompts.AWSRoute53ZonePrompt()
+		case "aws_route53_zone_association":
+			resourceprompts.AWSRoute53ZoneAssociationPrompt()
+		default:
+			color.Red("\nNo support added yet for your resource! Coming soon...")
+			color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")
+		}
 	}
 }
