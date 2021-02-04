@@ -155,6 +155,7 @@ func walk(strBuilder *strings.Builder, v reflect.Value) {
 				k.String() == "triggers" ||
 				k.String() == "response_parameters" ||
 				k.String() == "request_models" ||
+				k.String() == "response_models" ||
 				k.String() == "response_templates":
 				temp := fmt.Sprintf("%s = %s", k, "{\n")
 				strBuilder.WriteString(temp)

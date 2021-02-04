@@ -645,6 +645,10 @@ func ResourcePrompt(resource string, boilerplate bool) {
 			resourceprompts.AWSAPIGatewayV2IntegrationResponsePrompt()
 		case "aws_apigatewayv2_model":
 			resourceprompts.AWSAPIGatewayV2ModelPrompt()
+		case "aws_apigatewayv2_route":
+			resourceprompts.AWSAPIGatewayV2RoutePrompt()
+		case "aws_apigatewayv2_route_response":
+			resourceprompts.AWSAPIGatewayV2RouteResponsePrompt()
 		case "aws_lambda_alias":
 			resourceprompts.AWSLambdaAliasPrompt()
 		case "aws_lambda_code_signing_config":

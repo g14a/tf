@@ -653,3 +653,44 @@ func AWSAPIGatewayV2RoutePrompt() {
 
 	builder.ResourceBuilder("aws_apigatewayv2_route", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayV2RouteResponsePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "route_id",
+			Doc:   "(Required) The identifier of the aws_apigatewayv2_route.",
+		},
+		{
+			Field: "route_response_key",
+			Doc:   "(Required) The route response key.",
+		},
+		{
+			Field: "model_selection_permission",
+			Doc:   "(Optional) The model selection expression for the route.",
+		},
+		{
+			Field:     "response_models",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) The response models for the route response.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_route_response", blockName, resourceBlock)
+}
