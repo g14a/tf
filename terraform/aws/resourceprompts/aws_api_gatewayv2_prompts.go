@@ -584,3 +584,72 @@ func AWSAPIGatewayV2ModelPrompt() {
 
 	builder.ResourceBuilder("aws_apigatewayv2_model", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayV2RoutePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "route_key",
+			Doc:   "(Required) The route key for the route. For HTTP APIs, the route key can be either $default, or a combination of an HTTP method and resource path, for example, GET /pets",
+		},
+		{
+			Field:     "api_key_required",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Boolean whether an API key is required for the route. Defaults to false.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field: "authorization_scopes",
+			Doc:   "(Optional) The authorization scopes supported by this route. The scopes are used with a JWT authorizer to authorize the method invocation.",
+		},
+		{
+			Type:  "select",
+			Field: "authorization_type",
+			Doc:   "(Optional) The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer. For HTTP APIs, valid values are NONE for open access, or JWT for using JSON Web Tokens. Defaults to NONE.",
+			Items: []string{"NONE", "AWS_IAM", "CUSTOM", "JWT"},
+		},
+		{
+			Field: "authorizer_id",
+			Doc:   "(Optional) The identifier of the aws_apigatewayv2_authorizer resource to be associated with this route, if the authorizationType is CUSTOM.",
+		},
+		{
+			Field: "model_selection_permission",
+			Doc:   "(Optional) The model selection expression for the route.",
+		},
+		{
+			Field: "operation_name",
+			Doc:   "(Optional) The operation name for the route. Must be between 1 and 64 characters in length.",
+		},
+		{
+			Field:     "request_models",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) The request models for the route.",
+			Validator: validators.RCValidator,
+		},
+		{
+			Field: "route_response_selection_expression",
+			Doc:   "(Optional) The route response selection expression for the route.",
+		},
+		{
+			Field: "target",
+			Doc:   "(Optional) The target for the route. Must be between 1 and 128 characters in length.",
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_route", blockName, resourceBlock)
+}
