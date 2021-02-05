@@ -139,6 +139,7 @@ func resources() []string {
 		"aws_apigatewayv2_route_response",
 		"aws_apigatewayv2_stage",
 		"aws_apigatewayv2_vpc_link",
+		"aws_accessanalyzer_analyzer",
 		"aws_app_cookie_stickiness_policy",
 		"aws_cloud9_environment_ec2",
 		"aws_cloudformation_stack",
@@ -653,6 +654,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 			resourceprompts.AWSAPIGatewayV2StagePrompt()
 		case "aws_apigatewayv2_vpc_link":
 			resourceprompts.AWSAPIGatewayV2VPCLinkPrompt()
+		case "aws_accessanalyzer_analyzer":
+			resourceprompts.AWSAccessAnalyzerAnalyzerPrompt()
 		case "aws_lambda_alias":
 			resourceprompts.AWSLambdaAliasPrompt()
 		case "aws_lambda_code_signing_config":
