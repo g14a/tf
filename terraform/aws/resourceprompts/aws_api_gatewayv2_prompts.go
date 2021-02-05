@@ -819,3 +819,41 @@ func AWSAPIGatewayV2StagePrompt() {
 
 	builder.ResourceBuilder("aws_apigatewayv2_stage", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayV2VPCLinkPrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Doc: "(Required) The name of the VPC Link. Must be between 1 and 128 characters in length.",
+		},
+		{
+			Field: "security_group_ids",
+			Doc: "(Required) Security group IDs for the VPC Link.",
+		},
+		{
+			Field: "subnet_ids",
+			Ex: "[\"id1\",\"id2\"]",
+			Doc: "(Required) Subnet IDs for the VPC Link.",
+		},
+		{
+			Field: "tags",
+			Ex: "k1=v1,k2=v2",
+			Doc: "(Optional) A map of tags to assign to the VPC Link.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_vpc_link", blockName, resourceBlock)
+}
