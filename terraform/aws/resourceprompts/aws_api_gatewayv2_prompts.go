@@ -694,3 +694,128 @@ func AWSAPIGatewayV2RouteResponsePrompt() {
 
 	builder.ResourceBuilder("aws_apigatewayv2_route_response", blockName, resourceBlock)
 }
+
+func AWSAPIGatewayV2StagePrompt() {
+	color.Green("\nEnter block name(Required) e.g. web\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "api_id",
+			Doc:   "(Required) The API identifier.",
+		},
+		{
+			Field: "name",
+			Doc:   "(Required) The name of the stage. Must be between 1 and 128 characters in length.",
+		},
+		{
+			Field:     "auto_deploy",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether updates to an API automatically trigger a new deployment. Defaults to false. Applicable for HTTP APIs.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field: "client_certificate_id",
+			Doc:   "(Optional) The identifier of a client certificate for the stage. Use the aws_api_gateway_client_certificate resource to configure a client certificate. Supported only for WebSocket APIs.",
+		},
+		{
+			Field: "deployment_id",
+			Doc:   "(Optional) The deployment identifier of the stage. Use the aws_apigatewayv2_deployment resource to configure a deployment.",
+		},
+		{
+			Field: "description",
+			Doc:   "(Optional) The description for the stage. Must be less than or equal to 1024 characters in length.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the stage.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like access_log_settings/route_settings [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_apigatewayv2_stage", blockName, resourceBlock)
+		return
+	}
+
+	accessLogSettingsSchema := []types.Schema{
+		{
+			Field: "destination_arn",
+			Doc:   "(Required) The ARN of the CloudWatch Logs log group to receive access logs. Any trailing :* is trimmed from the ARN.",
+		},
+		{
+			Field: "format",
+			Doc: "(Required) A single line format of the access logs of data." +
+				"\nCheckout https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-logging.html",
+		},
+	}
+
+	resourceBlock["access_log_settings"] = builder.PSOrder(types.ProvidePS(accessLogSettingsSchema))
+
+	defaultRouteSettingsSchema := []types.Schema{
+		{
+			Field:     "data_trace_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether data trace logging is enabled for the default route. Affects the log entries pushed to Amazon CloudWatch Logs. Defaults to false. Supported only for WebSocket APIs.",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Field:     "detailed_metrics_enabled",
+			Ex:        "(true/false)",
+			Doc:       "(Optional) Whether detailed metrics are enabled for the default route. Defaults to false",
+			Validator: validators.BoolValidator,
+		},
+		{
+			Type:  "select",
+			Field: "logging_level",
+			Doc:   "(Optional) The logging level for the default route. Affects the log entries pushed to Amazon CloudWatch Logs. Defaults to OFF. Supported only for WebSocket APIs. Terraform will only perform drift detection of its value when present in a configuration.",
+			Items: []string{"ERROR", "INFO", "OFF"},
+		},
+		{
+			Field:     "throttling_burst_limit",
+			Doc:       "(Optional) The throttling burst limit for the default route.",
+			Validator: validators.IntValidator,
+		},
+		{
+			Field:     "throttling_rate_limit",
+			Doc:       "(Optional) The throttling rate limit for the default route.",
+			Validator: validators.IntValidator,
+		},
+	}
+
+	resourceBlock["default_route_settings"] = builder.PSOrder(types.ProvidePS(defaultRouteSettingsSchema))
+
+	routeSettingsSchema := []types.Schema{
+		{
+			Field: "route_key",
+			Doc:   "(Required) Route key.",
+		},
+	}
+
+	routeSettingsSchema = append(routeSettingsSchema, defaultRouteSettingsSchema...)
+
+	resourceBlock["route_settings"] = builder.PSOrder(types.ProvidePS(routeSettingsSchema))
+
+	builder.ResourceBuilder("aws_apigatewayv2_stage", blockName, resourceBlock)
+}
