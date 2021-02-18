@@ -23,19 +23,19 @@ func AWSAccessAnalyzerAnalyzerPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "analyzer_name",
-			Doc: "(Required) Name of the Analyzer.",
+			Doc:   "(Required) Name of the Analyzer.",
 		},
 		{
-			Field: "tags",
-			Ex: "k1=v1,k2=v2",
-			Doc: "(Optional) Key-value map of resource tags.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) Key-value map of resource tags.",
 			Validator: validators.RCValidator,
 		},
 		{
-			Type: "select",
+			Type:  "select",
 			Field: "type",
-			Doc: "(Optional) Type of Analyzer.",
-			Items: []string{"ACCOUNT","ORGANIZATION"},
+			Doc:   "(Optional) Type of Analyzer.",
+			Items: []string{"ACCOUNT", "ORGANIZATION"},
 		},
 	}
 

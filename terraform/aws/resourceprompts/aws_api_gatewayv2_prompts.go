@@ -834,21 +834,21 @@ func AWSAPIGatewayV2VPCLinkPrompt() {
 	schema := []types.Schema{
 		{
 			Field: "name",
-			Doc: "(Required) The name of the VPC Link. Must be between 1 and 128 characters in length.",
+			Doc:   "(Required) The name of the VPC Link. Must be between 1 and 128 characters in length.",
 		},
 		{
 			Field: "security_group_ids",
-			Doc: "(Required) Security group IDs for the VPC Link.",
+			Doc:   "(Required) Security group IDs for the VPC Link.",
 		},
 		{
 			Field: "subnet_ids",
-			Ex: "[\"id1\",\"id2\"]",
-			Doc: "(Required) Subnet IDs for the VPC Link.",
+			Ex:    "[\"id1\",\"id2\"]",
+			Doc:   "(Required) Subnet IDs for the VPC Link.",
 		},
 		{
-			Field: "tags",
-			Ex: "k1=v1,k2=v2",
-			Doc: "(Optional) A map of tags to assign to the VPC Link.",
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the VPC Link.",
 			Validator: validators.RCValidator,
 		},
 	}

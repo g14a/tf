@@ -1,13 +1,11 @@
 package aws
 
 import (
-	"fmt"
 	"github.com/g14a/tf/boilerplate/aws/resourcebps"
 )
 
 func ResourceBP(resource string) {
 
-	fmt.Println(resource, "=========resources")
 	if resource != "" {
 		switch resource {
 		case "aws_instance":
@@ -237,7 +235,13 @@ func ResourceBP(resource string) {
 		case "aws_sns_platform_application":
 			resourcebps.AWSSNSPlatformApplicationBP()
 		case "aws_elastic_beanstalk_application":
-			resourcebps.AWSElasticBeanstalkApplication()
+			resourcebps.AWSElasticBeanstalkApplicationBP()
+		case "aws_elastic_beanstalk_application_version":
+			resourcebps.AWSElasticBeanstalkApplicationVersionBP()
+		case "aws_elastic_beanstalk_configuration_template":
+			resourcebps.AWSElasticBeanstalkApplicationConfigurationTemplateBP()
+		case "aws_elastic_beanstalk_environment":
+			resourcebps.AWSElasticBeanstalkEnvironmentBP()
 		case "aws_cloudfront_distribution":
 			resourcebps.AWSCloudFrontDistributionBP()
 		case "aws_lambda_function":
