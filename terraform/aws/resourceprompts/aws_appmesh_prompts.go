@@ -149,3 +149,65 @@ func AWSAppmeshGatewayRoutePrompt() {
 
 	builder.ResourceBuilder("aws_appmesh_gateway_route", blockName, specBlock)
 }
+
+func AWSAppMeshMeshPrompt() {
+	color.Green("\nEnter block name(Required) e.g. foo/bar\n\n")
+	blockPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	blockName, err := blockPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	schema := []types.Schema{
+		{
+			Field: "name",
+			Doc:   "(Required) The name to use for the service mesh. Must be between 1 and 255 characters in length.",
+		},
+		{
+			Field:     "tags",
+			Ex:        "k1=v1,k2=v2",
+			Doc:       "(Optional) A map of tags to assign to the resource.",
+			Validator: validators.RCValidator,
+		},
+	}
+
+	resourceBlock := builder.PSOrder(types.ProvidePS(schema))
+
+	color.Yellow("\nConfigure nested settings like spec [y/n]?\n\n", "text")
+
+	ynPrompt := promptui.Prompt{
+		Label: "",
+	}
+
+	yn, err := ynPrompt.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if yn == "n" || yn == "" {
+		builder.ResourceBuilder("aws_appmesh_mesh", blockName, resourceBlock)
+		return
+	}
+
+	color.Green("Enter spec:\n(Optional) The service mesh specification to apply." +
+		"\nThe spec object supports the following:" +
+		"\n1.egress_filter")
+
+	egressFilterSchema := []types.Schema{
+		{
+			Type:  "select",
+			Field: "type",
+			Doc:   "(Optional) The egress filter rules for the service mesh.",
+			Items: []string{"DROP_ALL", "ALLOW_ALL"},
+		},
+	}
+
+	egressFilterBlock := builder.PSOrder(types.ProvidePS(egressFilterSchema))
+
+	resourceBlock["spec"] = egressFilterBlock
+
+	builder.ResourceBuilder("aws_appmesh_mesh", blockName, resourceBlock)
+}

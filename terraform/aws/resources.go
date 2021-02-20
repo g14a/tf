@@ -697,6 +697,8 @@ func ResourcePrompt(resource string, boilerplate bool) {
 			resourceprompts.AWSRoute53ZoneAssociationPrompt()
 		case "aws_appmesh_gateway_route":
 			resourceprompts.AWSAppmeshGatewayRoutePrompt()
+		case "aws_appmesh_mesh":
+			resourceprompts.AWSAppMeshMeshPrompt()
 		default:
 			color.Red("\nNo support added yet for your resource! Coming soon...")
 			color.Yellow("\nMeanwhile try getting the boilerplate version by running `tf resource -p aws -r " + resource + " -b`")
